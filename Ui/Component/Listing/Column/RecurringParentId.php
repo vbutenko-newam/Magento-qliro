@@ -9,13 +9,24 @@ use \Magento\Framework\Api\SearchCriteriaBuilder;
 
 class RecurringParentId extends Column
 {
-    protected $_orderRepository;
-    protected $_searchCriteria;
-
-    public function __construct(ContextInterface $context, UiComponentFactory $uiComponentFactory, OrderRepositoryInterface $orderRepository, SearchCriteriaBuilder $criteria, array $components = [], array $data = [])
-    {
-        $this->_orderRepository = $orderRepository;
-        $this->_searchCriteria  = $criteria;
+    /**
+     * Class constructor
+     *
+     * @param ContextInterface $context
+     * @param UiComponentFactory $uiComponentFactory
+     * @param OrderRepositoryInterface $orderRepository
+     * @param SearchCriteriaBuilder $criteria
+     * @param array $components
+     * @param array $data
+     */
+    public function __construct(
+        ContextInterface $context,
+        UiComponentFactory $uiComponentFactory,
+        private readonly OrderRepositoryInterface $orderRepository,
+        private readonly SearchCriteriaBuilder $criteria,
+        array $components = [],
+        array $data = []
+    ) {
         parent::__construct($context, $uiComponentFactory, $components, $data);
     }
 
@@ -24,7 +35,7 @@ class RecurringParentId extends Column
         if (isset($dataSource['data']['items'])) {
             foreach ($dataSource['data']['items'] as & $item) {
 
-                $order  = $this->_orderRepository->get($item["entity_id"]);
+                $order  = $this->orderRepository->get($item["entity_id"]);
                 $recurringParentId = $order->getData("recurring_parent_id");
 
                 $item[$this->getData('name')] = $recurringParentId;

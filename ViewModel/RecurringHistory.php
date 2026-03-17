@@ -23,18 +23,18 @@ class RecurringHistory implements ArgumentInterface
 
     const ORDER_VIEW_ROUTE = 'sales/order/view';
 
-    private CollectionFactory $recurringCollectionFactory;
-
-    private CustomerSession $customerSession;
-
     private ?Template $containerBlock = null;
 
+    /**
+     * Class constructor
+     *
+     * @param CollectionFactory $recurringCollectionFactory
+     * @param CustomerSession $customerSession
+     */
     public function __construct(
-        CollectionFactory $recurringCollectionFactory,
-        CustomerSession $customerSession
+        private readonly CollectionFactory $recurringCollectionFactory,
+        private readonly CustomerSession $customerSession
     ) {
-        $this->recurringCollectionFactory = $recurringCollectionFactory;
-        $this->customerSession = $customerSession;
     }
 
     /**

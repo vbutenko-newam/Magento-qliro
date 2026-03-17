@@ -17,25 +17,15 @@ use Qliro\QliroOne\Api\LinkRepositoryInterface;
 class CustomerLogin implements ObserverInterface
 {
     /**
-     * @var LinkRepositoryInterface
-     */
-    private $linkRepository;
-    /**
-     * @var Session
-     */
-    private $checkoutSession;
-
-    /**
-     * Inject dependencies
+     * Class constructor
+     *
      * @param LinkRepositoryInterface $linkRepository
      * @param Session $checkoutSession
      */
     public function __construct(
-        LinkRepositoryInterface $linkRepository,
-        Session $checkoutSession
+        private readonly LinkRepositoryInterface $linkRepository,
+        private readonly Session $checkoutSession
     ) {
-        $this->linkRepository = $linkRepository;
-        $this->checkoutSession = $checkoutSession;
     }
 
     /**

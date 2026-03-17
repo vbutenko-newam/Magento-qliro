@@ -29,77 +29,7 @@ class Fee
     private $methodsWithFee = [];
 
     /**
-     * @var Config
-     */
-    private $config;
-
-    /**
-     * @var Session
-     */
-    private $checkoutSession;
-
-    /**
-     * @var PriceCurrencyInterface
-     */
-    private $priceCurrency;
-
-    /**
-     * @var CatalogHelper
-     */
-    private $catalogHelper;
-
-    /**
-     * @var StoreManagerInterface
-     */
-    private $storeManager;
-
-    /**
-     * @var CustomerSession
-     */
-    private $customerSession;
-
-    /**
-     * @var TaxClassKeyInterfaceFactory
-     */
-    private $taxClassKeyFactory;
-
-    /**
-     * @var QuoteDetailsInterfaceFactory
-     */
-    private $quoteDetailsFactory;
-
-    /**
-     * @var QuoteDetailsItemInterfaceFactory
-     */
-    private $quoteDetailsItemFactory;
-
-    /**
-     * @var TaxCalculationInterface
-     */
-    private $taxCalculation;
-
-    /**
-     * @var AddressInterfaceFactory
-     */
-    private $addressFactory;
-
-    /**
-     * @var RegionInterfaceFactory
-     */
-    private $regionFactory;
-
-    /**
-     * @var GroupRepositoryInterface
-     */
-    private $customerGroupRepository;
-
-    /**
-     * @var DataObjectFactory
-     */
-    private $dataObjectFactory;
-
-    /**
-     * Fee constructor.
+     * Class constructor
      *
      * @param Config $config
      * @param Session $checkoutSession
@@ -117,35 +47,21 @@ class Fee
      * @param DataObjectFactory $dataObjectFactory
      */
     public function __construct(
-        Config $config,
-        Session $checkoutSession,
-        PriceCurrencyInterface $priceCurrency,
-        CatalogHelper $catalogHelper,
-        StoreManagerInterface $storeManager,
-        CustomerSession $customerSession,
-        TaxClassKeyInterfaceFactory $taxClassKeyFactory,
-        QuoteDetailsInterfaceFactory $quoteDetailsFactory,
-        QuoteDetailsItemInterfaceFactory $quoteDetailsItemFactory,
-        TaxCalculationInterface $taxCalculation,
-        AddressInterfaceFactory $addressFactory,
-        RegionInterfaceFactory $regionFactory,
-        GroupRepositoryInterface $customerGroupRepository,
-        DataObjectFactory $dataObjectFactory
+        private readonly Config $config,
+        private readonly Session $checkoutSession,
+        private readonly PriceCurrencyInterface $priceCurrency,
+        private readonly CatalogHelper $catalogHelper,
+        private readonly StoreManagerInterface $storeManager,
+        private readonly CustomerSession $customerSession,
+        private readonly TaxClassKeyInterfaceFactory $taxClassKeyFactory,
+        private readonly QuoteDetailsInterfaceFactory $quoteDetailsFactory,
+        private readonly QuoteDetailsItemInterfaceFactory $quoteDetailsItemFactory,
+        private readonly TaxCalculationInterface $taxCalculation,
+        private readonly AddressInterfaceFactory $addressFactory,
+        private readonly RegionInterfaceFactory $regionFactory,
+        private readonly GroupRepositoryInterface $customerGroupRepository,
+        private readonly DataObjectFactory $dataObjectFactory
     ) {
-        $this->config = $config;
-        $this->checkoutSession = $checkoutSession;
-        $this->priceCurrency = $priceCurrency;
-        $this->catalogHelper = $catalogHelper;
-        $this->storeManager = $storeManager;
-        $this->customerSession = $customerSession;
-        $this->taxClassKeyFactory = $taxClassKeyFactory;
-        $this->quoteDetailsFactory = $quoteDetailsFactory;
-        $this->quoteDetailsItemFactory = $quoteDetailsItemFactory;
-        $this->taxCalculation = $taxCalculation;
-        $this->addressFactory = $addressFactory;
-        $this->regionFactory = $regionFactory;
-        $this->customerGroupRepository = $customerGroupRepository;
-        $this->dataObjectFactory = $dataObjectFactory;
     }
 
     /**

@@ -18,50 +18,21 @@ use Qliro\QliroOne\Model\Success\Session as SuccessSession;
 class QliroCheckoutRedirect implements ObserverInterface
 {
     /**
-     * @var \Magento\Framework\Event\Manager
-     */
-    private $manager;
-
-    /**
-     * @var \Magento\Framework\Url
-     */
-    private $url;
-
-    /**
-     * @var Session
-     */
-    private $session;
-
-    /**
-     * @var \Qliro\QliroOne\Model\Config
-     */
-    private $qliroConfig;
-
-    /**
-     * @var SuccessSession
-     */
-    private $successSession;
-
-    /**
-     * Inject dependencies
+     * Class constructor
      *
-     * @param \Magento\Framework\Event\Manager $manager
-     * @param \Magento\Framework\Url $urlModel
-     * @param \Magento\Checkout\Model\Session $session
-     * @param \Qliro\QliroOne\Model\Config $qliroConfig
+     * @param EventManager $manager
+     * @param Url $url
+     * @param Session $session
+     * @param Config $qliroConfig
+     * @param SuccessSession $successSession
      */
     public function __construct(
-        EventManager $manager,
-        Url $urlModel,
-        Session $session,
-        Config $qliroConfig,
-        SuccessSession $successSession
+        private readonly EventManager $manager,
+        private readonly Url $url,
+        private readonly Session $session,
+        private readonly Config $qliroConfig,
+        private readonly SuccessSession $successSession
     ) {
-        $this->url = $urlModel;
-        $this->manager = $manager;
-        $this->session = $session;
-        $this->qliroConfig = $qliroConfig;
-        $this->successSession = $successSession;
     }
 
     /**

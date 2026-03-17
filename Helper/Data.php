@@ -23,62 +23,26 @@ use Magento\Framework\HTTP\PhpEnvironment\RemoteAddress;
 class Data extends AbstractHelper
 {
     /**
-     * @var \Qliro\QliroOne\Model\Payload\PayloadConverter
-     */
-    private $payloadConverter;
-
-    /**
-     * @var \Qliro\QliroOne\Model\Logger\Manager
-     */
-    private $logManager;
-
-    /**
-     * @var \Magento\Framework\Serialize\Serializer\Json
-     */
-    private $json;
-
-    /**
-     * @var DateTime
-     */
-    private DateTime $dateTime;
-
-    /**
-     * @var \Magento\Framework\Controller\ResultFactory
-     */
-    private $resultFactory;
-
-    /**
-     * @var \Magento\Framework\HTTP\PhpEnvironment\RemoteAddress
-     */
-    private $remoteAddress;
-
-    /**
-     * Inject dependencies
+     * Class constructor
      *
-     * @param \Magento\Framework\App\Helper\Context $context
-     * @param \Qliro\QliroOne\Model\PayloadConverter $payloadConverter
-     * @param \Qliro\QliroOne\Model\Logger\Manager $logManager
-     * @param \Magento\Framework\Serialize\Serializer\Json $json
+     * @param Context $context
+     * @param PayloadConverter $payloadConverter
+     * @param LogManager $logManager
+     * @param Json $json
      * @param DateTime $dateTime
-     * @param \Magento\Framework\Controller\ResultFactory $resultFactory
-     * @param \Magento\Framework\HTTP\PhpEnvironment\RemoteAddress $remoteAddress
+     * @param ResultFactory $resultFactory
+     * @param RemoteAddress $remoteAddress
      */
     public function __construct(
         Context $context,
-        PayloadConverter $payloadConverter,
-        LogManager $logManager,
-        Json $json,
-        DateTime $dateTime,
-        ResultFactory $resultFactory,
-        RemoteAddress $remoteAddress
+        private readonly PayloadConverter $payloadConverter,
+        private readonly LogManager $logManager,
+        private readonly Json $json,
+        private readonly DateTime $dateTime,
+        private readonly ResultFactory $resultFactory,
+        private readonly RemoteAddress $remoteAddress
     ) {
         parent::__construct($context);
-        $this->payloadConverter = $payloadConverter;
-        $this->logManager = $logManager;
-        $this->json = $json;
-        $this->dateTime = $dateTime;
-        $this->resultFactory = $resultFactory;
-        $this->remoteAddress = $remoteAddress;
     }
 
     /**

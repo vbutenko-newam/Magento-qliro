@@ -8,8 +8,10 @@ namespace Qliro\QliroOne\Model\Management;
 
 use Magento\Framework\DataObject;
 use Magento\Framework\Event\ManagerInterface;
+use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Quote\Api\CartRepositoryInterface;
 use Magento\Quote\Model\Quote as MagentoQuote;
+use Qliro\QliroOne\Api\Data\LinkInterface;
 use Qliro\QliroOne\Api\LinkRepositoryInterface;
 use Qliro\QliroOne\Model\Logger\Manager as LogManager;
 use Qliro\QliroOne\Model\Payload\PayloadConverter;
@@ -43,7 +45,7 @@ class ShippingMethod
         $declineContainer = ['DeclineReason' => 'PostalCode'];
 
         try {
-            $link = $this->linkRepository->getByQliroOrderId($updateContainer['OrderId'] ?? null);
+            $link = $this->getLinkWithRetry($updateContainer['OrderId'] ?? null);
             $this->logManager->setMerchantReference($link->getReference());
 
             try {
@@ -149,5 +151,33 @@ class ShippingMethod
         }
 
         return false;
+    }
+
+    /**
+     * Retrieve a link by Qliro order ID, retrying briefly to survive the race window
+     * between Qliro firing the callback and Magento finishing linkRepository->save().
+     *
+     * @throws NoSuchEntityException when the link is still not found after all attempts
+     */
+    private function getLinkWithRetry(?string $qliroOrderId, int $maxAttempts = 3, int $delayMs = 200): LinkInterface
+    {
+        $attempt = 0;
+        while (true) {
+            try {
+                return $this->linkRepository->getByQliroOrderId($qliroOrderId);
+            } catch (NoSuchEntityException $e) {
+                if (++$attempt >= $maxAttempts) {
+                    throw $e;
+                }
+                $this->logManager->debug(sprintf(
+                    'Link not found for Qliro order %s (attempt %d/%d), retrying in %dms',
+                    $qliroOrderId,
+                    $attempt,
+                    $maxAttempts,
+                    $delayMs
+                ));
+                usleep($delayMs * 1000);
+            }
+        }
     }
 }

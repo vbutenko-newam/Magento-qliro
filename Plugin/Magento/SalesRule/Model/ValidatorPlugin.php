@@ -9,20 +9,14 @@ use Qliro\QliroOne\Model\Config;
  */
 class ValidatorPlugin
 {
-
     /**
-     * @var Config
-     */
-    private $qliroConfig;
-
-    /**
-     * Constructor
+     * Class constructor
+     *
      * @param Config $qliroConfig
      */
     public function __construct(
-        Config $qliroConfig,
+        private readonly Config $qliroConfig
     ) {
-        $this->qliroConfig = $qliroConfig;
     }
 
     /**

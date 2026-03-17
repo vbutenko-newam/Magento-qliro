@@ -5,29 +5,19 @@ namespace Qliro\QliroOne\Plugin\Model\Type;
 use \Magento\Checkout\Model\Type\Onepage as Subject;
 use \Qliro\QliroOne\Model\Config;
 use \Magento\Framework\App\RequestInterface;
+
 class Onepage
 {
     /**
-     * @var Config
-     */
-    private Config $config;
-
-    /**
-     * @var RequestInterface
-     */
-    private RequestInterface $request;
-
-    /**
+     * Class constructor
+     *
      * @param Config $config
      * @param RequestInterface $request
      */
     public function __construct(
-        Config $config,
-        RequestInterface $request
-    )
-    {
-        $this->config = $config;
-        $this->request = $request;
+        private readonly Config $config,
+        private readonly RequestInterface $request
+    ) {
     }
 
     /**

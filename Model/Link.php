@@ -36,7 +36,7 @@ class Link extends AbstractModel implements LinkInterface
      */
     public function getIsActive(): int
     {
-        return (bool)$this->getData(self::FIELD_IS_ACTIVE);
+        return $this->getData(self::FIELD_IS_ACTIVE);
     }
 
     /**
@@ -50,17 +50,17 @@ class Link extends AbstractModel implements LinkInterface
     /**
      * @inheritdoc
      */
-    public function getQuoteId(): ?string
+    public function getQuoteId(): ?int
     {
-        return $this->getData(self::FIELD_QUOTE_ID);
+        return (int)$this->getData(self::FIELD_QUOTE_ID);
     }
 
     /**
      * @inheritdoc
      */
-    public function getQliroOrderId(): ?string
+    public function getQliroOrderId(): ?int
     {
-        return $this->getData(self::FIELD_QLIRO_ORDER_ID);
+        return (int)$this->getData(self::FIELD_QLIRO_ORDER_ID);
     }
 
     /**
@@ -139,7 +139,7 @@ class Link extends AbstractModel implements LinkInterface
     /**
      * @inheritdoc
      */
-    public function getIngridShippingAmount(): ?float
+    public function getIngridShippingAmount(): ?string
     {
         return $this->getData(self::FIELD_INGRID_SHIPPING_AMOUNT);
     }

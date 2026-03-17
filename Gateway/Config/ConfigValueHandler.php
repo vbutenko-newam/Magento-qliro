@@ -12,17 +12,13 @@ use Magento\Payment\Gateway\Config\ValueHandlerInterface;
 class ConfigValueHandler implements ValueHandlerInterface
 {
     /**
-     * @var \Magento\Payment\Gateway\ConfigInterface
-     */
-    private $configInterface;
-
-    /**
-     * @param \Magento\Payment\Gateway\ConfigInterface $configInterface
+     * Class constructor
+     *
+     * @param ConfigInterface $configInterface
      */
     public function __construct(
-        ConfigInterface $configInterface
+        private readonly ConfigInterface $configInterface
     ) {
-        $this->configInterface = $configInterface;
     }
 
     /**

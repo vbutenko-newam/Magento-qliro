@@ -26,13 +26,13 @@ class CheckoutConfigProvider implements ConfigProviderInterface
     /**
      * Class constructor
      *
-     * @param \Magento\Store\Model\StoreManagerInterface $storeManager
-     * @param \Qliro\QliroOne\Model\Security\AjaxToken $ajaxToken
-     * @param \Magento\Checkout\Model\Session $checkoutSession
-     * @param \Qliro\QliroOne\Model\Config $qliroConfig
-     * @param \Qliro\QliroOne\Model\Fee $fee
+     * @param StoreManagerInterface $storeManager
+     * @param AjaxToken $ajaxToken
+     * @param Session $checkoutSession
+     * @param Config $qliroConfig
+     * @param Fee $fee
      * @param CountrySelect $countrySelect
-     * @param \Qliro\QliroOne\Service\RecurringPayments\Data $recurringPaymentsDataService
+     * @param RecurringPaymentsDataService $recurringPaymentsDataService
      */
     public function __construct(
         private readonly StoreManagerInterface $storeManager,

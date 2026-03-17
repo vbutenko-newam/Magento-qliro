@@ -24,26 +24,6 @@ use Qliro\QliroOne\Api\LinkRepositoryInterface;
 class Shipping implements ArgumentInterface
 {
     /**
-     * @var DataObjectFactory
-     */
-    private DataObjectFactory $dataObjectFactory;
-
-    /**
-     * @var AddressFactory
-     */
-    private AddressFactory $addressFactory;
-
-    /**
-     * @var LinkRepositoryInterface
-     */
-    private LinkRepositoryInterface $linkRepo;
-
-    /**
-     * @var OrderRepositoryInterface
-     */
-    private OrderRepositoryInterface $orderRepo;
-
-    /**
      * @var DataObject|null
      */
     private ?DataObject $locationObj = null;
@@ -53,16 +33,20 @@ class Shipping implements ArgumentInterface
      */
     private ?Address $sourcedAddress = null;
 
+    /**
+     * Class constructor
+     *
+     * @param DataObjectFactory $dataObjectFactory
+     * @param AddressFactory $addressFactory
+     * @param LinkRepositoryInterface $linkRepo
+     * @param OrderRepositoryInterface $orderRepo
+     */
     public function __construct(
-        DataObjectFactory $dataObjectFactory,
-        AddressFactory $addressFactory,
-        LinkRepositoryInterface $linkRepo,
-        OrderRepositoryInterface $orderRepo
+        private readonly DataObjectFactory $dataObjectFactory,
+        private readonly AddressFactory $addressFactory,
+        private readonly LinkRepositoryInterface $linkRepo,
+        private readonly OrderRepositoryInterface $orderRepo
     ) {
-        $this->dataObjectFactory = $dataObjectFactory;
-        $this->addressFactory = $addressFactory;
-        $this->linkRepo = $linkRepo;
-        $this->orderRepo = $orderRepo;
     }
 
     /**
@@ -210,7 +194,7 @@ class Shipping implements ArgumentInterface
             return [];
         }
         $ingridShippingInfo = $order->getPayment()->getAdditionalInformation()['qliroone_shipping_info'] ?? [];
-        
+
         if (count($ingridShippingInfo) < 1) {
             return [];
         }

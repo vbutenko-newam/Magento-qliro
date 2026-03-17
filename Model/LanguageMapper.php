@@ -33,27 +33,15 @@ class LanguageMapper implements LanguageMapperInterface
     ];
 
     /**
-     * @var \Magento\Framework\Locale\Resolver
-     */
-    private $localeResolver;
-
-    /**
-     * @var CountrySelect
-     */
-    private CountrySelect $countrySelect;
-
-    /**
-     * Inject dependencies
+     * Class constructor
      *
-     * @param \Magento\Framework\Locale\Resolver $localeResolver
+     * @param Resolver $localeResolver
      * @param CountrySelect $countrySelect
      */
     public function __construct(
-        Resolver $localeResolver,
-        CountrySelect $countrySelect
+        private readonly Resolver $localeResolver,
+        private readonly CountrySelect $countrySelect
     ) {
-        $this->localeResolver = $localeResolver;
-        $this->countrySelect = $countrySelect;
     }
 
     /**

@@ -54,9 +54,9 @@ interface LinkInterface
     /**
      * Get Magento quote ID
      *
-     * @return string|null
+     * @return int|null
      */
-    public function getQuoteId(): ?string;
+    public function getQuoteId(): ?int;
 
     /**
      * Get Magento order ID
@@ -68,9 +68,9 @@ interface LinkInterface
     /**
      * Get QliroOne order ID
      *
-     * @return string|null
+     * @return int|null
      */
-    public function getQliroOrderId(): ?string;
+    public function getQliroOrderId(): ?int;
 
     /**
      * Get QliroOne order status
@@ -131,9 +131,9 @@ interface LinkInterface
     /**
      * Get ingrid shipping amount
      *
-     * @return ?float
+     * @return ?string
      */
-    public function getIngridShippingAmount(): ?float;
+    public function getIngridShippingAmount(): ?string;
 
     /**
      * Get "is_locked" flag
