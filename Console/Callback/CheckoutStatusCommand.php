@@ -52,7 +52,7 @@ class CheckoutStatusCommand extends AbstractCallbackCommand
         return [
             'OrderId'           => $qliroOrder['OrderId'] ?? null,
             'MerchantReference' => $qliroOrder['MerchantReference'] ?? null,
-            'Status'            => $qliroOrder['Status'] ?? null,
+            'Status'            => $qliroOrder['CustomerCheckoutStatus'] ?? null,
             'Timestamp'         => date('Y-m-d\TH:i:s\Z'),
         ];
     }

@@ -6,19 +6,21 @@
 
 namespace Qliro\QliroOne\Model\Management;
 
+use Magento\Framework\Exception\AlreadyExistsException;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Quote\Api\CartRepositoryInterface;
 use Magento\Sales\Api\OrderRepositoryInterface;
 use Qliro\QliroOne\Api\Client\MerchantInterface;
 use Qliro\QliroOne\Api\Client\OrderManagementInterface;
+use Qliro\QliroOne\Api\Data\AdminTransactionResponseInterface;
 use Qliro\QliroOne\Api\Data\OrderManagementStatusInterface;
 use Qliro\QliroOne\Api\Data\OrderManagementStatusInterfaceFactory;
 use Qliro\QliroOne\Api\LinkRepositoryInterface;
 use Qliro\QliroOne\Api\OrderManagementStatusRepositoryInterface;
-use Qliro\QliroOne\Model\Config;
 use Qliro\QliroOne\Model\Exception\AlreadyPlacedException;
 use Qliro\QliroOne\Model\Exception\TerminalException;
 use Qliro\QliroOne\Model\Logger\Manager as LogManager;
+use Qliro\QliroOne\Model\OrderManagementStatus;
 use Qliro\QliroOne\Model\Payload\PayloadConverter;
 use Qliro\QliroOne\Model\QliroOrder\Admin\CancelOrderRequest;
 use Qliro\QliroOne\Model\QliroOrder\Builder\ValidateOrderBuilder;
@@ -29,14 +31,31 @@ use Qliro\QliroOne\Model\ResourceModel\Lock;
 /**
  * QliroOne order management.
  *
- * Handles fetching, validating and cancelling Qliro orders.
+ * Handles fetching, validating, and cancelling Qliro orders.
  * The quote is passed explicitly to every method that needs it.
  * No mutable shared state; does not extend AbstractManagement.
  */
 class QliroOrder
 {
+    /**
+     * Class constructor
+     *
+     * @param MerchantInterface $merchantApi
+     * @param OrderManagementInterface $orderManagementApi
+     * @param ValidateOrderBuilder $validateOrderBuilder
+     * @param QuoteFromValidateConverter $quoteFromValidateConverter
+     * @param QuoteFromOrderConverter $quoteFromOrderConverter
+     * @param LinkRepositoryInterface $linkRepository
+     * @param CartRepositoryInterface $quoteRepository
+     * @param OrderRepositoryInterface $orderRepository
+     * @param PayloadConverter $payloadConverter
+     * @param LogManager $logManager
+     * @param Lock $lock
+     * @param OrderManagementStatusInterfaceFactory $orderManagementStatusInterfaceFactory
+     * @param OrderManagementStatusRepositoryInterface $orderManagementStatusRepository
+     * @param Quote $quoteManagement
+     */
     public function __construct(
-        private readonly Config $qliroConfig,
         private readonly MerchantInterface $merchantApi,
         private readonly OrderManagementInterface $orderManagementApi,
         private readonly ValidateOrderBuilder $validateOrderBuilder,
@@ -64,7 +83,7 @@ class QliroOrder
      * @param bool $allowRecreate
      * @return array
      * @throws AlreadyPlacedException
-     * @throws TerminalException
+     * @throws TerminalException|AlreadyExistsException
      */
     public function get(\Magento\Quote\Model\Quote $quote, bool $allowRecreate = true): array
     {
@@ -232,10 +251,10 @@ class QliroOrder
      * Cancel a Qliro order.
      *
      * @param int $qliroOrderId
-     * @return \Qliro\QliroOne\Api\Data\AdminTransactionResponseInterface
+     * @return AdminTransactionResponseInterface
      * @throws TerminalException
      */
-    public function cancel(int $qliroOrderId): \Qliro\QliroOne\Api\Data\AdminTransactionResponseInterface
+    public function cancel(int $qliroOrderId): AdminTransactionResponseInterface
     {
         $this->logManager->setMark('CANCEL QLIRO ORDER');
 
@@ -273,7 +292,7 @@ class QliroOrder
 
             $responseContainer = $this->orderManagementApi->cancelOrder($request, $storeId);
 
-            /** @var \Qliro\QliroOne\Model\OrderManagementStatus $omStatus */
+            /** @var OrderManagementStatus $omStatus */
             $omStatus = $this->orderManagementStatusInterfaceFactory->create();
             $omStatus->setRecordType(OrderManagementStatusInterface::RECORD_TYPE_CANCEL);
             $omStatus->setRecordId($link->getOrderId());

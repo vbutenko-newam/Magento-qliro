@@ -15,6 +15,9 @@ use Magento\Framework\Url;
 use Qliro\QliroOne\Model\Config;
 use Qliro\QliroOne\Model\Success\Session as SuccessSession;
 
+/**
+ * Class QliroCheckoutRedirect
+ */
 class QliroCheckoutRedirect implements ObserverInterface
 {
     /**
