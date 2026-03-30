@@ -115,7 +115,7 @@ class ShipmentShipmentsBuilder
             );
 
             if ($qliroOrderItem) {
-                $qliroOrderItem->setQuantity($shipmentQty);
+                $qliroOrderItem['Quantity'] = (float)$shipmentQty;
                 $shipmentOrderItems[] = $qliroOrderItem;
             }
         }
