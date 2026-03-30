@@ -78,7 +78,7 @@ class CheckoutStatus
 
             $this->logManager->setMerchantReference($link->getReference());
 
-            $link->setQliroOrderStatus($checkoutStatus['Status'] ?? null);
+            $link->setQliroOrderStatus($checkoutStatus['Status'] ?? '');
             $this->linkRepository->save($link);
 
             $qliroOrder = $this->merchantApi->getOrder($qliroOrderId);
@@ -130,7 +130,7 @@ class CheckoutStatus
         try {
             $link = $this->linkRepository->getByQliroOrderId($checkoutStatus['OrderId'] ?? null, false);
             $this->logManager->setMerchantReference($link->getReference());
-            $link->setQliroOrderStatus($checkoutStatus['Status'] ?? null);
+            $link->setQliroOrderStatus($checkoutStatus['Status'] ?? '');
 
             try {
                 $this->qliroOrder->cancel($link->getQliroOrderId());
