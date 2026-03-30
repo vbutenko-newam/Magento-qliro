@@ -76,7 +76,7 @@ class Link extends AbstractModel implements LinkInterface
      */
     public function getOrderId(): ?int
     {
-        return $this->getData(self::FIELD_ORDER_ID);
+        return (int)$this->getData(self::FIELD_ORDER_ID);
     }
 
     /**
