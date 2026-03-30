@@ -76,7 +76,7 @@ class Link extends AbstractModel implements LinkInterface
      */
     public function getOrderId(): ?int
     {
-        return $this->getData(self::FIELD_ORDER_ID);
+        return (int)$this->getData(self::FIELD_ORDER_ID);
     }
 
     /**
@@ -133,7 +133,7 @@ class Link extends AbstractModel implements LinkInterface
      */
     public function getUnifaunShippingAmount(): float
     {
-        return $this->getData(self::FIELD_UNIFAUN_SHIPPING_AMOUNT);
+        return (float)$this->getData(self::FIELD_UNIFAUN_SHIPPING_AMOUNT);
     }
 
     /**

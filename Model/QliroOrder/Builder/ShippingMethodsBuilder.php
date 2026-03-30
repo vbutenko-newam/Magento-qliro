@@ -11,6 +11,7 @@ use Magento\Quote\Model\Quote;
 use Magento\Quote\Model\Quote\Address\Rate;
 use Magento\Store\Model\StoreManagerInterface;
 use Qliro\QliroOne\Model\Carrier\Ingrid;
+use Qliro\QliroOne\Model\Carrier\Unifaun;
 use Qliro\QliroOne\Model\Config;
 
 /**
@@ -19,33 +20,30 @@ use Qliro\QliroOne\Model\Config;
 class ShippingMethodsBuilder
 {
     /**
-     * @var \Magento\Quote\Model\Quote
-     */
-    private $quote;
-
-    /**
      * Class constructor
      *
      * @param ShippingMethodBuilder $shippingMethodBuilder
      * @param ManagerInterface $eventManager
      * @param StoreManagerInterface $storeManager
      * @param Config $qliroConfig
+     * @param Quote|null $quote
      */
     public function __construct(
         private readonly ShippingMethodBuilder $shippingMethodBuilder,
         private readonly ManagerInterface $eventManager,
         private readonly StoreManagerInterface $storeManager,
         private readonly Config $qliroConfig,
+        private ?Quote $quote = null
     ) {
     }
 
     /**
      * Set quote for data extraction
      *
-     * @param \Magento\Quote\Model\Quote $quote
+     * @param Quote $quote
      * @return $this
      */
-    public function setQuote(Quote $quote)
+    public function setQuote(Quote $quote): static
     {
         $this->quote = $quote;
 
@@ -55,7 +53,7 @@ class ShippingMethodsBuilder
     /**
      * @return array
      */
-    public function create()
+    public function create(): array
     {
         if (empty($this->quote)) {
             throw new \LogicException('Quote entity is not set.');
@@ -121,6 +119,7 @@ class ShippingMethodsBuilder
          $rateGroups = $this->quote->getShippingAddress()->getGroupedAllShippingRates();
 
          $isIngridEnabled = $this->qliroConfig->isIngridEnabled($this->quote->getStoreId());
+         $isUnifaunEnabled = $this->qliroConfig->isUnifaunEnabled($this->quote->getStoreId());
          foreach ($rateGroups as $group) {
              /** @var Rate $rate */
              foreach ($group as $rate) {
@@ -128,14 +127,16 @@ class ShippingMethodsBuilder
                      continue;
                  }
 
-                 // if ingrid delivery method is enabled - make sure only this shipping method is sent to qliro
-                 if ($isIngridEnabled && $rate->getCode() !== Ingrid::QLIRO_INGRID_SHIPPING_CODE) {
-                     //continue;
+                 if (!$isUnifaunEnabled && $rate->getCarrier() === Unifaun::QLIRO_UNIFAUN_SHIPPING) {
+                     continue;
+                 }
+
+                 if (!$isIngridEnabled && $rate->getCarrier() === Ingrid::QLIRO_INGRID_SHIPPING) {
+                     continue;
                  }
 
                  $this->shippingMethodBuilder->setQuote($this->quote);
 
-                 /** @var \Magento\Store\Api\Data\StoreInterface */
                  $store = $this->storeManager->getStore();
                  $amountPrice = $store->getBaseCurrency()
                      ->convert($rate->getPrice(), $store->getCurrentCurrencyCode());
