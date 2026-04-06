@@ -10,7 +10,6 @@ use Magento\Framework\Exception\NoSuchEntityException;
 use Qliro\QliroOne\Api\LinkRepositoryInterface;
 use Qliro\QliroOne\Model\Logger\Manager as LogManager;
 use Qliro\QliroOne\Model\OrderManagementStatus\Update\HandlerPool as  OrderManagementHandlerPool;
-use Qliro\QliroOne\Model\ResourceModel\Lock;
 use Qliro\QliroOne\Api\Data\OrderManagementStatusInterfaceFactory;
 use Qliro\QliroOne\Api\OrderManagementStatusRepositoryInterface;
 use Qliro\QliroOne\Api\Data\OrderManagementStatusInterface;
@@ -30,7 +29,6 @@ class TransactionStatus
      *
      * @param LinkRepositoryInterface $linkRepository
      * @param LogManager $logManager
-     * @param Lock $lock
      * @param OrderManagementStatusInterfaceFactory $orderManagementStatusInterfaceFactory
      * @param OrderManagementStatusRepositoryInterface $orderManagementStatusRepository
      * @param OrderManagementHandlerPool $statusUpdateHandlerPool
@@ -38,7 +36,6 @@ class TransactionStatus
     public function __construct(
         private readonly LinkRepositoryInterface $linkRepository,
         private readonly LogManager $logManager,
-        private readonly Lock $lock,
         private readonly OrderManagementStatusInterfaceFactory $orderManagementStatusInterfaceFactory,
         private readonly OrderManagementStatusRepositoryInterface $orderManagementStatusRepository,
         private readonly OrderManagementHandlerPool $statusUpdateHandlerPool
@@ -165,7 +162,6 @@ class TransactionStatus
                 if ($this->statusUpdateHandlerPool->handle($qliroOrderManagementStatus, $omStatus)) {
                     $omStatus->setNotificationStatus(OrderManagementStatusInterface::NOTIFICATION_STATUS_DONE);
                 }
-                $this->lock->unlock($qliroOrderId);
             } else {
                 $omStatus->setNotificationStatus(OrderManagementStatusInterface::NOTIFICATION_STATUS_SKIPPED);
             }
@@ -196,7 +192,6 @@ class TransactionStatus
                 $omStatus->setNotificationStatus(OrderManagementStatusInterface::NOTIFICATION_STATUS_ERROR);
                 $this->orderManagementStatusRepository->save($omStatus);
             }
-            $this->lock->unlock($qliroOrderId);
 
             $result = false;
         }

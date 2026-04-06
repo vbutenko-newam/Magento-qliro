@@ -16,7 +16,7 @@ use Qliro\QliroOne\Api\Data\LinkInterface;
 class Link extends AbstractModel implements LinkInterface
 {
     /**
-     * Initialize resource model
+     * Initialize a resource model
      */
     protected function _construct(): void
     {
@@ -52,7 +52,8 @@ class Link extends AbstractModel implements LinkInterface
      */
     public function getQuoteId(): ?int
     {
-        return (int)$this->getData(self::FIELD_QUOTE_ID);
+        $value = $this->getData(self::FIELD_QUOTE_ID);
+        return $value !== null ? (int)$value : null;
     }
 
     /**
@@ -60,7 +61,8 @@ class Link extends AbstractModel implements LinkInterface
      */
     public function getQliroOrderId(): ?int
     {
-        return (int)$this->getData(self::FIELD_QLIRO_ORDER_ID);
+        $value = $this->getData(self::FIELD_QLIRO_ORDER_ID);
+        return $value !== null ? (int)$value : null;
     }
 
     /**
@@ -76,7 +78,8 @@ class Link extends AbstractModel implements LinkInterface
      */
     public function getOrderId(): ?int
     {
-        return (int)$this->getData(self::FIELD_ORDER_ID);
+        $value = $this->getData(self::FIELD_ORDER_ID);
+        return $value !== null ? (int)$value : null;
     }
 
     /**
@@ -139,9 +142,10 @@ class Link extends AbstractModel implements LinkInterface
     /**
      * @inheritdoc
      */
-    public function getIngridShippingAmount(): ?string
+    public function getIngridShippingAmount(): ?float
     {
-        return $this->getData(self::FIELD_INGRID_SHIPPING_AMOUNT);
+        $value = $this->getData(self::FIELD_INGRID_SHIPPING_AMOUNT);
+        return $value !== null ? (float)$value : null;
     }
 
     /**
@@ -187,9 +191,9 @@ class Link extends AbstractModel implements LinkInterface
     /**
      * @inheritdoc
      */
-    public function setQliroOrderId(string $value): static
+    public function setQliroOrderId(int|string|null $value): static
     {
-        return $this->setData(self::FIELD_QLIRO_ORDER_ID, $value);
+        return $this->setData(self::FIELD_QLIRO_ORDER_ID, $value !== null ? (int)$value : null);
     }
 
     /**
@@ -267,7 +271,7 @@ class Link extends AbstractModel implements LinkInterface
     /**
      * @inheritdoc
      */
-    public function setIngridShippingAmount(float $value): static
+    public function setIngridShippingAmount(?float $value): static
     {
         return $this->setData(self::FIELD_INGRID_SHIPPING_AMOUNT, $value);
     }
