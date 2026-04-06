@@ -104,6 +104,21 @@ class CheckoutStatus
 
             $this->placeOrder->hydrateAndFinalise($order, $qliroOrder);
 
+            if (in_array($checkoutStatus['Status'] ?? '', ['Completed', 'OnHold'], true)) {
+                try {
+                    $quote = $this->quoteRepository->get($link->getQuoteId());
+                    if ($quote->getIsActive()) {
+                        $quote->setIsActive(false);
+                        $this->quoteRepository->save($quote);
+                    }
+                } catch (\Exception $e) {
+                    $this->logManager->warning(
+                        'CheckoutStatus: failed to deactivate quote after terminal status.',
+                        ['extra' => ['quote_id' => $link->getQuoteId(), 'error' => $e->getMessage()]]
+                    );
+                }
+            }
+
             return ['CallbackResponse' => 'Received', 'callbackResponseCode' => 200];
 
         } catch (NoSuchEntityException $exception) {
