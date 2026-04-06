@@ -178,18 +178,16 @@
     <preference for="Qliro\QliroOne\Api\Client\OrderManagement\PaymentOperationsInterface" type="Qliro\QliroOne\Model\Api\Client\OrderManagement" />
     <preference for="Qliro\QliroOne\Api\Client\OrderManagement\ReturnInterface" type="Qliro\QliroOne\Model\Api\Client\OrderManagement" />
 
-    <!--NEW FLOW-->
     <preference for="Qliro\QliroOne\Api\Checkout\OrderServiceInterface" type="Qliro\QliroOne\Model\Checkout\OrderService" />
     <preference for="Qliro\QliroOne\Api\Admin\OrderServiceInterface" type="Qliro\QliroOne\Model\Admin\OrderService" />
-    <!--END NEW FLOW-->
 
     <preference for="Qliro\QliroOne\Api\LanguageMapperInterface" type="Qliro\QliroOne\Model\LanguageMapper" />
     <preference for="Qliro\QliroOne\Api\GeoIpResolverInterface" type="Qliro\QliroOne\Model\GeoIp\DefaultResolver" />
-    <!-- Array-only refactor: UpdateRequest DTO removed.  returns arrays. -->
     <preference for="Qliro\QliroOne\Api\Data\QliroOrderItemInterface" type="Qliro\QliroOne\Model\QliroOrder\Item" />
     <preference for="Qliro\QliroOne\Api\Data\AdminOrderInterface" type="Qliro\QliroOne\Model\QliroOrder\Admin\AdminOrder" />
     <preference for="Qliro\QliroOne\Api\Data\AdminOrderItemActionInterface" type="Qliro\QliroOne\Model\QliroOrder\Admin\OrderItemAction" />
     <preference for="Qliro\QliroOne\Api\Data\AdminMarkItemsAsShippedRequestInterface" type="Qliro\QliroOne\Model\QliroOrder\Admin\MarkItemsAsShippedRequest" />
+    <preference for="Qliro\QliroOne\Api\Data\QliroShipmentInterface" type="Qliro\QliroOne\Model\QliroOrder\Admin\QliroShipment" />
     <preference for="Qliro\QliroOne\Api\Data\AdminCancelOrderRequestInterface" type="Qliro\QliroOne\Model\QliroOrder\Admin\CancelOrderRequest" />
     <preference for="Qliro\QliroOne\Api\Data\AdminUpdateMerchantReferenceRequestInterface" type="Qliro\QliroOne\Model\QliroOrder\Admin\UpdateMerchantReferenceRequest" />
     <preference for="Qliro\QliroOne\Api\Data\AdminUpdateItemsRequestInterface" type="Qliro\QliroOne\Model\QliroOrder\Admin\UpdateItemsRequest" />
@@ -200,7 +198,6 @@
     <preference for="Qliro\QliroOne\Api\Data\AdminCreateMerchantPaymentResponseInterface" type="Qliro\QliroOne\Model\MerchantPayment\CreateResponse" />
     <preference for="Qliro\QliroOne\Api\Data\MerchantPaymentPaymentMethodInterface" type="Qliro\QliroOne\Model\MerchantPayment\PaymentMethod" />
     <preference for="Qliro\QliroOne\Api\Data\MerchantPaymentCustomerInterface" type="Qliro\QliroOne\Model\MerchantPayment\Customer" />
-
     <preference for="Qliro\QliroOne\Api\SubscriptionInterface" type="Qliro\QliroOne\Model\Newsletter\Subscription" />
     <preference for="Qliro\QliroOne\Api\Data\RecurringInfoInterface" type="Qliro\QliroOne\Model\RecurringInfo" />
     <preference for="Qliro\QliroOne\Api\RecurringInfoRepositoryInterface" type="Qliro\QliroOne\Model\RecurringInfoRepository" />
