@@ -14,6 +14,7 @@ use Qliro\QliroOne\Api\Checkout\OrderServiceInterface;
 use Qliro\QliroOne\Api\LinkRepositoryInterface;
 use Qliro\QliroOne\Model\Logger\Manager as LogManager;
 use Qliro\QliroOne\Model\Management\CheckoutStatus as CheckoutStatusManagement;
+use Qliro\QliroOne\Model\Management\PlaceOrder;
 use Qliro\QliroOne\Model\Management\QliroOrder as QliroOrderManagement;
 use Qliro\QliroOne\Model\Management\Quote as QuoteManagement;
 use Qliro\QliroOne\Model\Management\ShippingMethod as ShippingMethodManagement;
@@ -36,6 +37,7 @@ class OrderService implements OrderServiceInterface
      * @param LinkRepositoryInterface             $linkRepository
      * @param Agent                               $quoteAgent
      * @param LogManager                          $logManager
+     * @param PlaceOrder                          $placeOrder
      */
     public function __construct(
         private readonly CheckoutSession          $checkoutSession,
@@ -45,7 +47,8 @@ class OrderService implements OrderServiceInterface
         private readonly QuoteManagement          $quoteManagement,
         private readonly LinkRepositoryInterface  $linkRepository,
         private readonly Agent                    $quoteAgent,
-        private readonly LogManager               $logManager
+        private readonly LogManager               $logManager,
+        private readonly PlaceOrder               $placeOrder
     ) {
     }
 
@@ -64,6 +67,19 @@ class OrderService implements OrderServiceInterface
             }
 
             $qliroOrder = $this->qliroOrderManagement->get($quote, $allowRecreate);
+
+            try {
+                $link = $this->linkRepository->getByQuoteId((int) $quote->getId());
+                if ($link->getQliroOrderId() && !$link->getOrderId()) {
+                    $this->placeOrder->placePending($quote, $link);
+                }
+            } catch (\Exception $e) {
+                $this->logManager->warning(
+                    'Early order placement failed, will fall back to late placement: ' . $e->getMessage(),
+                    ['extra' => ['quote_id' => $quote->getId()]]
+                );
+            }
+
             $this->quoteAgent->store($quote);
 
             return $qliroOrder;
