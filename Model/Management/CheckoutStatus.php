@@ -14,6 +14,7 @@ use Qliro\QliroOne\Api\LinkRepositoryInterface;
 use Qliro\QliroOne\Model\Logger\Manager as LogManager;
 use Qliro\QliroOne\Model\Exception\TerminalException;
 use Qliro\QliroOne\Model\QliroOrder\Converter\QuoteFromOrderConverter;
+use Qliro\QliroOne\Model\ResourceModel\Lock;
 
 /**
  * Processes Qliro CheckoutStatus push callbacks.
@@ -43,6 +44,7 @@ class CheckoutStatus
      * @param QliroOrder $qliroOrder
      * @param QuoteFromOrderConverter $quoteFromOrderConverter
      * @param Quote $quoteManagement
+     * @param Lock $lock
      */
     public function __construct(
         private readonly MerchantInterface $merchantApi,
@@ -53,7 +55,8 @@ class CheckoutStatus
         private readonly PlaceOrder $placeOrder,
         private readonly QliroOrder $qliroOrder,
         private readonly QuoteFromOrderConverter $quoteFromOrderConverter,
-        private readonly Quote $quoteManagement
+        private readonly Quote $quoteManagement,
+        private readonly Lock $lock
     ) {
     }
 
@@ -86,18 +89,36 @@ class CheckoutStatus
             $orderId = $link->getOrderId();
 
             if (empty($orderId)) {
-                $this->logManager->warning(
-                    'CheckoutStatus: no pending order found — falling back to late order creation.',
-                    ['extra' => ['qliro_order_id' => $qliroOrderId, 'link_id' => $link->getId()]]
-                );
+                if (!$this->lock->lock($qliroOrderId)) {
+                    $this->logManager->warning(
+                        'CheckoutStatus: could not acquire lock for late order placement — concurrent request in progress.',
+                        ['extra' => ['qliro_order_id' => $qliroOrderId]]
+                    );
+                    return ['CallbackResponse' => 'OrderNotFound', 'callbackResponseCode' => 500];
+                }
 
-                $quote = $this->quoteRepository->get($link->getQuoteId());
+                try {
+                    $link = $this->linkRepository->getByQliroOrderId($qliroOrderId);
+                    $orderId = $link->getOrderId();
 
-                $this->quoteFromOrderConverter->convert($qliroOrder, $quote);
-                $this->quoteManagement->recalculateAndSaveQuote($quote);
+                    if (empty($orderId)) {
+                        $this->logManager->warning(
+                            'CheckoutStatus: no pending order found — falling back to late order creation.',
+                            ['extra' => ['qliro_order_id' => $qliroOrderId, 'link_id' => $link->getId()]]
+                        );
 
-                $order = $this->placeOrder->placePending($quote, $link);
+                        $quote = $this->quoteRepository->get($link->getQuoteId());
 
+                        $this->quoteFromOrderConverter->convert($qliroOrder, $quote);
+                        $this->quoteManagement->recalculateAndSaveQuote($quote);
+
+                        $order = $this->placeOrder->placePending($quote, $link);
+                    } else {
+                        $order = $this->orderRepository->get($orderId);
+                    }
+                } finally {
+                    $this->lock->unlock($qliroOrderId);
+                }
             } else {
                 $order = $this->orderRepository->get($orderId);
             }

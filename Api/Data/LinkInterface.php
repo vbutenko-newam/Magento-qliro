@@ -131,9 +131,9 @@ interface LinkInterface
     /**
      * Get ingrid shipping amount
      *
-     * @return ?string
+     * @return ?float
      */
-    public function getIngridShippingAmount(): ?string;
+    public function getIngridShippingAmount(): ?float;
 
     /**
      * Get "is_locked" flag
@@ -186,9 +186,9 @@ interface LinkInterface
      * Set QliroOne order ID
      *
      * @return $this
-     *@var string $value
+     *@var int|string|null $value  Accepts int or numeric string from the Qliro API; stored as int.
      */
-    public function setQliroOrderId(string $value): static;
+    public function setQliroOrderId(int|string|null $value): static;
 
     /**
      * Set QliroOne order status
@@ -258,9 +258,9 @@ interface LinkInterface
      * Set ingrid shipping amount
      *
      * @return $this
-     *@var float $value
+     *@var float|null $value
      */
-    public function setIngridShippingAmount(float $value): static;
+    public function setIngridShippingAmount(?float $value): static;
 
     /**
      * Set "is_locked" flag
