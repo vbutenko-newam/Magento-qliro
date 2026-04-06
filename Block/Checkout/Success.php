@@ -34,16 +34,6 @@ class Success extends Template
     }
 
     /**
-     * Get QliroOne final HTML snippet
-     *
-     * @return string
-     */
-    public function getHtmlSnippet()
-    {
-        return $this->successSession->getSuccessHtmlSnippet();
-    }
-
-    /**
      * Get Id of placed order
      *
      * @return string
