@@ -56,13 +56,9 @@ class OrderManagement implements OrderManagementInterface
     }
 
     /**
-     * Get admin QliroOne order by its Qliro Order ID
-     *
-     * @param int $qliroOrderId
-     * @return \Qliro\QliroOne\Api\Data\AdminOrderInterface
-     * @throws \Qliro\QliroOne\Model\Api\Client\Exception\ClientException
+     * @inheirtDoc
      */
-    public function getOrder($qliroOrderId)
+    public function getOrder(int $qliroOrderId) : AdminOrderInterface
     {
         $container = null;
 
@@ -86,7 +82,7 @@ class OrderManagement implements OrderManagementInterface
      * @return \Qliro\QliroOne\Api\Data\AdminTransactionResponseInterface
      * @throws \Qliro\QliroOne\Model\Api\Client\Exception\ClientException
      */
-    public function markItemsAsShipped(AdminMarkItemsAsShippedRequestInterface $request, $storeId = null)
+    public function markItemsAsShipped(AdminMarkItemsAsShippedRequestInterface $request, int $storeId = null): AdminTransactionResponseInterface
     {
         $container = null;
         $request->setRequestId($this->idGenerator->generateId());
@@ -113,7 +109,7 @@ class OrderManagement implements OrderManagementInterface
      * @return \Qliro\QliroOne\Api\Data\AdminTransactionResponseInterface
      * @throws \Qliro\QliroOne\Model\Api\Client\Exception\ClientException
      */
-    public function cancelOrder(AdminCancelOrderRequestInterface $request, $storeId = null)
+    public function cancelOrder(AdminCancelOrderRequestInterface $request, int $storeId = null): AdminTransactionResponseInterface
     {
         $container = null;
         $request->setRequestId($this->idGenerator->generateId());
@@ -158,7 +154,7 @@ class OrderManagement implements OrderManagementInterface
      * @return \Qliro\QliroOne\Api\Data\AdminTransactionResponseInterface
      * @throws \Qliro\QliroOne\Model\Api\Client\Exception\ClientException
      */
-    public function updateMerchantReference(AdminUpdateMerchantReferenceRequestInterface $request, $storeId = null)
+    public function updateMerchantReference(AdminUpdateMerchantReferenceRequestInterface $request, int $storeId = null): AdminTransactionResponseInterface
     {
         $container = null;
         $request->setRequestId($this->idGenerator->generateId());
@@ -209,7 +205,7 @@ class OrderManagement implements OrderManagementInterface
      * @return \Qliro\QliroOne\Api\Data\AdminTransactionResponseInterface
      * @throws \Qliro\QliroOne\Model\Api\Client\Exception\ClientException
      */
-    public function returnWithItems(AdminReturnWithItemsRequestInterface $request, $storeId = null)
+    public function returnWithItems(AdminReturnWithItemsRequestInterface $request, int $storeId = null): AdminTransactionResponseInterface
     {
         $container = null;
         $request->setRequestId($this->idGenerator->generateId());
@@ -237,14 +233,14 @@ class OrderManagement implements OrderManagementInterface
 
     /**
      * Get admin QliroOne order payment transaction
-     * @todo Not used?
-     *
      * @param int $paymentTransactionId
      * @param int|null $storeId
      * @return \Qliro\QliroOne\Api\Data\AdminOrderPaymentTransactionInterface
      * @throws \Qliro\QliroOne\Model\Api\Client\Exception\ClientException
+     *@todo Not used?
+     *
      */
-    public function getPaymentTransaction($paymentTransactionId, $storeId = null)
+    public function getPaymentTransaction(int $paymentTransactionId, int $storeId = null): AdminOrderPaymentTransactionInterface
     {
         $container = null;
 
