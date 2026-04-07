@@ -7,6 +7,8 @@ declare(strict_types=1);
 
 namespace Qliro\QliroOne\Api\Client\OrderManagement;
 
+use Qliro\QliroOne\Api\Data\AdminOrderPaymentTransactionInterface;
+
 /**
  * ISP sub-interface: payment transaction operations on a QliroOne order.
  *
@@ -19,17 +21,17 @@ interface PaymentOperationsInterface
      *
      * @param int $paymentTransactionId
      * @param int|null $storeId
-     * @return \Qliro\QliroOne\Api\Data\AdminOrderPaymentTransactionInterface
+     * @return AdminOrderPaymentTransactionInterface
      * @throws \Qliro\QliroOne\Model\Api\Client\Exception\ClientException
      */
-    public function getPaymentTransaction($paymentTransactionId, $storeId = null);
+    public function getPaymentTransaction(int $paymentTransactionId, int $storeId = null): AdminOrderPaymentTransactionInterface;
 
     /**
      * Retry a reversal payment
      *
      * @param int $paymentReference
      * @param int|null $storeId
-     * @return \Qliro\QliroOne\Api\Data\AdminOrderPaymentTransactionInterface|null
+     * @return AdminOrderPaymentTransactionInterface|null
      * @throws \Qliro\QliroOne\Model\Api\Client\Exception\ClientException
      */
     public function retryReversalPayment($paymentReference, $storeId = null);

@@ -38,10 +38,10 @@ class Merchant implements MerchantInterface
      * Perform QliroOne order creation
      *
      * @param array $payload
-     * @return int|string|null
+     * @return int|null
      * @throws ClientException
      */
-    public function createOrder(array $payload): int|string|null
+    public function createOrder(array $payload): ?int
     {
         $this->logManager->addTag('sensitive');
 
@@ -83,7 +83,7 @@ class Merchant implements MerchantInterface
     /**
      * @inheirtDoc
      */
-    public function updateOrder(int|string $qliroOrderId, array $payload): int|string
+    public function updateOrder(int $qliroOrderId, array $payload): int
     {
         $this->logManager->addTag('sensitive');
 

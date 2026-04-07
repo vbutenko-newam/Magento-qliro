@@ -9,6 +9,7 @@ namespace Qliro\QliroOne\Api\Client\OrderManagement;
 
 use Qliro\QliroOne\Api\Data\AdminCancelOrderRequestInterface;
 use Qliro\QliroOne\Api\Data\AdminMarkItemsAsShippedRequestInterface;
+use Qliro\QliroOne\Api\Data\AdminTransactionResponseInterface;
 use Qliro\QliroOne\Api\Data\AdminUpdateMerchantReferenceRequestInterface;
 
 /**
@@ -23,28 +24,28 @@ interface OrderMutatorInterface
      *
      * @param AdminMarkItemsAsShippedRequestInterface $request
      * @param int|null $storeId
-     * @return \Qliro\QliroOne\Api\Data\AdminTransactionResponseInterface
+     * @return AdminTransactionResponseInterface
      * @throws \Qliro\QliroOne\Model\Api\Client\Exception\ClientException
      */
-    public function markItemsAsShipped(AdminMarkItemsAsShippedRequestInterface $request, $storeId = null);
+    public function markItemsAsShipped(AdminMarkItemsAsShippedRequestInterface $request, int $storeId = null): AdminTransactionResponseInterface;
 
     /**
      * Cancel admin QliroOne order
      *
      * @param AdminCancelOrderRequestInterface $request
      * @param int|null $storeId
-     * @return \Qliro\QliroOne\Api\Data\AdminTransactionResponseInterface
+     * @return AdminTransactionResponseInterface
      * @throws \Qliro\QliroOne\Model\Api\Client\Exception\ClientException
      */
-    public function cancelOrder(AdminCancelOrderRequestInterface $request, $storeId = null);
+    public function cancelOrder(AdminCancelOrderRequestInterface $request, int $storeId = null): AdminTransactionResponseInterface;
 
     /**
      * Update QliroOne order merchant reference
      *
      * @param AdminUpdateMerchantReferenceRequestInterface $request
      * @param int|null $storeId
-     * @return \Qliro\QliroOne\Api\Data\AdminTransactionResponseInterface
+     * @return AdminTransactionResponseInterface
      * @throws \Qliro\QliroOne\Model\Api\Client\Exception\ClientException
      */
-    public function updateMerchantReference(AdminUpdateMerchantReferenceRequestInterface $request, $storeId = null);
+    public function updateMerchantReference(AdminUpdateMerchantReferenceRequestInterface $request, int $storeId = null): AdminTransactionResponseInterface;
 }

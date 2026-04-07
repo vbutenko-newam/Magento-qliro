@@ -86,44 +86,42 @@ class CheckoutStatus
 
             $qliroOrder = $this->merchantApi->getOrder($qliroOrderId);
 
-            $orderId = $link->getOrderId();
-
-            if (empty($orderId)) {
-                if (!$this->lock->lock($qliroOrderId)) {
-                    $this->logManager->warning(
-                        'CheckoutStatus: could not acquire lock for late order placement — concurrent request in progress.',
-                        ['extra' => ['qliro_order_id' => $qliroOrderId]]
-                    );
-                    return ['CallbackResponse' => 'OrderNotFound', 'callbackResponseCode' => 500];
-                }
-
-                try {
-                    $link = $this->linkRepository->getByQliroOrderId($qliroOrderId);
-                    $orderId = $link->getOrderId();
-
-                    if (empty($orderId)) {
-                        $this->logManager->warning(
-                            'CheckoutStatus: no pending order found — falling back to late order creation.',
-                            ['extra' => ['qliro_order_id' => $qliroOrderId, 'link_id' => $link->getId()]]
-                        );
-
-                        $quote = $this->quoteRepository->get($link->getQuoteId());
-
-                        $this->quoteFromOrderConverter->convert($qliroOrder, $quote);
-                        $this->quoteManagement->recalculateAndSaveQuote($quote);
-
-                        $order = $this->placeOrder->placePending($quote, $link);
-                    } else {
-                        $order = $this->orderRepository->get($orderId);
-                    }
-                } finally {
-                    $this->lock->unlock($qliroOrderId);
-                }
-            } else {
-                $order = $this->orderRepository->get($orderId);
+            // Lock the entire order-load → hydrate block so concurrent callbacks
+            // (original delivery + retry) cannot race on the same order.
+            if (!$this->lock->lock($qliroOrderId)) {
+                $this->logManager->warning(
+                    'CheckoutStatus: could not acquire lock — concurrent request in progress.',
+                    ['extra' => ['qliro_order_id' => $qliroOrderId]]
+                );
+                return ['CallbackResponse' => 'OrderNotFound', 'callbackResponseCode' => 500];
             }
 
-            $this->placeOrder->hydrateAndFinalise($order, $qliroOrder);
+            try {
+                // Re-fetch link under the lock so we see the latest order_id even if a
+                // concurrent early-placement just wrote it.
+                $link = $this->linkRepository->getByQliroOrderId($qliroOrderId);
+                $orderId = $link->getOrderId();
+
+                if (empty($orderId)) {
+                    $this->logManager->warning(
+                        'CheckoutStatus: no pending order found — falling back to late order creation.',
+                        ['extra' => ['qliro_order_id' => $qliroOrderId, 'link_id' => $link->getId()]]
+                    );
+
+                    $quote = $this->quoteRepository->get($link->getQuoteId());
+
+                    $this->quoteFromOrderConverter->convert($qliroOrder, $quote);
+                    $this->quoteManagement->recalculateAndSaveQuote($quote);
+
+                    $order = $this->placeOrder->placePending($quote, $link);
+                } else {
+                    $order = $this->orderRepository->get($orderId);
+                }
+
+                $this->placeOrder->hydrateAndFinalise($order, $qliroOrder);
+            } finally {
+                $this->lock->unlock($qliroOrderId);
+            }
 
             if (in_array($checkoutStatus['Status'] ?? '', ['Completed', 'OnHold'], true)) {
                 try {

@@ -56,7 +56,7 @@ class OrderItemsConverter
 
         $shippingMerchantRef = '';
         foreach ($qliroOrderItems as $index => $orderItem) {
-            switch (isset($orderItem['Type']) && $orderItem['Type']) {
+            switch ($orderItem['Type'] ?? null) {
                 case QliroOrderItemInterface::TYPE_PRODUCT:
                     $this->typePoolHandler->resolveQuoteItem($orderItem, $this->quoteSourceProvider);
                     break;
@@ -70,10 +70,9 @@ class OrderItemsConverter
                     break;
 
                 case QliroOrderItemInterface::TYPE_FEE:
-                    $qliroFee = $this->payloadConverter->toArray($orderItem);
                     $quote->getPayment()->setAdditionalInformation(
                         "qliroone_fees",
-                        [$index => $orderItem]
+                        [$index => $this->payloadConverter->toArray($orderItem)]
                     );
                     break;
             }

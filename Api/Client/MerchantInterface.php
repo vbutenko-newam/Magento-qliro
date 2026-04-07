@@ -18,9 +18,9 @@ interface MerchantInterface
      * Perform QliroOne order creation
      *
      * @param array $payload
-     * @return int|string|null
+     * @return int|null
      */
-    public function createOrder(array $payload): int|string|null;
+    public function createOrder(array $payload): ?int;
 
     /**
      * Get QliroOne order by its Qliro Order ID.
@@ -35,7 +35,7 @@ interface MerchantInterface
      *
      * @param int $qliroOrderId
      * @param array $payload
-     * @return int|string
+     * @return int
      */
-    public function updateOrder(int $qliroOrderId, array $payload): int|string;
+    public function updateOrder(int $qliroOrderId, array $payload): int;
 }
