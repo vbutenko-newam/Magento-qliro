@@ -59,6 +59,11 @@ class OrderService implements OrderServiceInterface
     {
         $quote = $this->getQuote();
 
+        // Ensure PHP keeps running even if the browser cancels the page load (e.g. pressing Escape).
+        // Without this, PHP can abort between creating the Qliro order and saving the Magento
+        // pending order + link.order_id, leaving an orphaned Qliro order with no Magento counterpart.
+        $previousAbortSetting = ignore_user_abort(true);
+
         try {
             try {
                 $this->linkRepository->unlock((int)$quote->getId());
@@ -91,6 +96,8 @@ class OrderService implements OrderServiceInterface
             );
 
             return [];
+        } finally {
+            ignore_user_abort($previousAbortSetting);
         }
     }
 
