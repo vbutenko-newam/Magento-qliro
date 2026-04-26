@@ -3,6 +3,7 @@
  * Copyright © Qliro AB. All rights reserved.
  * See LICENSE.txt for license details.
  */
+declare(strict_types=1);
 
 namespace Qliro\QliroOne\Model\QliroOrder\Admin\Builder;
 
@@ -18,20 +19,9 @@ use Qliro\QliroOne\Model\QliroOrder\Admin\Builder\InvoiceShipmentsBuilder;
  */
 class InvoiceMarkItemsAsShippedRequestBuilder
 {
-    /**
-     * @var \Magento\Sales\Model\Order\Payment
-     */
-    private $payment;
-
-    /**
-     * @var \Magento\Sales\Model\Order
-     */
-    private $order;
-
-    /**
-     * @var float
-     */
-    private $amount;
+    private ?\Magento\Sales\Model\Order\Payment $payment = null;
+    private ?\Magento\Sales\Model\Order $order = null;
+    private ?float $amount = null;
 
     /**
      * Class constructor
@@ -54,7 +44,7 @@ class InvoiceMarkItemsAsShippedRequestBuilder
     /**
      * @param \Magento\Sales\Model\Order\Payment $payment
      */
-    public function setPayment($payment)
+    public function setPayment(\Magento\Sales\Model\Order\Payment $payment): void
     {
         $this->payment = $payment;
 
@@ -67,7 +57,7 @@ class InvoiceMarkItemsAsShippedRequestBuilder
      *
      * @param float $amount
      */
-    public function setAmount($amount)
+    public function setAmount(float $amount): void
     {
         $this->amount = $amount;
     }
@@ -75,7 +65,7 @@ class InvoiceMarkItemsAsShippedRequestBuilder
     /**
      * @return \Qliro\QliroOne\Api\Data\AdminMarkItemsAsShippedRequestInterface
      */
-    public function create()
+    public function create(): \Qliro\QliroOne\Api\Data\AdminMarkItemsAsShippedRequestInterface
     {
         if (empty($this->order)) {
             throw new \LogicException('Order entity is not set.');
@@ -94,7 +84,7 @@ class InvoiceMarkItemsAsShippedRequestBuilder
      *
      * @return \Qliro\QliroOne\Api\Data\AdminMarkItemsAsShippedRequestInterface
      */
-    private function prepareRequest()
+    private function prepareRequest(): \Qliro\QliroOne\Api\Data\AdminMarkItemsAsShippedRequestInterface
     {
         /** @var \Qliro\QliroOne\Api\Data\AdminMarkItemsAsShippedRequestInterface $request */
         $request = $this->requestFactory->create();

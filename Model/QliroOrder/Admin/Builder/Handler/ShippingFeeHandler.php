@@ -3,13 +3,14 @@
  * Copyright © Qliro AB. All rights reserved.
  * See LICENSE.txt for license details.
  */
+declare(strict_types=1);
 
 namespace Qliro\QliroOne\Model\QliroOrder\Admin\Builder\Handler;
 
 use Qliro\QliroOne\Api\Admin\Builder\OrderItemHandlerInterface;
 use Qliro\QliroOne\Api\Data\QliroOrderItemInterface;
 use Qliro\QliroOne\Api\Data\QliroOrderItemInterfaceFactory;
-use Qliro\QliroOne\Helper\Data as QliroHelper;
+use Qliro\QliroOne\Model\Formatter\PriceFormatter;
 
 /**
  * Shipping Fee Handler class for order items builder
@@ -22,11 +23,11 @@ class ShippingFeeHandler implements OrderItemHandlerInterface
      * Class constructor
      *
      * @param QliroOrderItemInterfaceFactory $qliroOrderItemFactory
-     * @param QliroHelper $qliroHelper
+     * @param PriceFormatter $priceFormatter
      */
     public function __construct(
         private readonly QliroOrderItemInterfaceFactory $qliroOrderItemFactory,
-        private readonly QliroHelper $qliroHelper
+        private readonly PriceFormatter $priceFormatter
     ) {
     }
 
@@ -34,10 +35,10 @@ class ShippingFeeHandler implements OrderItemHandlerInterface
      * Handle specific type of order items and add them to the QliroOne order items list
      *
      * @param \Qliro\QliroOne\Api\Data\QliroOrderItemInterface[] $orderItems
-     * @param \Magento\Sales\Model\Order $order
+     * @param \Magento\Sales\Api\Data\OrderInterface $order
      * @return \Qliro\QliroOne\Api\Data\QliroOrderItemInterface[]
      */
-    public function handle($orderItems, $order)
+    public function handle(array $orderItems, \Magento\Sales\Api\Data\OrderInterface $order): array
     {
         // @todo Handle invoiced and refunded shipping
         if (!$order->getFirstCaptureFlag()) {
@@ -50,8 +51,8 @@ class ShippingFeeHandler implements OrderItemHandlerInterface
         $inclTax = (float)$order->getShippingInclTax() - $order->getShippingDiscountAmount();
         $exclTax = $inclTax - $order->getShippingTaxAmount();
 
-        $formattedInclAmount = $this->qliroHelper->formatPrice($inclTax);
-        $formattedExclAmount = $this->qliroHelper->formatPrice($exclTax);
+        $formattedInclAmount = $this->priceFormatter->format($inclTax);
+        $formattedExclAmount = $this->priceFormatter->format($exclTax);
 
         if ($merchantReference) {
             /** @var \Qliro\QliroOne\Api\Data\QliroOrderItemInterface $qliroOrderItem */

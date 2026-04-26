@@ -1,23 +1,27 @@
 <?php
+declare(strict_types=1);
+
 namespace Qliro\QliroOne\Controller\Adminhtml\Recurring;
 
+use Magento\Backend\Model\View\Result\Redirect;
 use Magento\Framework\App\Action\HttpPostActionInterface as HttpPostActionInterface;
 use Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection;
 use Magento\Backend\App\Action\Context;
+use Magento\Sales\Controller\Adminhtml\Order\AbstractMassAction;
 use Magento\Ui\Component\MassAction\Filter;
 use Magento\Sales\Model\ResourceModel\Order\CollectionFactory;
 use Magento\Setup\Module\Di\Definition\Collection;
 use Qliro\QliroOne\Api\RecurringInfoRepositoryInterface;
 use Qliro\QliroOne\Service\RecurringPayments\Data as RecurringDataService;
 
-class Cancel extends \Magento\Sales\Controller\Adminhtml\Order\AbstractMassAction implements HttpPostActionInterface
+class Cancel extends AbstractMassAction implements HttpPostActionInterface
 {
     /**
      * Authorization level of a basic admin session
      *
      * @see _isAllowed()
      */
-    const ADMIN_RESOURCE = 'Magento_Sales::sales_order';
+    const string ADMIN_RESOURCE = 'Magento_Sales::sales_order';
 
     /**
      * @var string
@@ -48,9 +52,9 @@ class Cancel extends \Magento\Sales\Controller\Adminhtml\Order\AbstractMassActio
      * Cancel recurring for selected orders
      *
      * @param AbstractCollection $collection
-     * @return \Magento\Backend\Model\View\Result\Redirect
+     * @return \Magento\Framework\Controller\Result\Redirect
      */
-    protected function massAction(AbstractCollection $collection)
+    protected function massAction(AbstractCollection $collection): \Magento\Framework\Controller\Result\Redirect
     {
         foreach ($collection->getItems() as $order) {
             try {

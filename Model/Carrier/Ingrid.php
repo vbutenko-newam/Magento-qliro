@@ -3,6 +3,8 @@
  * Copyright © Qliro AB. All rights reserved.
  * See LICENSE.txt for license details.
  */
+declare(strict_types=1);
+
 namespace Qliro\QliroOne\Model\Carrier;
 
 use Magento\Quote\Model\Quote\Address\RateRequest;
@@ -32,10 +34,7 @@ class Ingrid extends \Magento\Shipping\Model\Carrier\AbstractCarrier implements
      */
     protected $_rateMethodFactory;
 
-    /**
-     * @var
-     */
-    private $quoteId;
+    private mixed $quoteId = null;
 
     /**
      * Class constructor
@@ -70,7 +69,7 @@ class Ingrid extends \Magento\Shipping\Model\Carrier\AbstractCarrier implements
      * get allowed methods
      * @return array
      */
-    public function getAllowedMethods()
+    public function getAllowedMethods(): array
     {
         return [$this->_code => $this->getConfigData('name')];
     }
@@ -78,7 +77,7 @@ class Ingrid extends \Magento\Shipping\Model\Carrier\AbstractCarrier implements
     /**
      * @return float
      */
-    private function getShippingPrice()
+    private function getShippingPrice(): float
     {
         $quoteId = $this->quoteId;
         try {
@@ -101,7 +100,7 @@ class Ingrid extends \Magento\Shipping\Model\Carrier\AbstractCarrier implements
      * @param RateRequest $request
      * @return bool|Result
      */
-    public function collectRates(RateRequest $request)
+    public function collectRates(RateRequest $request): bool|Result
     {
         if (!$this->getConfigFlag('active') ||
             !$this->qliroConfig->isIngridEnabled($this->getStore())) {

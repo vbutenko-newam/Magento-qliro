@@ -3,6 +3,7 @@
  * Copyright © Qliro AB. All rights reserved.
  * See LICENSE.txt for license details.
  */
+declare(strict_types=1);
 
 namespace Qliro\QliroOne\Model\QliroOrder\Admin;
 
@@ -34,7 +35,7 @@ class QliroShipment implements QliroShipmentInterface
     /**
      * @inheritDoc
      */
-    public function setPaymentTransactionId(int $value): self
+    public function setPaymentTransactionId(int $value): static
     {
         $this->paymentTransactionId = $value;
         return $this;
@@ -51,7 +52,7 @@ class QliroShipment implements QliroShipmentInterface
     /**
      * @inheritDoc
      */
-    public function setOrderItems(array $value): self
+    public function setOrderItems(array $value): static
     {
         $this->orderItems = $value;
         return $this;

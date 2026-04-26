@@ -3,6 +3,7 @@
  * Copyright © Qliro AB. All rights reserved.
  * See LICENSE.txt for license details.
  */
+declare(strict_types=1);
 
 // @codingStandardsIgnoreFile
 // phpcs:ignoreFile
@@ -17,16 +18,16 @@ use Qliro\QliroOne\Api\HashResolverInterface;
  */
 class ReferenceHashResolver implements HashResolverInterface
 {
-    const CHARSET = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const string CHARSET = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
     /**
      * Resolve a supposedly unique hash for QliroOne order reference.
      * It must be a string of any length, but important to remember that it will be truncated to up to 25 characters max
      *
-     * @param \Magento\Quote\Api\Data\CartInterface $quote
+     * @param CartInterface $quote
      * @return string
      */
-    public function resolveHash(CartInterface $quote)
+    public function resolveHash(CartInterface $quote): string
     {
         srand();
         $result = '';

@@ -3,6 +3,7 @@
  * Copyright © Qliro AB. All rights reserved.
  * See LICENSE.txt for license details.
  */
+declare(strict_types=1);
 
 namespace Qliro\QliroOne\Model\QliroOrder\Builder;
 
@@ -16,10 +17,7 @@ use Qliro\QliroOne\Api\Data\QliroOrderItemInterfaceFactory;
  */
 class ShippingOrderItemBuilder
 {
-    /**
-     * @var \Magento\Quote\Model\Quote
-     */
-    private $quote;
+    private ?Quote $quote = null;
 
     /**
      * Class constructor
@@ -41,7 +39,7 @@ class ShippingOrderItemBuilder
      * @param \Magento\Quote\Model\Quote $quote
      * @return $this
      */
-    public function setQuote(Quote $quote)
+    public function setQuote(Quote $quote): static
     {
         $this->quote = $quote;
 
@@ -53,7 +51,7 @@ class ShippingOrderItemBuilder
      *
      * @return \Qliro\QliroOne\Api\Data\QliroOrderItemInterface
      */
-    public function create()
+    public function create(): \Qliro\QliroOne\Api\Data\QliroOrderItemInterface
     {
         if (empty($this->quote)) {
             throw new \LogicException('Quote entity is not set.');

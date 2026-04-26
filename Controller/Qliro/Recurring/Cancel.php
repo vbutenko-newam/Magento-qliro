@@ -48,7 +48,7 @@ class Cancel implements HttpPostActionInterface
     /**
      * @inheritDoc
      */
-    public function execute()
+    public function execute(): \Magento\Framework\Controller\ResultInterface
     {
         if (!$this->config->isActive() || !$this->config->isUseRecurring()) {
             return $this->resultForwardFactory->create()->forward('noroute');

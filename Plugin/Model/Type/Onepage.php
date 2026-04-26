@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Qliro\QliroOne\Plugin\Model\Type;
 
@@ -28,7 +29,7 @@ class Onepage
      * @param \Closure $proceed The closure representing the original method being called.
      * @return Subject
      */
-    public function aroundInitCheckout(Subject $subject, \Closure $proceed)
+    public function aroundInitCheckout(Subject $subject, \Closure $proceed): Subject
     {
         if ($this->config->isActive()
             && $this->request->getFullActionName() === 'checkout_qliro_index'

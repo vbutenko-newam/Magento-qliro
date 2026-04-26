@@ -3,6 +3,7 @@
  * Copyright © Qliro AB. All rights reserved.
  * See LICENSE.txt for license details.
  */
+declare(strict_types=1);
 
 // @codingStandardsIgnoreFile
 // phpcs:ignoreFile
@@ -35,7 +36,7 @@ class UpdateOrderCommand extends AbstractCommand
     /**
      * Configure the CLI command
      */
-    protected function configure()
+    protected function configure(): void
     {
         parent::configure();
 
@@ -51,7 +52,7 @@ class UpdateOrderCommand extends AbstractCommand
      * @param InputInterface $input
      * @param OutputInterface $output
      */
-    protected function initialize(InputInterface $input, OutputInterface $output)
+    protected function initialize(InputInterface $input, OutputInterface $output): void
     {
         parent::initialize($input, $output);
         $this->orderId = $input->getArgument('orderid');
@@ -65,7 +66,7 @@ class UpdateOrderCommand extends AbstractCommand
      * @param OutputInterface $output
      * @return int|null
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $output->writeln('<comment>Update QliroOne order</comment>');
 

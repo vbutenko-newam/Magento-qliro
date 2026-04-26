@@ -14,13 +14,13 @@ use Qliro\QliroOne\Api\LinkRepositoryInterface;
  */
 class LinkService
 {
-    const REFERENCE_MIN_LENGTH = 6;
+    const int REFERENCE_MIN_LENGTH = 6;
 
     /**
      * Class constructor
      *
-     * @param \Qliro\QliroOne\Api\HashResolverInterface $hashResolver
-     * @param \Qliro\QliroOne\Api\LinkRepositoryInterface $linkRepository
+     * @param HashResolverInterface $hashResolver
+     * @param LinkRepositoryInterface $linkRepository
      */
     public function __construct(
         private readonly HashResolverInterface $hashResolver,
@@ -80,7 +80,7 @@ class LinkService
      *
      * @param string $hash
      */
-    private function validateHash($hash)
+    private function validateHash(string $hash): void
     {
         if (!preg_match(HashResolverInterface::VALIDATE_MERCHANT_REFERENCE, $hash)) {
             throw new \DomainException(sprintf('Merchant reference \'%s\' will not be accepted by Qliro', $hash));

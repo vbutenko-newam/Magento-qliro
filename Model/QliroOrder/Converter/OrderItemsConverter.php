@@ -3,6 +3,7 @@
  * Copyright © Qliro AB. All rights reserved.
  * See LICENSE.txt for license details.
  */
+declare(strict_types=1);
 
 namespace Qliro\QliroOne\Model\QliroOrder\Converter;
 
@@ -44,7 +45,7 @@ class OrderItemsConverter
      * @param \Magento\Quote\Model\Quote $quote
      * @throws \Magento\Framework\Exception\LocalizedException
      */
-    public function convert($qliroOrderItems, Quote $quote)
+    public function convert(array $qliroOrderItems, Quote $quote): void
     {
         $feeAmount = 0;
         $shippingCode = null;
@@ -90,7 +91,7 @@ class OrderItemsConverter
      * @param \Magento\Quote\Model\Quote $quote
      * @throws \Magento\Framework\Exception\LocalizedException
      */
-    private function applyShippingMethod($code, Quote $quote, string $shippingMerchantRef = '')
+    private function applyShippingMethod(string $code, Quote $quote, string $shippingMerchantRef = ''): void
     {
         if (empty($code)) {
             throw new LocalizedException(__('Invalid shipping method, empty code.'));

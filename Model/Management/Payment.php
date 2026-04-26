@@ -3,6 +3,7 @@
  * Copyright © Qliro AB. All rights reserved.
  * See LICENSE.txt for license details.
  */
+declare(strict_types=1);
 
 namespace Qliro\QliroOne\Model\Management;
 
@@ -79,7 +80,7 @@ class Payment
      * @param string $state
      * @throws \Exception
      */
-    public function createPaymentTransaction($order, $qliroOrder, $state = Order::STATE_PENDING_PAYMENT)
+    public function createPaymentTransaction(Order $order, array $qliroOrder, string $state = Order::STATE_PENDING_PAYMENT): void
     {
         $this->logManager->setMark('PAYMENT TRANSACTION');
 
@@ -133,7 +134,7 @@ class Payment
      * @return void
      * @throws \Exception
      */
-    public function captureByInvoice($payment, $amount)
+    public function captureByInvoice(\Magento\Payment\Model\InfoInterface $payment, float $amount): void
     {
         if ($payment->getData(self::QLIRO_SKIP_ACTUAL_CAPTURE)) {
             return;
@@ -189,7 +190,7 @@ class Payment
      * @return void
      * @throws \Exception
      */
-    public function captureByShipment($shipment)
+    public function captureByShipment(\Magento\Sales\Model\Order\Shipment $shipment): void
     {
         if (!$this->qliroConfig->shouldCaptureOnShipment($shipment->getStoreId())) {
             return;
@@ -242,11 +243,11 @@ class Payment
 
     /**
      * @param \Magento\Sales\Model\Order\Payment $payment
-     * @param $amount
+     * @param float $amount
      * @return void
      * @throws LocalizedException
      */
-    public function refundByInvoice($payment, $amount)
+    public function refundByInvoice(\Magento\Sales\Model\Order\Payment $payment, float $amount): void
     {
         if (!$amount) {
             throw new LocalizedException(__('Zero amount is not allowed.'));
@@ -319,9 +320,8 @@ class Payment
      * @param $amount
      * @return bool
      */
-    private function isValidRequestAmount(AdminReturnWithItemsRequestInterface $request, $amount)
+    private function isValidRequestAmount(AdminReturnWithItemsRequestInterface $request, float $amount): bool
     {
-        $amount = floatval($amount);
 
         $returns = $request->getReturns();
         if (!count($returns)) {

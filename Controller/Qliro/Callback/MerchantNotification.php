@@ -12,7 +12,7 @@ use Magento\Framework\App\Request\Http as HttpRequest;
 use Magento\Framework\App\ResponseInterface;
 use Magento\Framework\Controller\ResultInterface;
 use Qliro\QliroOne\Api\Admin\OrderServiceInterface as OrderService;
-use Qliro\QliroOne\Helper\Data;
+use Qliro\QliroOne\Service\Notification\PayloadHandler;
 use Qliro\QliroOne\Model\Config;
 use Qliro\QliroOne\Model\Logger\Manager as LogManager;
 use Qliro\QliroOne\Model\Security\CallbackToken;
@@ -36,7 +36,7 @@ class MerchantNotification implements HttpPostActionInterface
         private readonly HttpRequest   $request,
         private readonly OrderService  $orderService,
         private readonly Config        $qliroConfig,
-        private readonly Data          $dataHelper,
+        private readonly PayloadHandler $dataHelper,
         private readonly LogManager    $logManager,
         private readonly CallbackToken $callbackToken
     ) {
@@ -53,7 +53,7 @@ class MerchantNotification implements HttpPostActionInterface
         $this->logManager->info('MerchantNotification Callback start');
 
         if (!$this->qliroConfig->isActive()) {
-            return $this->dataHelper->sendPreparedPayload(
+            return $this->dataHelper->sendPayload(
                 [ 'CallbackResponse' => 'NotificationsDisabled' ],
                 400,
                 null,
@@ -62,7 +62,7 @@ class MerchantNotification implements HttpPostActionInterface
         }
 
         if (!$this->callbackToken->verifyToken($this->request->getParam('token'))) {
-            return $this->dataHelper->sendPreparedPayload(
+            return $this->dataHelper->sendPayload(
                 [ 'CallbackResponse' => 'AuthenticateError'],
                 400,
                 null,
@@ -70,11 +70,11 @@ class MerchantNotification implements HttpPostActionInterface
             );
         }
 
-        $payload = $this->dataHelper->readPreparedPayload($this->request, 'CALLBACK:MERCHANT_NOTIFICATION');
+        $payload = $this->dataHelper->readPayload($this->request, 'CALLBACK:MERCHANT_NOTIFICATION');
 
         $responseContainer = $this->orderService->merchantNotification($payload);
 
-        $response = $this->dataHelper->sendPreparedPayload(
+        $response = $this->dataHelper->sendPayload(
             $responseContainer,
             $responseContainer['callbackResponseCode'] ?? 200,
             null,

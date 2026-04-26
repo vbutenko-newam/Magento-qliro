@@ -15,7 +15,7 @@ use Magento\Sales\Model\Order;
  *
  * Extracted from PlaceOrder::updateOrderAddresses() (SRP).
  */
-class OrderAddressUpdater
+readonly class OrderAddressUpdater
 {
     /**
      * Class constructor
@@ -23,7 +23,7 @@ class OrderAddressUpdater
      * @param OrderRepositoryInterface $orderRepository
      */
     public function __construct(
-        private readonly OrderRepositoryInterface $orderRepository
+        private OrderRepositoryInterface $orderRepository
     ) {
     }
 
@@ -86,9 +86,17 @@ class OrderAddressUpdater
             }
         }
 
-        // Sync email on the order itself for guests
-        if (!empty($qliroCustomer['Email']) && !$order->getCustomerId()) {
-            $order->setCustomerEmail($qliroCustomer['Email']);
+        // Sync email and name on the order itself for guests
+        if (!$order->getCustomerId()) {
+            if (!empty($qliroCustomer['Email'])) {
+                $order->setCustomerEmail($qliroCustomer['Email']);
+            }
+            if (!empty($qliroBilling['FirstName'])) {
+                $order->setCustomerFirstname($qliroBilling['FirstName']);
+            }
+            if (!empty($qliroBilling['LastName'])) {
+                $order->setCustomerLastname($qliroBilling['LastName']);
+            }
         }
 
         $this->orderRepository->save($order);

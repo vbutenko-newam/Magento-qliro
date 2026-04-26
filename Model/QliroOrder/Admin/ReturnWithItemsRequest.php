@@ -3,6 +3,7 @@
  * Copyright © Qliro AB. All rights reserved.
  * See LICENSE.txt for license details.
  */
+declare(strict_types=1);
 
 namespace Qliro\QliroOne\Model\QliroOrder\Admin;
 
@@ -18,37 +19,37 @@ class ReturnWithItemsRequest implements AdminReturnWithItemsRequestInterface
     /**
      * @var string
      */
-    private $merchantApiKey;
+    private string $merchantApiKey;
 
     /**
      * @var int
      */
-    private $paymentReference;
+    private int $paymentReference;
 
     /**
      * @var string
      */
-    private $requestId;
+    private string $requestId;
 
     /**
      * @var string
      */
-    private $currency;
+    private string $currency;
 
     /**
      * @var QliroOrderItemInterface[]
      */
-    private $orderItems;
+    private array $orderItems;
 
     /**
      * @var QliroOrderItemInterface[]
      */
-    private $fees;
+    private array $fees;
 
     /**
      * @var QliroOrderItemInterface[]
      */
-    private $discounts;
+    private array $discounts;
 
     /**
      * @var int
@@ -78,17 +79,17 @@ class ReturnWithItemsRequest implements AdminReturnWithItemsRequestInterface
     /**
      * @inheritDoc
      */
-    public function getMerchantApiKey()
+    public function getMerchantApiKey(): string
     {
-        return $this->merchantApiKey;
+        return (string)$this->merchantApiKey;
     }
 
     /**
      * @inheritDoc
      */
-    public function setMerchantApiKey($value)
+    public function setMerchantApiKey($value): static
     {
-        $this->merchantApiKey = $value;
+        $this->merchantApiKey = (string)$value;
 
         return $this;
     }
@@ -96,17 +97,17 @@ class ReturnWithItemsRequest implements AdminReturnWithItemsRequestInterface
     /**
      * @inheritDoc
      */
-    public function getPaymentReference()
+    public function getPaymentReference(): int
     {
-        return $this->paymentReference;
+        return (int)$this->paymentReference;
     }
 
     /**
      * @inheritDoc
      */
-    public function setPaymentReference($value)
+    public function setPaymentReference($value): static
     {
-        $this->paymentReference = $value;
+        $this->paymentReference = (int)$value;
 
         return $this;
     }
@@ -114,17 +115,17 @@ class ReturnWithItemsRequest implements AdminReturnWithItemsRequestInterface
     /**
      * @inheritDoc
      */
-    public function getRequestId()
+    public function getRequestId(): string
     {
-        return $this->requestId;
+        return (string)$this->requestId;
     }
 
     /**
      * @inheritDoc
      */
-    public function setRequestId($value)
+    public function setRequestId($value): static
     {
-        $this->requestId = $value;
+        $this->requestId = (string)$value;
 
         return $this;
     }
@@ -132,17 +133,17 @@ class ReturnWithItemsRequest implements AdminReturnWithItemsRequestInterface
     /**
      * @inheritDoc
      */
-    public function getCurrency()
+    public function getCurrency(): string
     {
-        return $this->currency;
+        return (string)$this->currency;
     }
 
     /**
      * @inheritDoc
      */
-    public function setCurrency($value)
+    public function setCurrency($value): static
     {
-        $this->currency = $value;
+        $this->currency = (string)$value;
 
         return $this;
     }
@@ -150,15 +151,15 @@ class ReturnWithItemsRequest implements AdminReturnWithItemsRequestInterface
     /**
      * @inheritDoc
      */
-    public function getOrderItems()
+    public function getOrderItems(): array
     {
-        return null;
+        return [];
     }
 
     /**
      * @inheritDoc
      */
-    public function setOrderItems($orderItems)
+    public function setOrderItems($orderItems): static
     {
         if (!count($orderItems)) {
             return $this;
@@ -181,15 +182,15 @@ class ReturnWithItemsRequest implements AdminReturnWithItemsRequestInterface
     /**
      * @inheritDoc
      */
-    public function getFees()
+    public function getFees(): array
     {
-        return null;
+        return [];
     }
 
     /**
      * @inheritDoc
      */
-    public function setFees($value)
+    public function setFees($value): static
     {
         $this->fees = $value;
 
@@ -199,7 +200,7 @@ class ReturnWithItemsRequest implements AdminReturnWithItemsRequestInterface
     /**
      * @inheritDoc
      */
-    public function setOrderId(int $value)
+    public function setOrderId(int $value): static
     {
         $this->orderId = $value;
 
@@ -217,7 +218,7 @@ class ReturnWithItemsRequest implements AdminReturnWithItemsRequestInterface
     /**
      * @inheritDoc
      */
-    public function setReturns(array $value)
+    public function setReturns(array $value): static
     {
         $this->returns = $value;
 
@@ -286,7 +287,7 @@ class ReturnWithItemsRequest implements AdminReturnWithItemsRequestInterface
     /**
      * @inheritDoc
      */
-    public function setPaymentTransactionId(int $value)
+    public function setPaymentTransactionId(int $value): static
     {
         $this->paymentTransactionId = $value;
 
@@ -304,7 +305,7 @@ class ReturnWithItemsRequest implements AdminReturnWithItemsRequestInterface
     /**
      * @inheritDoc
      */
-    public function getDiscounts()
+    public function getDiscounts(): array
     {
         return $this->discounts;
     }
@@ -312,7 +313,7 @@ class ReturnWithItemsRequest implements AdminReturnWithItemsRequestInterface
     /**
      * @inheritDoc
      */
-    public function setDiscounts($value)
+    public function setDiscounts($value): static
     {
         $this->discounts = $value;
 

@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace Qliro\QliroOne\Plugin;
 
 use Magento\Sales\Model\ResourceModel\Order\Grid\Collection as OrderGridCollection;
@@ -6,7 +8,7 @@ use Zend_Db_Expr;
 
 class AddRecurringColumnToOrderGrid
 {
-    public function beforeLoad(OrderGridCollection $collection)
+    public function beforeLoad(OrderGridCollection $collection): OrderGridCollection
     {
         $select = $collection->getSelect();
         //check if recurring_info corelation is already set

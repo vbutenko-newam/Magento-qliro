@@ -3,6 +3,7 @@
  * Copyright © Qliro AB. All rights reserved.
  * See LICENSE.txt for license details.
  */
+declare(strict_types=1);
 
 namespace Qliro\QliroOne\Model\MerchantPayment\Builder;
 
@@ -85,7 +86,7 @@ class CreateRequestBuilder
      * @param \Magento\Quote\Api\Data\CartInterface $quote
      * @return $this
      */
-    public function setQuote(CartInterface $quote)
+    public function setQuote(CartInterface $quote): static
     {
         $this->quote = $quote;
 
@@ -96,9 +97,9 @@ class CreateRequestBuilder
      * Set order for data extraction
      *
      * @param \Magento\Sales\Model\Order $order
-     * @return $this
+     * @return static
      */
-    public function setOrder(Order $order)
+    public function setOrder(Order $order): static
     {
         $this->order = $order;
 
@@ -111,7 +112,7 @@ class CreateRequestBuilder
      * @return \Qliro\QliroOne\Api\Data\AdminCreateMerchantPaymentRequestInterface
      * @throws \Exception
      */
-    public function create()
+    public function create(): AdminCreateMerchantPaymentRequestInterface
     {
         if (empty($this->quote)) {
             throw new \LogicException('Quote entity is not set.');
@@ -191,7 +192,7 @@ class CreateRequestBuilder
      * @param string $path
      * @return string
      */
-    private function getCallbackUrl($path)
+    private function getCallbackUrl(string $path): string
     {
         $params['_query']['token'] = $this->generateCallbackToken();
 
@@ -218,7 +219,7 @@ class CreateRequestBuilder
      * @param string $url
      * @return string
      */
-    private function applyHttpAuth($url)
+    private function applyHttpAuth(string $url): string
     {
         if ($this->qliroConfig->isHttpAuthEnabled() && preg_match('#^(https?://)(.+)$#', $url, $match)) {
             $authUsername = $this->qliroConfig->getCallbackHttpAuthUsername();
@@ -237,7 +238,7 @@ class CreateRequestBuilder
      * @param array $params
      * @return string
      */
-    private function getUrl($path, $params = [])
+    private function getUrl(string $path, array $params = []): string
     {
         /** @var \Magento\Store\Model\Store $store */
         $store = $this->storeManager->getStore();
@@ -248,7 +249,7 @@ class CreateRequestBuilder
     /**
      * @return string
      */
-    private function generateCallbackToken()
+    private function generateCallbackToken(): string
     {
         if (!$this->generatedToken) {
             $this->generatedToken = $this->callbackToken->getToken();

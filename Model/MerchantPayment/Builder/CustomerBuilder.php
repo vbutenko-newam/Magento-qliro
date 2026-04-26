@@ -27,7 +27,8 @@ class CustomerBuilder
      * @param Quote $quote
      * @return void
      */
-    public function setQuote(Quote $quote) {
+    public function setQuote(Quote $quote): void
+    {
         $this->quote = $quote;
     }
 

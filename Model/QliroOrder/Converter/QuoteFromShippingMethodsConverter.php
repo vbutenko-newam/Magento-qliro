@@ -3,11 +3,12 @@
  * Copyright © Qliro AB. All rights reserved.
  * See LICENSE.txt for license details.
  */
+declare(strict_types=1);
 
 namespace Qliro\QliroOne\Model\QliroOrder\Converter;
 
 use Magento\Quote\Model\Quote;
-use Qliro\QliroOne\Helper\Data as Helper;
+use Qliro\QliroOne\Service\Quote\AddressComparator;
 
 /**
  * Quote from shipping methods container converter class
@@ -18,11 +19,11 @@ class QuoteFromShippingMethodsConverter
      * Class constructor
      *
      * @param AddressConverter $addressConverter
-     * @param Helper $helper
+     * @param AddressComparator $addressComparator
      */
     public function __construct(
-        private readonly AddressConverter $addressConverter,
-        private readonly Helper $helper
+        private readonly AddressConverter  $addressConverter,
+        private readonly AddressComparator $addressComparator
     ) {
     }
 
@@ -44,7 +45,7 @@ class QuoteFromShippingMethodsConverter
         if (!$quote->isVirtual()) {
             $shippingAddress = $quote->getShippingAddress();
             $this->addressConverter->convert($qliroAddress, $qliroCustomer, $shippingAddress, $countryCode);
-            $shippingAddress->setSameAsBilling($this->helper->doAddressesMatch($shippingAddress, $billingAddress));
+            $shippingAddress->setSameAsBilling($this->addressComparator->match($shippingAddress, $billingAddress));
         }
     }
 }

@@ -3,9 +3,11 @@
  * Copyright © Qliro AB. All rights reserved.
  * See LICENSE.txt for license details.
  */
+declare(strict_types=1);
 
 namespace Qliro\QliroOne\Controller\Qliro;
 
+use Magento\Checkout\Controller\Onepage;
 use Magento\Customer\Api\AccountManagementInterface;
 use Magento\Customer\Api\CustomerRepositoryInterface;
 use Magento\Customer\Model\Session;
@@ -14,6 +16,7 @@ use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\Controller\Result\JsonFactory;
 use Magento\Checkout\Model\Session as CheckoutSession;
 use Magento\Framework\Controller\Result\RawFactory;
+use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\Data\Form\FormKey\Validator;
 use Magento\Framework\Registry;
 use Magento\Framework\Translate\InlineInterface;
@@ -37,7 +40,7 @@ use Qliro\QliroOne\Model\Success\Session as SuccessSession;
  * The CheckoutStatus callback updates the order to its terminal state asynchronously, but
  * the success page only needs the order to exist, not to be in its final state.
  */
-class Success extends \Magento\Checkout\Controller\Onepage
+class Success extends Onepage
 {
     /**
      * Class constructor
@@ -106,9 +109,9 @@ class Success extends \Magento\Checkout\Controller\Onepage
     /**
      * Dispatch a QliroOne checkout success page or redirect to the cart.
      *
-     * @return \Magento\Framework\View\Result\Page|\Magento\Framework\Controller\Result\Redirect
+     * @return ResultInterface
      */
-    public function execute()
+    public function execute(): ResultInterface
     {
         if (!$this->successSession->getSuccessIncrementId()) {
             if (!$this->populateSuccessSessionFromCookie()) {

@@ -3,6 +3,7 @@
  * Copyright © Qliro AB. All rights reserved.
  * See LICENSE.txt for license details.
  */
+declare(strict_types=1);
 
 namespace Qliro\QliroOne\Model\QliroOrder\Builder;
 
@@ -11,7 +12,6 @@ use Magento\Sales\Api\Data\CreditmemoInterface;
 use Magento\Sales\Api\Data\CreditmemoItemInterface;
 use Magento\Tax\Helper\Data as TaxHelper;
 use Magento\Tax\Model\Calculation as TaxCalculation;
-use Qliro\QliroOne\Helper\Data as QliroHelper;
 use Qliro\QliroOne\Model\Product\Type\QuoteSourceProvider;
 use Qliro\QliroOne\Model\Product\Type\TypePoolHandler;
 
@@ -20,10 +20,7 @@ use Qliro\QliroOne\Model\Product\Type\TypePoolHandler;
  */
 class CreditMemoItemsBuilder extends OrderItemsBuilder
 {
-    /**
-     * @var CreditmemoInterface
-     */
-    private $creditMemo;
+    private ?CreditmemoInterface $creditMemo = null;
 
     /**
      * Class constructor
@@ -31,26 +28,22 @@ class CreditMemoItemsBuilder extends OrderItemsBuilder
      * @param TaxHelper $taxHelper
      * @param TaxCalculation $taxCalculation
      * @param TypePoolHandler $typeResolver
-     * @param QliroHelper $qliroHelper
      * @param QuoteSourceProvider $quoteSourceProvider
      * @param ManagerInterface $eventManager
-     * @param $handlers
+     * @param array $handlers
      */
     public function __construct(
         TaxHelper $taxHelper,
         TaxCalculation $taxCalculation,
         TypePoolHandler $typeResolver,
-        QliroHelper $qliroHelper,
         QuoteSourceProvider $quoteSourceProvider,
         ManagerInterface $eventManager,
-        $handlers = []
-    )
-    {
+        array $handlers = []
+    ) {
         parent::__construct(
             $taxHelper,
             $taxCalculation,
             $typeResolver,
-            $qliroHelper,
             $quoteSourceProvider,
             $eventManager,
             $handlers
@@ -58,12 +51,12 @@ class CreditMemoItemsBuilder extends OrderItemsBuilder
     }
 
     /**
-     * Set credit memo for data extraction
+     * Set a credit memo for data extraction
      *
      * @param CreditmemoInterface $creditMemo
      * @return $this
      */
-    public function setCreditMemo(CreditmemoInterface $creditMemo)
+    public function setCreditMemo(CreditmemoInterface $creditMemo): static
     {
         $this->creditMemo = $creditMemo;
 
@@ -75,7 +68,7 @@ class CreditMemoItemsBuilder extends OrderItemsBuilder
      *
      * @return array[]
      */
-    public function create()
+    public function create(): array
     {
         if (empty($this->creditMemo)) {
             throw new \LogicException('Credit memo entity is not set.');
@@ -120,7 +113,7 @@ class CreditMemoItemsBuilder extends OrderItemsBuilder
      * @param string $sku
      * @return CreditmemoItemInterface|null
      */
-    private function getCreditMemoItemBySku(string $sku)
+    private function getCreditMemoItemBySku(string $sku): ?CreditmemoItemInterface
     {
         $toReturn = null;
         foreach ($this->creditMemo->getItems() as $item) {

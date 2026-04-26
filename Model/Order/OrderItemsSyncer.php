@@ -15,7 +15,7 @@ use Qliro\QliroOne\Model\Logger\Manager as LogManager;
  *
  * Extracted from PlaceOrder::syncOrderItems() (SRP).
  */
-class OrderItemsSyncer
+readonly class OrderItemsSyncer
 {
     /**
      * Class constructor
@@ -23,7 +23,7 @@ class OrderItemsSyncer
      * @param LogManager $logManager
      */
     public function __construct(
-        private readonly LogManager $logManager
+        private LogManager $logManager
     ) {
     }
 
@@ -80,7 +80,7 @@ class OrderItemsSyncer
             }
 
             $originalQty = (float) $orderItem->getQtyOrdered();
-            if ($originalQty == $qliroQty) {
+            if (abs($originalQty - $qliroQty) < 0.0001) {
                 continue; // no change
             }
 

@@ -3,6 +3,7 @@
  * Copyright © Qliro AB. All rights reserved.
  * See LICENSE.txt for license details.
  */
+declare(strict_types=1);
 
 namespace Qliro\QliroOne\Model\QliroOrder\Admin\Builder;
 
@@ -17,25 +18,10 @@ use Qliro\QliroOne\Api\Data\QliroShipmentInterfaceFactory;
  */
 class InvoiceShipmentsBuilder
 {
-    /**
-     * @var \Magento\Sales\Model\Order\Payment
-     */
-    private $payment;
-
-    /**
-     * @var \Magento\Sales\Model\Order
-     */
-    private $order;
-
-    /**
-     * @var \Magento\Sales\Model\Order\Invoice
-     */
-    private $invoice;
-
-    /**
-     * @var \Qliro\QliroOne\Api\Admin\Builder\OrderItemHandlerInterface[]
-     */
-    private $handlers = [];
+    private ?\Magento\Sales\Model\Order\Payment $payment = null;
+    private ?\Magento\Sales\Model\Order $order = null;
+    private ?\Magento\Sales\Model\Order\Invoice $invoice = null;
+    private array $handlers = [];
 
     /**
      * Class constructor
@@ -49,7 +35,7 @@ class InvoiceShipmentsBuilder
         private readonly TypePoolHandler $typeResolver,
         private readonly QliroShipmentInterfaceFactory $qliroShipmentFactory,
         private readonly OrderSourceProvider $orderSourceProvider,
-        $handlers = []
+        array $handlers = []
     ) {
         $this->handlers = $handlers;
     }
@@ -57,7 +43,7 @@ class InvoiceShipmentsBuilder
     /**
      * @param \Magento\Sales\Model\Order\Payment $payment
      */
-    public function setPayment($payment)
+    public function setPayment(\Magento\Sales\Model\Order\Payment $payment): void
     {
         $this->payment = $payment;
 
@@ -73,7 +59,7 @@ class InvoiceShipmentsBuilder
      *
      * @return \Qliro\QliroOne\Api\Data\QliroShipmentInterface[]
      */
-    public function create()
+    public function create(): array
     {
         if (empty($this->order)) {
             throw new \LogicException('Order entity is not set.');
@@ -142,7 +128,7 @@ class InvoiceShipmentsBuilder
     /**
      * @return bool
      */
-    private function isFirstInvoice()
+    private function isFirstInvoice(): bool
     {
         $invoiceCollection = $this->order->getInvoiceCollection();
         foreach ($invoiceCollection as $invoice) {

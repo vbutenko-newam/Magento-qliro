@@ -3,6 +3,7 @@
  * Copyright © Qliro AB. All rights reserved.
  * See LICENSE.txt for license details.
  */
+declare(strict_types=1);
 
 namespace Qliro\QliroOne\Model;
 
@@ -20,13 +21,14 @@ use Magento\Tax\Api\Data\TaxClassKeyInterfaceFactory;
 use Magento\Tax\Api\TaxCalculationInterface;
 use Magento\Tax\Api\Data\TaxClassKeyInterface;
 use Magento\Framework\DataObjectFactory;
+use Magento\Quote\Model\Quote;
 
 class Fee
 {
     /**
      * @var array
      */
-    private $methodsWithFee = [];
+    private array $methodsWithFee = [];
 
     /**
      * Class constructor
@@ -67,10 +69,11 @@ class Fee
     /**
      * Sets the fee including Tax, quote should be recalculated after this, to update all remaining fields
      *
-     * @param \Magento\Quote\Model\Quote $quote
+     * @param Quote $quote
      * @param float $fee
+     * @return void
      */
-    public function setQlirooneFeeInclTax(\Magento\Quote\Model\Quote $quote, $fee)
+    public function setQlirooneFeeInclTax(Quote $quote, float $fee): void
     {
         if ($quote->isVirtual()) {
             $quote->getBillingAddress()->setQlirooneFee($fee);
@@ -83,42 +86,40 @@ class Fee
      * Returns the amount of the fee, if defined. It can be fixed or a percent of the order sum
      * This function must not depend on display settings
      *
-     * @param \Magento\Quote\Model\Quote $quote
-     * @return float|int
+     * @param Quote $quote
+     * @return float
      */
-    public function getQlirooneFeeInclTax(\Magento\Quote\Model\Quote $quote)
+    public function getQlirooneFeeInclTax(Quote $quote): float
     {
         if ($quote->isVirtual()) {
             $fee = $quote->getBillingAddress()->getQlirooneFee();
         } else {
             $fee = $quote->getShippingAddress()->getQlirooneFee();
         }
-        $price = $this->getCalcTaxPrice($quote, $fee, 1);
 
-        return $price;
+        return (float)$this->getCalcTaxPrice($quote, $fee, true);
     }
 
     /**
-     * Return Fee exluding tax
+     * Return Fee excluding tax
      *
-     * @param \Magento\Quote\Model\Quote $quote
-     * @return float|int
+     * @param Quote $quote
+     * @return float
      */
-    public function getQlirooneFeeExclTax(\Magento\Quote\Model\Quote $quote)
+    public function getQlirooneFeeExclTax(Quote $quote): float
     {
         $price = $this->getQlirooneFeeInclTax($quote);
-        $price = $this->getCalcTaxPrice($quote, $price, 0);
 
-        return $price;
+        return (float)$this->getCalcTaxPrice($quote, $price, false);
     }
 
     /**
      * @todo Improvement. Proper currency conversion to handle display currencies
      *
-     * @param \Magento\Quote\Model\Quote $quote
-     * @return float|int
+     * @param Quote $quote
+     * @return float
      */
-    public function getBaseQlirooneFeeInclTax(\Magento\Quote\Model\Quote $quote)
+    public function getBaseQlirooneFeeInclTax(Quote $quote): float
     {
         return $this->getQlirooneFeeInclTax($quote);
     }
@@ -126,10 +127,10 @@ class Fee
     /**
      * @todo Improvement. Proper currency conversion to handle display currencies
      *
-     * @param \Magento\Quote\Model\Quote $quote
-     * @return float|int
+     * @param Quote $quote
+     * @return float
      */
-    public function getBaseQlirooneFeeExclTax(\Magento\Quote\Model\Quote $quote)
+    public function getBaseQlirooneFeeExclTax(Quote $quote): float
     {
         return $this->getQlirooneFeeExclTax($quote);
     }
@@ -137,11 +138,11 @@ class Fee
     /**
      * Get the summary for cart and checkout
      *
-     * @param \Magento\Quote\Model\Quote $quote
+     * @param Quote $quote
      * @param float $amount
      * @return array
      */
-    public function getFeeArray($quote, $amount)
+    public function getFeeArray(Quote $quote, float $amount): array
     {
         $feeSetup = $this->getFeeSetup($quote->getStoreId());
         if (!$amount || empty($feeSetup)) {
@@ -158,11 +159,11 @@ class Fee
     /**
      * Get the object, used for Totals in both FE and BE on orders, creditnotes and invoices
      *
-     * @param int $storeId
+     * @param mixed $storeId
      * @param float $amount
      * @return \Magento\Framework\DataObject
      */
-    public function getFeeObject($storeId, $amount)
+    public function getFeeObject(mixed $storeId, float $amount): \Magento\Framework\DataObject
     {
         $feeSetup = $this->getFeeSetup($storeId);
         $feeObject = $this->dataObjectFactory->create();
@@ -189,7 +190,7 @@ class Fee
      * @param array $qlirooneFee
      * @return \Magento\Framework\DataObject
      */
-    public function feeToFeeObject($qlirooneFee)
+    public function feeToFeeObject(array $qlirooneFee): \Magento\Framework\DataObject
     {
         $feeObject = $this->dataObjectFactory->create();
         $feeObject->setData([
@@ -204,10 +205,10 @@ class Fee
     /**
      * Will return fee setup, including an amount of zero
      *
-     * @param int $storeId
+     * @param mixed $storeId
      * @return array
      */
-    public function getFeeSetup($storeId)
+    public function getFeeSetup(mixed $storeId): array
     {
         if (!$this->config->isActive($storeId)) {
             return [];
@@ -226,11 +227,11 @@ class Fee
      * Picks up the amounts from Fees and runs them through the getTaxPrice function,
      * which changes things depending on display settings etc
      *
-     * @param \Magento\Quote\Model\Quote $quote
+     * @param Quote $quote
      * @param array $feeCalc
      * @return array
      */
-    public function applyDisplayFlagsToFeeArray($quote, $feeCalc)
+    public function applyDisplayFlagsToFeeArray(Quote $quote, array $feeCalc): array
     {
         if (empty($feeCalc)) {
             return [];
@@ -246,9 +247,9 @@ class Fee
     /**
      * Get current quote from checkout session
      *
-     * @return \Magento\Quote\Model\Quote
+     * @return Quote
      */
-    public function getQuote()
+    public function getQuote(): Quote
     {
         return $this->checkoutSession->getQuote();
     }
@@ -266,13 +267,13 @@ class Fee
     /**
      * Returns the price including or excluding tax, depending on flags being sent in and display settings
      *
-     * @param \Magento\Quote\Model\Quote $quote
+     * @param Quote $quote
      * @param float $price
      * @param bool|null $includingTax
      * @param bool|null $feeIncludesTax
      * @return float
      */
-    private function getTaxPrice($quote, $price, $includingTax = null, $feeIncludesTax = null)
+    private function getTaxPrice(Quote $quote, float $price, ?bool $includingTax = null, ?bool $feeIncludesTax = null): float
     {
         $pseudoProduct = new \Magento\Framework\DataObject();
         $pseudoProduct->setTaxClassId(
@@ -287,7 +288,7 @@ class Fee
             $feeIncludesTax = $this->config->paymentFeeIncludesTax($quote->getStoreId());
         }
 
-        $price = $this->catalogHelper->getTaxPrice(
+        return (float)$this->catalogHelper->getTaxPrice(
             $pseudoProduct,
             $price,
             $includingTax,
@@ -297,21 +298,19 @@ class Fee
             $quote->getStoreId(),
             $feeIncludesTax
         );
-
-        return $price;
     }
 
     /**
      * Returns the price including or excluding tax, NOT depending on display settings
      * Basically a copy of above used function $this->catalogHelper->getTaxPrice
      *
-     * @param \Magento\Quote\Model\Quote $quote
+     * @param Quote $quote
      * @param float $price
      * @param bool $includingTax
      * @param bool|null $feeIncludesTax
      * @return float
      */
-    private function getCalcTaxPrice($quote, $price, $includingTax, $feeIncludesTax = null)
+    private function getCalcTaxPrice(Quote $quote, float $price, bool $includingTax, ?bool $feeIncludesTax = null): float
     {
         if (!$price) {
             return $price;
@@ -392,17 +391,17 @@ class Fee
         }
 
         if ($roundPrice) {
-            return $this->priceCurrency->round($price);
+            return (float)$this->priceCurrency->round($price);
         } else {
-            return $price;
+            return (float)$price;
         }
     }
 
     /**
-     * @param array $taxAddress
+     * @param array|null $taxAddress
      * @return \Magento\Customer\Api\Data\AddressInterface|null
      */
-    private function convertDefaultTaxAddress(?array $taxAddress = null)
+    private function convertDefaultTaxAddress(?array $taxAddress = null): ?\Magento\Customer\Api\Data\AddressInterface
     {
         if (empty($taxAddress)) {
             return null;
@@ -417,5 +416,4 @@ class Fee
         }
         return $addressDataObject;
     }
-
 }

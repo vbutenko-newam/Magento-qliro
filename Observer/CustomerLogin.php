@@ -3,6 +3,7 @@
  * Copyright © Qliro AB. All rights reserved.
  * See LICENSE.txt for license details.
  */
+declare(strict_types=1);
 
 namespace Qliro\QliroOne\Observer;
 
@@ -31,7 +32,7 @@ class CustomerLogin implements ObserverInterface
     /**
      * @param Observer $observer
      */
-    public function execute(\Magento\Framework\Event\Observer $observer)
+    public function execute(\Magento\Framework\Event\Observer $observer): void
     {
         try {
             $link = $this->linkRepository->getByQuoteId($this->getQuote()->getId());
@@ -47,7 +48,7 @@ class CustomerLogin implements ObserverInterface
      *
      * @return \Magento\Quote\Model\Quote
      */
-    private function getQuote()
+    private function getQuote(): \Magento\Quote\Model\Quote
     {
         return $this->checkoutSession->getQuote();
     }

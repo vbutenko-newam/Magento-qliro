@@ -35,7 +35,7 @@ class FrequencyOptions extends Value
         parent::__construct($context, $registry, $config, $cacheTypeList, $resource, $resourceCollection, $data);
     }
 
-    public function beforeSave()
+    public function beforeSave(): static
     {
         $value = $this->getValue();
         $value = $this->serializer->serialize($value);
@@ -43,7 +43,7 @@ class FrequencyOptions extends Value
         return parent::beforeSave();
     }
 
-    protected function _afterLoad()
+    protected function _afterLoad(): void
     {
         $value = $this->getValue();
         if (!$value) {

@@ -34,7 +34,7 @@ class OnepagePlugin
      * @param \Closure $proceed The closure representing the original method being called.
      * @return Subject
      */
-    public function aroundInitCheckout(Subject $subject, \Closure $proceed) : Subject
+    public function aroundInitCheckout(Subject $subject, \Closure $proceed): Subject
     {
         if ($this->config->isActive()
             && $this->request->getFullActionName() === 'checkout_qliro_index'

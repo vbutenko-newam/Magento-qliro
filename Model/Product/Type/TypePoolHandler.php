@@ -3,6 +3,7 @@
  * Copyright © Qliro AB. All rights reserved.
  * See LICENSE.txt for license details.
  */
+declare(strict_types=1);
 
 namespace Qliro\QliroOne\Model\Product\Type;
 
@@ -38,7 +39,7 @@ class TypePoolHandler
     public function resolveQliroOrderItem(
         TypeSourceItemInterface $sourceItem,
         TypeSourceProviderInterface $typeSourceProvider
-    ) {
+    ): ?array {
         $typeHash = [$sourceItem->getProduct()->getTypeId()];
 
         if ($parentItem = $sourceItem->getParent()) {
@@ -64,7 +65,7 @@ class TypePoolHandler
     public function resolveQuoteItem(
         array $qliroOrderItem,
         TypeSourceProviderInterface $typeSourceProvider
-    ) {
+    ): ?TypeSourceItemInterface {
         $handler = $this->resolveHandler($this->typeResolver->resolve($qliroOrderItem, $typeSourceProvider));
 
         if ($handler) {
@@ -77,11 +78,14 @@ class TypePoolHandler
     /**
      * Resolve handler class from a type
      *
-     * @param string $type
+     * @param string|null $type
      * @return \Qliro\QliroOne\Api\Product\TypeHandlerInterface|null
      */
-    private function resolveHandler($type)
+    private function resolveHandler(?string $type): ?\Qliro\QliroOne\Api\Product\TypeHandlerInterface
     {
+        if ($type === null) {
+            return null;
+        }
         return $this->pool[$type] ?? null;
     }
 }

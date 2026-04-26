@@ -3,6 +3,7 @@
  * Copyright © Qliro AB. All rights reserved.
  * See LICENSE.txt for license details.
  */
+declare(strict_types=1);
 
 namespace Qliro\QliroOne\Model\Management;
 
@@ -25,7 +26,7 @@ use Qliro\QliroOne\Model\Method\QliroOne;
 use Qliro\QliroOne\Model\QliroOrder\Builder\CreateRequestBuilder;
 use Qliro\QliroOne\Model\QliroOrder\Builder\UpdateRequestBuilder;
 use Qliro\QliroOne\Model\QliroOrder\Converter\CustomerConverter;
-use Qliro\QliroOne\Helper\Data as Helper;
+use Magento\Framework\HTTP\PhpEnvironment\RemoteAddress;
 use Qliro\QliroOne\Service\General\LinkService;
 use Magento\Framework\Serialize\Serializer\Json;
 
@@ -50,7 +51,7 @@ class Quote
         private readonly LogManager $logManager,
         private readonly Json $json,
         private readonly Fee $fee,
-        private readonly Helper $helper,
+        private readonly RemoteAddress $remoteAddress,
         private readonly ManagerInterface $eventManager,
         private readonly LoadHandler $loadHandler,
         private readonly CountrySelect $countrySelectManagement
@@ -151,7 +152,7 @@ class Quote
             $this->logManager->debug('No Link found for quote ' . $quoteId . ', creating new one');
             /** @var LinkInterface $link */
             $link = $this->linkFactory->create();
-            $link->setRemoteIp($this->helper->getRemoteIp());
+            $link->setRemoteIp($this->remoteAddress->getRemoteAddress());
             $link->setIsActive(true);
             $link->setQuoteId($quoteId);
             $this->logManager->debug('Link created, quote_id: ' . $quoteId);

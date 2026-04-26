@@ -3,6 +3,7 @@
  * Copyright © Qliro AB. All rights reserved.
  * See LICENSE.txt for license details.
  */
+declare(strict_types=1);
 
 namespace Qliro\QliroOne\Model\Management;
 
@@ -93,7 +94,9 @@ class CheckoutStatus
                     'CheckoutStatus: could not acquire lock — concurrent request in progress.',
                     ['extra' => ['qliro_order_id' => $qliroOrderId]]
                 );
-                return ['CallbackResponse' => 'OrderNotFound', 'callbackResponseCode' => 500];
+                // Return a pending response so Qliro retries once the concurrent process finishes,
+                // rather than an error response which Qliro treats the same way but is misleading.
+                return ['CallbackResponse' => 'Order creation pending', 'callbackResponseCode' => 200];
             }
 
             try {
@@ -163,6 +166,21 @@ class CheckoutStatus
 
         try {
             $link = $this->linkRepository->getByQliroOrderId($checkoutStatus['OrderId'] ?? null, false);
+
+            // If a Magento order is already linked, do not cancel the Qliro order.
+            // Cancelling here would void a real paid order in Qliro while leaving
+            // the Magento order alive — the exact scenario that caused orphaned orders.
+            if ($link->getOrderId()) {
+                $this->logManager->warning(
+                    'CheckoutStatus: skipping cancel — a Magento order already exists for this Qliro order.',
+                    ['extra' => [
+                        'qliro_order_id' => $checkoutStatus['OrderId'] ?? null,
+                        'order_id'       => $link->getOrderId(),
+                    ]]
+                );
+                return;
+            }
+
             $this->logManager->setMerchantReference($link->getReference());
             $link->setQliroOrderStatus($checkoutStatus['Status'] ?? '');
 

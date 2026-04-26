@@ -3,6 +3,7 @@
  * Copyright © Qliro AB. All rights reserved.
  * See LICENSE.txt for license details.
  */
+declare(strict_types=1);
 
 namespace Qliro\QliroOne\Model\QliroOrder\Builder;
 
@@ -13,10 +14,7 @@ use Qliro\QliroOne\Api\Data\QliroOrderItemInterfaceFactory;
 
 class RefundFeeBuilder
 {
-    /**
-     * @var CreditmemoInterface
-     */
-    private $creditMemo;
+    private ?CreditmemoInterface $creditMemo = null;
 
     /**
      * Class constructor
@@ -36,7 +34,7 @@ class RefundFeeBuilder
      * @param CreditmemoInterface $creditMemo
      * @return $this
      */
-    public function setCreditMemo(CreditmemoInterface $creditMemo)
+    public function setCreditMemo(CreditmemoInterface $creditMemo): static
     {
         $this->creditMemo = $creditMemo;
 
@@ -48,7 +46,7 @@ class RefundFeeBuilder
      *
      * @return QliroOrderItemInterface[]
      */
-    public function create()
+    public function create(): array
     {
         if (empty($this->creditMemo)) {
             throw new \LogicException('Credit memo entity is not set.');
@@ -66,7 +64,7 @@ class RefundFeeBuilder
      *
      * @return QliroOrderItemInterface
      */
-    protected function getAdjustmentFeeContainer()
+    protected function getAdjustmentFeeContainer(): QliroOrderItemInterface
     {
         $container = $this->qliroOrderItemFactory->create();
         if ($this->creditMemo->getAdjustmentNegative() > 0) {

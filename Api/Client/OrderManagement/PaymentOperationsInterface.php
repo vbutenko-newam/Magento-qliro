@@ -24,15 +24,15 @@ interface PaymentOperationsInterface
      * @return AdminOrderPaymentTransactionInterface
      * @throws \Qliro\QliroOne\Model\Api\Client\Exception\ClientException
      */
-    public function getPaymentTransaction(int $paymentTransactionId, int $storeId = null): AdminOrderPaymentTransactionInterface;
+    public function getPaymentTransaction(int $paymentTransactionId, int|string|null $storeId = null): AdminOrderPaymentTransactionInterface;
 
     /**
      * Retry a reversal payment
      *
-     * @param int $paymentReference
+     * @param mixed $paymentReference
      * @param int|null $storeId
      * @return AdminOrderPaymentTransactionInterface|null
      * @throws \Qliro\QliroOne\Model\Api\Client\Exception\ClientException
      */
-    public function retryReversalPayment($paymentReference, $storeId = null);
+    public function retryReversalPayment(mixed $paymentReference, int|string|null $storeId = null): ?AdminOrderPaymentTransactionInterface;
 }

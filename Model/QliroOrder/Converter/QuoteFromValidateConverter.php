@@ -3,6 +3,7 @@
  * Copyright © Qliro AB. All rights reserved.
  * See LICENSE.txt for license details.
  */
+declare(strict_types=1);
 
 namespace Qliro\QliroOne\Model\QliroOrder\Converter;
 
@@ -29,7 +30,7 @@ class QuoteFromValidateConverter
      * @param \Qliro\QliroOne\Api\Data\ValidateOrderNotificationInterface $container
      * @param \Magento\Quote\Model\Quote $quote
      */
-    public function convert(array $container, Quote $quote)
+    public function convert(array $container, Quote $quote): void
     {
         $billingAddress = $quote->getBillingAddress();
         $this->addressConverter->convert(

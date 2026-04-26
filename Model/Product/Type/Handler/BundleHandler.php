@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace Qliro\QliroOne\Model\Product\Type\Handler;
 
 use Qliro\QliroOne\Api\Product\TypeSourceItemInterface;
@@ -10,15 +12,10 @@ use Magento\Bundle\Model\Product\Type as BundleType;
  */
 class BundleHandler extends DefaultHandler
 {
-
     /**
-     * Get a reference to source item out of QliroOne order item, or null if not applicable
-     *
-     * @param \Qliro\QliroOne\Api\Data\QliroOrderItemInterface $qliroOrderItem
-     * @param \Qliro\QliroOne\Api\Product\TypeSourceProviderInterface $typeSourceProvider
-     * @return \Qliro\QliroOne\Api\Product\TypeSourceItemInterface|null
+     * @inHeirtDoc
      */
-    public function getItem(array $qliroOrderItem, TypeSourceProviderInterface $typeSourceProvider)
+    public function getItem(array $qliroOrderItem, TypeSourceProviderInterface $typeSourceProvider): ?TypeSourceItemInterface
     {
         $type = $qliroOrderItem['Type'] ?? null;
         if ($type !== 'Product' && $type !== 'Bundle') {
@@ -29,13 +26,9 @@ class BundleHandler extends DefaultHandler
     }
 
     /**
-     * Prepare price depending on bundle dynamic pricing setting
-     *
-     * @param TypeSourceItemInterface $item
-     * @param boolean $taxIncluded
-     * @return void
+     * @inHeirtDoc
      */
-    public function preparePrice(TypeSourceItemInterface $item, $taxIncluded = true)
+    public function preparePrice(TypeSourceItemInterface $item, bool $taxIncluded = true): float
     {
         if ($item->getType() !== BundleType::TYPE_CODE) {
             return parent::preparePrice($item, $taxIncluded);

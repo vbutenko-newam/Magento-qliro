@@ -3,10 +3,13 @@
  * Copyright © Qliro AB. All rights reserved.
  * See LICENSE.txt for license details.
  */
+declare(strict_types=1);
 
 namespace Qliro\QliroOne\Model\QliroOrder\Builder;
 
 use Magento\Customer\Api\Data\CustomerInterface;
+use Magento\Customer\Model\Address;
+use Magento\Customer\Model\Address\AbstractAddress;
 use Magento\Customer\Model\AddressFactory;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Quote\Model\Quote;
@@ -17,15 +20,8 @@ use Qliro\QliroOne\Model\Config;
  */
 class CustomerBuilder
 {
-    /**
-     * @var CustomerInterface
-     */
-    private $customer;
-
-    /**
-     * @var Quote
-     */
-    private $quote;
+    private ?CustomerInterface $customer = null;
+    private ?Quote $quote = null;
 
     /**
      * Class constructor
@@ -47,7 +43,7 @@ class CustomerBuilder
      * @param CustomerInterface|null $customer
      * @return $this
      */
-    public function setCustomer(?CustomerInterface $customer)
+    public function setCustomer(?CustomerInterface $customer): static
     {
         $this->customer = $customer;
 
@@ -57,10 +53,10 @@ class CustomerBuilder
     /**
      * Set quote for data extraction
      *
-     * @param \Magento\Quote\Model\Quote $quote
-     * @return $this
+     * @param Quote $quote
+     * @return static
      */
-    public function setQuote(Quote $quote)
+    public function setQuote(Quote $quote): static
     {
         $this->quote = $quote;
 
@@ -72,7 +68,7 @@ class CustomerBuilder
      *
      * @return array
      */
-    public function create()
+    public function create(): array
     {
         $qliroOrderCustomer = [];
 
@@ -114,9 +110,9 @@ class CustomerBuilder
     }
 
     /**
-     * @return \Magento\Customer\Model\Address|Quote\Address|null
+     * @return AbstractAddress|null
      */
-    protected function getAddress()
+    protected function getAddress(): ?AbstractAddress
     {
         if ($this->qliroConfig->getShowAsPaymentMethod()) {
             if ($this->quote->getIsVirtual()) {
@@ -136,7 +132,7 @@ class CustomerBuilder
     /**
      * @return string|null
      */
-    protected function getEmail()
+    protected function getEmail(): ?string
     {
         if ($this->customer && $this->customer->getEmail()) {
             return $this->customer->getEmail();
@@ -156,7 +152,7 @@ class CustomerBuilder
     /**
      * @return string|null
      */
-    protected function getMobileNumber()
+    protected function getMobileNumber(): ?string
     {
         if ($this->quote->getShippingAddress()) {
             return $this->quote->getShippingAddress()->getTelephone();

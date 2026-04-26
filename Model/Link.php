@@ -167,7 +167,7 @@ class Link extends AbstractModel implements LinkInterface
     /**
      * @inheritdoc
      */
-    public function setIsActive(int $value): static
+    public function setIsActive(int|bool $value): static
     {
         return $this->setData(self::FIELD_IS_ACTIVE, $value);
     }
@@ -183,7 +183,7 @@ class Link extends AbstractModel implements LinkInterface
     /**
      * @inheritdoc
      */
-    public function setQuoteId(int $value): static
+    public function setQuoteId(int|string $value): static
     {
         return $this->setData(self::FIELD_QUOTE_ID, $value);
     }
@@ -207,7 +207,7 @@ class Link extends AbstractModel implements LinkInterface
     /**
      * @inheritdoc
      */
-    public function setOrderId(int $value): static
+    public function setOrderId(int|string $value): static
     {
         return $this->setData(self::FIELD_ORDER_ID, $value);
     }
@@ -239,7 +239,7 @@ class Link extends AbstractModel implements LinkInterface
     /**
      * @inheritdoc
      */
-    public function setPlacedAt(string $value)
+    public function setPlacedAt(string $value): static
     {
         return $this->setData(self::FIELD_PLACED_AT, $value);
     }
@@ -279,9 +279,8 @@ class Link extends AbstractModel implements LinkInterface
     /**
      * @inheritDoc
      */
-    public function setIsLocked(bool $value): LinkInterface
+    public function setIsLocked(bool $value): static
     {
-        $this->setData(self::FIELD_IS_LOCKED, $value);
-        return $this;
+        return $this->setData(self::FIELD_IS_LOCKED, $value);
     }
 }

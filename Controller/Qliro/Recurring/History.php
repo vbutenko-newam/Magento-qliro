@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace Qliro\QliroOne\Controller\Qliro\Recurring;
 
 use Magento\Customer\Controller\AccountInterface;
@@ -33,7 +35,7 @@ class History implements OrderInterface, AccountInterface, HttpGetActionInterfac
     /**
      * @inheritdoc
      */
-    public function execute()
+    public function execute(): \Magento\Framework\Controller\ResultInterface
     {
         if (!$this->config->isActive() || !$this->config->isUseRecurring()) {
             return $this->resultForwardFactory->create()->forward('noroute');
