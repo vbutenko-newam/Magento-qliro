@@ -7,57 +7,61 @@ declare(strict_types=1);
 
 namespace Qliro\QliroOne\Model\QliroOrder\Admin\Builder;
 
+use Magento\Sales\Model\Order;
+use Magento\Sales\Model\Order\Invoice;
+use Magento\Sales\Model\Order\Invoice\Item;
+use Magento\Sales\Model\Order\Payment;
 use Qliro\QliroOne\Api\Admin\Builder\OrderItemHandlerInterface;
 use Qliro\QliroOne\Api\Data\QliroShipmentInterface;
 use Qliro\QliroOne\Model\Product\Type\OrderSourceProvider;
 use Qliro\QliroOne\Model\Product\Type\TypePoolHandler;
-use Qliro\QliroOne\Api\Data\QliroShipmentInterfaceFactory;
+use Qliro\QliroOne\Api\Data\QliroShipmentInterfaceFactory as QliroShipmentFactory;
 
 /**
  * QliroOne Admin Order shipments builder class
  */
 class InvoiceShipmentsBuilder
 {
-    private ?\Magento\Sales\Model\Order\Payment $payment = null;
-    private ?\Magento\Sales\Model\Order $order = null;
-    private ?\Magento\Sales\Model\Order\Invoice $invoice = null;
+    private ?Payment $payment = null;
+    private ?Order $order = null;
+    private ?Invoice $invoice = null;
     private array $handlers = [];
 
     /**
      * Class constructor
      *
-     * @param TypePoolHandler $typeResolver
-     * @param QliroShipmentInterfaceFactory $qliroShipmentFactory
-     * @param OrderSourceProvider $orderSourceProvider
-     * @param \Qliro\QliroOne\Api\Admin\Builder\OrderItemHandlerInterface[] $handlers
+     * @param TypePoolHandler                 $typeResolver
+     * @param QliroShipmentFactory            $qliroShipmentFactory
+     * @param OrderSourceProvider             $orderSourceProvider
+     * @param OrderItemHandlerInterface[]     $handlers
      */
     public function __construct(
-        private readonly TypePoolHandler $typeResolver,
-        private readonly QliroShipmentInterfaceFactory $qliroShipmentFactory,
-        private readonly OrderSourceProvider $orderSourceProvider,
+        private readonly TypePoolHandler      $typeResolver,
+        private readonly QliroShipmentFactory $qliroShipmentFactory,
+        private readonly OrderSourceProvider  $orderSourceProvider,
         array $handlers = []
     ) {
         $this->handlers = $handlers;
     }
 
     /**
-     * @param \Magento\Sales\Model\Order\Payment $payment
+     * @param Payment $payment
      */
-    public function setPayment(\Magento\Sales\Model\Order\Payment $payment): void
+    public function setPayment(Payment $payment): void
     {
         $this->payment = $payment;
 
-        /** @var \Magento\Sales\Model\Order $order */
+        /** @var Order $order */
         $this->order = $this->payment->getOrder();
 
-        /** @var  \Magento\Sales\Model\Order\Invoice $invoice */
+        /** @var  Invoice $invoice */
         $this->invoice = $this->payment->getInvoice();
     }
 
     /**
      * Create an array of containers
      *
-     * @return \Qliro\QliroOne\Api\Data\QliroShipmentInterface[]
+     * @return QliroShipmentInterface[]
      */
     public function create(): array
     {
@@ -73,9 +77,9 @@ class InvoiceShipmentsBuilder
          */
         $configurableProducts = [];
 
-        /** @var \Magento\Sales\Model\Order\Invoice\Item $invoiceItem */
+        /** @var Item $invoiceItem */
         foreach ($this->invoice->getAllItems() as $invoiceItem) {
-            /** @var \Magento\Sales\Model\Order\Item $orderItem */
+            /** @var Order\Item $orderItem */
             $orderItem = $this->order->getItemById($invoiceItem->getOrderItemId());
             $invoiceQty = (int)$invoiceItem->getQty();
 

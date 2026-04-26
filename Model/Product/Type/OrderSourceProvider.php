@@ -137,7 +137,7 @@ class OrderSourceProvider implements TypeSourceProviderInterface
                 );
             }
 
-            $sourceItem->setQty($item->getQtyOrdered());
+            $sourceItem->setQty((float) $item->getQtyOrdered());
             $sourceItem->setSku($item->getSku());
             $sourceItem->setType($item->getProductType());
             $sourceItem->setProduct($item->getProduct());

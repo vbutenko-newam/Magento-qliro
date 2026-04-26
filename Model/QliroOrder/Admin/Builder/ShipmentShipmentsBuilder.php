@@ -7,53 +7,56 @@ declare(strict_types=1);
 
 namespace Qliro\QliroOne\Model\QliroOrder\Admin\Builder;
 
+use Magento\Sales\Model\Order;
+use Magento\Sales\Model\Order\Shipment;
+use Magento\Sales\Model\Order\Shipment\Item;
 use Qliro\QliroOne\Api\Admin\Builder\OrderItemHandlerInterface;
 use Qliro\QliroOne\Api\Data\QliroShipmentInterface;
 use Qliro\QliroOne\Model\Product\Type\OrderSourceProvider;
 use Qliro\QliroOne\Model\Product\Type\TypePoolHandler;
-use Qliro\QliroOne\Api\Data\QliroShipmentInterfaceFactory;
+use Qliro\QliroOne\Api\Data\QliroShipmentInterfaceFactory as QliroShipmentFactory;
 
 /**
  * QliroOne Admin Order shipments builder class
  */
 class ShipmentShipmentsBuilder
 {
-    private ?\Magento\Sales\Model\Order $order = null;
-    private ?\Magento\Sales\Model\Order\Shipment $shipment = null;
+    private ?Order $order = null;
+    private ?Shipment $shipment = null;
     private array $handlers = [];
 
     /**
      * Class constructor
      *
-     * @param TypePoolHandler $typeResolver
-     * @param QliroShipmentInterfaceFactory $qliroShipmentFactory
-     * @param OrderSourceProvider $orderSourceProvider
-     * @param \Qliro\QliroOne\Api\Admin\Builder\OrderItemHandlerInterface[] $handlers
+     * @param TypePoolHandler                 $typeResolver
+     * @param QliroShipmentFactory            $qliroShipmentFactory
+     * @param OrderSourceProvider             $orderSourceProvider
+     * @param OrderItemHandlerInterface[]     $handlers
      */
     public function __construct(
-        private readonly TypePoolHandler $typeResolver,
-        private readonly QliroShipmentInterfaceFactory $qliroShipmentFactory,
-        private readonly OrderSourceProvider $orderSourceProvider,
-        array $handlers = []
+        private readonly TypePoolHandler      $typeResolver,
+        private readonly QliroShipmentFactory $qliroShipmentFactory,
+        private readonly OrderSourceProvider  $orderSourceProvider,
+        array                                 $handlers = []
     ) {
         $this->handlers = $handlers;
     }
 
     /**
-     * @param \Magento\Sales\Model\Order\Shipment $shipment
+     * @param Shipment $shipment
      */
-    public function setShipment(\Magento\Sales\Model\Order\Shipment $shipment): void
+    public function setShipment(Shipment $shipment): void
     {
         $this->shipment = $shipment;
 
-        /** @var \Magento\Sales\Model\Order $order */
+        /** @var Order $order */
         $this->order = $this->shipment->getOrder();
     }
 
     /**
      * Create an array of containers
      *
-     * @return \Qliro\QliroOne\Api\Data\QliroShipmentInterface[]
+     * @return QliroShipmentInterface[]
      */
     public function create(): array
     {
@@ -69,9 +72,9 @@ class ShipmentShipmentsBuilder
          */
         $configurableProducts = [];
 
-        /** @var \Magento\Sales\Model\Order\Shipment\Item $shipmentItem */
+        /** @var Item $shipmentItem */
         foreach ($this->shipment->getItemsCollection() as $shipmentItem) {
-            /** @var \Magento\Sales\Model\Order\Item $orderItem */
+            /** @var Order\Item $orderItem */
             $orderItem = $this->order->getItemById($shipmentItem->getOrderItemId());
             $shipmentQty = (int)$shipmentItem->getQty();
 

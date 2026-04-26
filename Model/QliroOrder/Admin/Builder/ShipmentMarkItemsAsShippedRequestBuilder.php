@@ -8,8 +8,12 @@ declare(strict_types=1);
 namespace Qliro\QliroOne\Model\QliroOrder\Admin\Builder;
 
 use Magento\Framework\Exception\NoSuchEntityException;
-use Qliro\QliroOne\Api\Data\AdminMarkItemsAsShippedRequestInterfaceFactory;
-use Qliro\QliroOne\Api\LinkRepositoryInterface;
+use Magento\Sales\Model\Order;
+use Magento\Sales\Model\Order\Payment;
+use Magento\Sales\Model\Order\Shipment;
+use Qliro\QliroOne\Api\Data\AdminMarkItemsAsShippedRequestInterface;
+use Qliro\QliroOne\Api\Data\AdminMarkItemsAsShippedRequestInterfaceFactory as AdminMarkItemsAsShippedRequestFactory;
+use Qliro\QliroOne\Api\LinkRepositoryInterface as LinkRepository;
 use Qliro\QliroOne\Model\Logger\Manager as LogManager;
 use Qliro\QliroOne\Model\Config;
 
@@ -18,46 +22,46 @@ use Qliro\QliroOne\Model\Config;
  */
 class ShipmentMarkItemsAsShippedRequestBuilder
 {
-    private ?\Magento\Sales\Model\Order\Payment $payment = null;
-    private ?\Magento\Sales\Model\Order $order = null;
-    private ?\Magento\Sales\Model\Order\Shipment $shipment = null;
+    private ?Payment $payment = null;
+    private ?Order $order = null;
+    private ?Shipment $shipment = null;
 
     /**
      * Class constructor
      *
-     * @param AdminMarkItemsAsShippedRequestInterfaceFactory $requestFactory
-     * @param LinkRepositoryInterface $linkRepository
-     * @param LogManager $logManager
-     * @param ShipmentShipmentsBuilder $shipmentsBuilder
-     * @param Config $qliroConfig
+     * @param AdminMarkItemsAsShippedRequestFactory            $requestFactory
+     * @param LinkRepository                                   $linkRepository
+     * @param LogManager                                       $logManager
+     * @param ShipmentShipmentsBuilder                         $shipmentsBuilder
+     * @param Config                                           $qliroConfig
      */
     public function __construct(
-        private readonly AdminMarkItemsAsShippedRequestInterfaceFactory $requestFactory,
-        private readonly LinkRepositoryInterface $linkRepository,
-        private readonly LogManager $logManager,
-        private readonly ShipmentShipmentsBuilder $shipmentsBuilder,
-        private readonly Config $qliroConfig
+        private readonly AdminMarkItemsAsShippedRequestFactory $requestFactory,
+        private readonly LinkRepository                        $linkRepository,
+        private readonly LogManager                            $logManager,
+        private readonly ShipmentShipmentsBuilder              $shipmentsBuilder,
+        private readonly Config                                $qliroConfig
     ) {
     }
 
     /**
-     * @param \Magento\Sales\Model\Order\Shipment $shipment
+     * @param Shipment $shipment
      */
-    public function setShipment(\Magento\Sales\Model\Order\Shipment $shipment): void
+    public function setShipment(Shipment $shipment): void
     {
         $this->shipment = $shipment;
 
-        /** @var \Magento\Sales\Model\Order $order */
+        /** @var Order $order */
         $this->order = $this->shipment->getOrder();
 
-        /** @var \Magento\Sales\Model\Order\Payment $payment */
+        /** @var Payment $payment */
         $this->payment = $this->order->getPayment();
     }
 
     /**
-     * @return \Qliro\QliroOne\Api\Data\AdminMarkItemsAsShippedRequestInterface
+     * @return AdminMarkItemsAsShippedRequestInterface
      */
-    public function create(): \Qliro\QliroOne\Api\Data\AdminMarkItemsAsShippedRequestInterface
+    public function create(): AdminMarkItemsAsShippedRequestInterface
     {
         if (empty($this->order)) {
             throw new \LogicException('Order entity is not set.');
@@ -75,11 +79,11 @@ class ShipmentMarkItemsAsShippedRequestBuilder
     /**
      * Prepare a new request
      *
-     * @return \Qliro\QliroOne\Api\Data\AdminMarkItemsAsShippedRequestInterface
+     * @return AdminMarkItemsAsShippedRequestInterface
      */
-    private function prepareRequest(): \Qliro\QliroOne\Api\Data\AdminMarkItemsAsShippedRequestInterface
+    private function prepareRequest(): AdminMarkItemsAsShippedRequestInterface
     {
-        /** @var \Qliro\QliroOne\Api\Data\AdminMarkItemsAsShippedRequestInterface $request */
+        /** @var AdminMarkItemsAsShippedRequestInterface $request */
         $request = $this->requestFactory->create();
 
         try {

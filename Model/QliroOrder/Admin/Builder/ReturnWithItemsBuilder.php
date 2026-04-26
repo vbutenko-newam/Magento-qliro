@@ -123,7 +123,7 @@ class ReturnWithItemsBuilder
             )->setCurrency(
                 $order->getOrderCurrencyCode()
             )->setPaymentTransactionId(
-                $this->payment->getParentTransactionId()
+                (int) $this->payment->getParentTransactionId()
             )->setOrderItems(
                 $orderItems
             )->setFees(
