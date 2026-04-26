@@ -3,6 +3,7 @@
  * Copyright © Qliro AB. All rights reserved.
  * See LICENSE.txt for license details.
  */
+declare(strict_types=1);
 
 namespace Qliro\QliroOne\Model\OrderManagementStatus\Update;
 
@@ -44,7 +45,7 @@ class HandlerPool
      * @param \Qliro\QliroOne\Model\OrderManagementStatus $omStatus
      * @return bool
      */
-    public function handle($qliroOrderManagementStatus, $omStatus)
+    public function handle(array $qliroOrderManagementStatus, mixed $omStatus): bool
     {
         try {
             $type = $omStatus->getRecordType();

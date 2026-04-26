@@ -3,6 +3,7 @@
  * Copyright © Qliro AB. All rights reserved.
  * See LICENSE.txt for license details.
  */
+declare(strict_types=1);
 
 namespace Qliro\QliroOne\Console;
 
@@ -22,7 +23,7 @@ abstract class AbstractCommand extends Command
     /**
      * @var ObjectManager
      */
-    protected $objectManager;
+    protected ?ObjectManager $objectManager = null;
 
     /**
      * Class constructor
@@ -43,7 +44,7 @@ abstract class AbstractCommand extends Command
      * @return int|null
      * @throws \Magento\Framework\Exception\LocalizedException
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         throw new LocalizedException(__('You must override the execute() method in the concrete command class.'));
     }
@@ -53,7 +54,7 @@ abstract class AbstractCommand extends Command
      *
      * @return ObjectManagerInterface
      */
-    protected function getObjectManager()
+    protected function getObjectManager(): ObjectManagerInterface
     {
         if (null == $this->objectManager) {
             $area = FrontNameResolver::AREA_CODE;

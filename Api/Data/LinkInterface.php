@@ -3,6 +3,7 @@
  * Copyright © Qliro AB. All rights reserved.
  * See LICENSE.txt for license details.
  */
+declare(strict_types=1);
 
 namespace Qliro\QliroOne\Api\Data;
 
@@ -13,29 +14,29 @@ namespace Qliro\QliroOne\Api\Data;
  */
 interface LinkInterface
 {
-    const FIELD_ID = 'link_id';
-    const FIELD_IS_ACTIVE = 'is_active';
-    const FIELD_REFERENCE = 'reference';
-    const FIELD_QUOTE_ID = 'quote_id';
-    const FIELD_QLIRO_ORDER_ID = 'qliro_order_id';
-    const FIELD_QLIRO_ORDER_STATUS = 'qliro_order_status';
-    const FIELD_ORDER_ID = 'order_id';
-    const FIELD_QUOTE_SNAPSHOT = 'quote_snapshot';
-    const FIELD_REMOTE_IP = 'remote_ip';
-    const FIELD_CREATED_AT = 'created_at';
-    const FIELD_UPDATED_AT = 'updated_at';
-    const FIELD_MESSAGE= 'message';
-    const FIELD_PLACED_AT = 'placed_at';
-    const FIELD_UNIFAUN_SHIPPING_AMOUNT = 'unifaun_shipping_amount';
-    const FIELD_INGRID_SHIPPING_AMOUNT = 'ingrid_shipping_amount';
-    const FIELD_IS_LOCKED = 'is_locked';
+    const string FIELD_ID = 'link_id';
+    const string FIELD_IS_ACTIVE = 'is_active';
+    const string FIELD_REFERENCE = 'reference';
+    const string FIELD_QUOTE_ID = 'quote_id';
+    const string FIELD_QLIRO_ORDER_ID = 'qliro_order_id';
+    const string FIELD_QLIRO_ORDER_STATUS = 'qliro_order_status';
+    const string FIELD_ORDER_ID = 'order_id';
+    const string FIELD_QUOTE_SNAPSHOT = 'quote_snapshot';
+    const string FIELD_REMOTE_IP = 'remote_ip';
+    const string FIELD_CREATED_AT = 'created_at';
+    const string FIELD_UPDATED_AT = 'updated_at';
+    const string FIELD_MESSAGE= 'message';
+    const string FIELD_PLACED_AT = 'placed_at';
+    const string FIELD_UNIFAUN_SHIPPING_AMOUNT = 'unifaun_shipping_amount';
+    const string FIELD_INGRID_SHIPPING_AMOUNT = 'ingrid_shipping_amount';
+    const string FIELD_IS_LOCKED = 'is_locked';
 
     /**
      * Get ID
      *
      * @return mixed
      */
-    public function getId(): mixed;
+    public function getId();
 
     /**
      * Get "is_active" flag
@@ -131,7 +132,7 @@ interface LinkInterface
     /**
      * Get ingrid shipping amount
      *
-     * @return ?float
+     * @return float|null
      */
     public function getIngridShippingAmount(): ?float;
 
@@ -148,117 +149,117 @@ interface LinkInterface
      * @param mixed $value
      * @return $this
      */
-    public function setId(mixed $value): static;
+    public function setId($value);
 
     /**
      * Set "is_active" flag
      *
+     * @param int|bool $value
      * @return $this
-     *@var int $value
      */
-    public function setIsActive(int $value): static;
+    public function setIsActive(int|bool $value): static;
 
     /**
      * Set a unique reference hash
      *
+     * @param string $value
      * @return $this
-     *@var string $value
      */
     public function setReference(string $value): static;
 
     /**
      * Set Magento quote ID
      *
+     * @param int|string $value
      * @return $this
-     *@var int $value
      */
-    public function setQuoteId(int $value): static;
+    public function setQuoteId(int|string $value): static;
 
     /**
      * Set Magento order ID
      *
+     * @param int|string $value
      * @return $this
-     *@var int $value
      */
-    public function setOrderId(int $value): static;
+    public function setOrderId(int|string $value): static;
 
     /**
      * Set QliroOne order ID
      *
+     * @param int|string|null $value Accepts int or numeric string from the Qliro API; stored as int.
      * @return $this
-     *@var int|string|null $value  Accepts int or numeric string from the Qliro API; stored as int.
      */
     public function setQliroOrderId(int|string|null $value): static;
 
     /**
      * Set QliroOne order status
      *
+     * @param string $value
      * @return $this
-     *@var string $value
      */
     public function setQliroOrderStatus(string $value): static;
 
     /**
      * Set client ip
      *
+     * @param string $value
      * @return $this
-     *@var string $value
      */
     public function setRemoteIp(string $value): static;
 
     /**
      * Set the creation timestamp
      *
+     * @param string $value
      * @return $this
-     *@var string $value
      */
     public function setCreatedAt(string $value): static;
 
     /**
      * Set the timestamp of the last update
      *
+     * @param string $value
      * @return $this
-     *@var string $value
      */
     public function setUpdatedAt(string $value): static;
 
     /**
      * Set the timestamp of when we start pending view, basically when qliro has placed the order
      *
+     * @param string $value
      * @return $this
-     *@var string $value
      */
-    public function setPlacedAt(string $value);
+    public function setPlacedAt(string $value): static;
 
     /**
      * Set hash reflecting qliro order
      *
+     * @param string|null $value
      * @return $this
-     *@var ?string $value
      */
     public function setQuoteSnapshot(?string $value): static;
 
     /**
      * Set message
      *
+     * @param string $value
      * @return $this
-     *@var string $value
      */
     public function setMessage(string $value): static;
 
     /**
      * Set unifaun shipping amount
      *
+     * @param float $value
      * @return $this
-     *@var float $value
      */
     public function setUnifaunShippingAmount(float $value): static;
 
     /**
      * Set ingrid shipping amount
      *
+     * @param float|null $value
      * @return $this
-     *@var float|null $value
      */
     public function setIngridShippingAmount(?float $value): static;
 
@@ -266,7 +267,7 @@ interface LinkInterface
      * Set "is_locked" flag
      *
      * @param bool $value
-     * @return LinkInterface
+     * @return $this
      */
-    public function setIsLocked(bool $value): LinkInterface;
+    public function setIsLocked(bool $value): static;
 }

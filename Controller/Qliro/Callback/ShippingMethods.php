@@ -12,7 +12,7 @@ use Magento\Framework\App\Request\Http as HttpRequest;
 use Magento\Framework\App\ResponseInterface;
 use Magento\Framework\Controller\ResultInterface;
 use Qliro\QliroOne\Api\Checkout\OrderServiceInterface as OrderService;
-use Qliro\QliroOne\Helper\Data;
+use Qliro\QliroOne\Service\Notification\PayloadHandler;
 use Qliro\QliroOne\Model\Config;
 use Qliro\QliroOne\Model\Logger\Manager as LogManager;
 use Qliro\QliroOne\Model\Security\CallbackToken;
@@ -36,7 +36,7 @@ class ShippingMethods implements HttpPostActionInterface
         private readonly HttpRequest   $request,
         private readonly OrderService  $orderService,
         private readonly Config        $qliroConfig,
-        private readonly Data          $dataHelper,
+        private readonly PayloadHandler $dataHelper,
         private readonly LogManager    $logManager,
         private readonly CallbackToken $callbackToken
     ) {
@@ -53,7 +53,7 @@ class ShippingMethods implements HttpPostActionInterface
         $this->logManager->info('Notification ShippingMethods start');
 
         if (!$this->qliroConfig->isActive()) {
-            return $this->dataHelper->sendPreparedPayload(
+            return $this->dataHelper->sendPayload(
                 [ 'error' => 'PostalCode' ],
                 400,
                 null,
@@ -62,7 +62,7 @@ class ShippingMethods implements HttpPostActionInterface
         }
 
         if (!$this->callbackToken->verifyToken($this->request->getParam('token'))) {
-            return $this->dataHelper->sendPreparedPayload(
+            return $this->dataHelper->sendPayload(
                 [ 'error' => 'PostalCode' ],
                 400,
                 null,
@@ -70,11 +70,11 @@ class ShippingMethods implements HttpPostActionInterface
             );
         }
 
-        $payload = $this->dataHelper->readPreparedPayload($this->request, 'CALLBACK:SHIPPING_METHODS');
+        $payload = $this->dataHelper->readPayload($this->request, 'CALLBACK:SHIPPING_METHODS');
 
         $responseContainer = $this->orderService->getShippingMethods($payload);
 
-        $response = $this->dataHelper->sendPreparedPayload(
+        $response = $this->dataHelper->sendPayload(
             $responseContainer,
             !empty($responseContainer['DeclineReason']) ? 400 : 200,
             null,

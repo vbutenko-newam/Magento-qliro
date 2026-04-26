@@ -3,6 +3,7 @@
  * Copyright © Qliro AB. All rights reserved.
  * See LICENSE.txt for license details.
  */
+declare(strict_types=1);
 
 namespace Qliro\QliroOne\Model\QliroOrder\Admin\Builder;
 
@@ -25,10 +26,7 @@ use Qliro\QliroOne\Model\QliroOrder\Builder\RefundDiscountBuilder;
 
 class ReturnWithItemsBuilder
 {
-    /**
-     * @var Payment
-     */
-    private $payment;
+    private ?Payment $payment = null;
 
     /**
      * Class constructor
@@ -64,7 +62,7 @@ class ReturnWithItemsBuilder
     /**
      * @return AdminReturnWithItemsRequestInterface
      */
-    public function create()
+    public function create(): AdminReturnWithItemsRequestInterface
     {
         if (empty($this->payment)) {
             throw new \LogicException('Payment entity is not set.');
@@ -79,9 +77,9 @@ class ReturnWithItemsBuilder
 
     /**
      * @param Payment $payment
-     * @return $this
+     * @return static
      */
-    public function setPayment(Payment $payment)
+    public function setPayment(Payment $payment): static
     {
         $this->payment = $payment;
 
@@ -91,7 +89,7 @@ class ReturnWithItemsBuilder
     /**
      * @return AdminReturnWithItemsRequestInterface
      */
-    private function prepareRequest()
+    private function prepareRequest(): AdminReturnWithItemsRequestInterface
     {
         /** @var AdminReturnWithItemsRequestInterface $request */
         $request = $this->adminReturnWithItemsRequestFactory->create();

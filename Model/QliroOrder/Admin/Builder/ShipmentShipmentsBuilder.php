@@ -3,6 +3,7 @@
  * Copyright © Qliro AB. All rights reserved.
  * See LICENSE.txt for license details.
  */
+declare(strict_types=1);
 
 namespace Qliro\QliroOne\Model\QliroOrder\Admin\Builder;
 
@@ -17,20 +18,9 @@ use Qliro\QliroOne\Api\Data\QliroShipmentInterfaceFactory;
  */
 class ShipmentShipmentsBuilder
 {
-    /**
-     * @var \Magento\Sales\Model\Order
-     */
-    private $order;
-
-    /**
-     * @var \Magento\Sales\Model\Order\Shipment
-     */
-    private $shipment;
-
-    /**
-     * @var \Qliro\QliroOne\Api\Admin\Builder\OrderItemHandlerInterface[]
-     */
-    private $handlers = [];
+    private ?\Magento\Sales\Model\Order $order = null;
+    private ?\Magento\Sales\Model\Order\Shipment $shipment = null;
+    private array $handlers = [];
 
     /**
      * Class constructor
@@ -44,7 +34,7 @@ class ShipmentShipmentsBuilder
         private readonly TypePoolHandler $typeResolver,
         private readonly QliroShipmentInterfaceFactory $qliroShipmentFactory,
         private readonly OrderSourceProvider $orderSourceProvider,
-        $handlers = []
+        array $handlers = []
     ) {
         $this->handlers = $handlers;
     }
@@ -52,7 +42,7 @@ class ShipmentShipmentsBuilder
     /**
      * @param \Magento\Sales\Model\Order\Shipment $shipment
      */
-    public function setShipment($shipment)
+    public function setShipment(\Magento\Sales\Model\Order\Shipment $shipment): void
     {
         $this->shipment = $shipment;
 
@@ -63,9 +53,9 @@ class ShipmentShipmentsBuilder
     /**
      * Create an array of containers
      *
-     * @return \Qliro\QliroOne\Api\Data\QliroShipmentInterface[];
+     * @return \Qliro\QliroOne\Api\Data\QliroShipmentInterface[]
      */
-    public function create()
+    public function create(): array
     {
         if (empty($this->order)) {
             throw new \LogicException('Order entity is not set.');
@@ -143,7 +133,7 @@ class ShipmentShipmentsBuilder
     /**
      * @return bool
      */
-    private function isFirstShipment()
+    private function isFirstShipment(): bool
     {
         $invoiceCollection = $this->order->getInvoiceCollection();
         foreach ($invoiceCollection as $invoice) {

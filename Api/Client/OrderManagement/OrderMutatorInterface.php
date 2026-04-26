@@ -11,6 +11,7 @@ use Qliro\QliroOne\Api\Data\AdminCancelOrderRequestInterface;
 use Qliro\QliroOne\Api\Data\AdminMarkItemsAsShippedRequestInterface;
 use Qliro\QliroOne\Api\Data\AdminTransactionResponseInterface;
 use Qliro\QliroOne\Api\Data\AdminUpdateMerchantReferenceRequestInterface;
+use Qliro\QliroOne\Model\Api\Client\Exception\ClientException;
 
 /**
  * ISP sub-interface: mutating operations on a QliroOne order.
@@ -23,29 +24,29 @@ interface OrderMutatorInterface
      * Send a "Mark items as shipped" request
      *
      * @param AdminMarkItemsAsShippedRequestInterface $request
-     * @param int|null $storeId
+     * @param int|string|null $storeId
      * @return AdminTransactionResponseInterface
-     * @throws \Qliro\QliroOne\Model\Api\Client\Exception\ClientException
+     * @throws ClientException
      */
-    public function markItemsAsShipped(AdminMarkItemsAsShippedRequestInterface $request, int $storeId = null): AdminTransactionResponseInterface;
+    public function markItemsAsShipped(AdminMarkItemsAsShippedRequestInterface $request, int|string|null $storeId = null): AdminTransactionResponseInterface;
 
     /**
      * Cancel admin QliroOne order
      *
      * @param AdminCancelOrderRequestInterface $request
-     * @param int|null $storeId
+     * @param int|string|null $storeId
      * @return AdminTransactionResponseInterface
-     * @throws \Qliro\QliroOne\Model\Api\Client\Exception\ClientException
+     * @throws ClientException
      */
-    public function cancelOrder(AdminCancelOrderRequestInterface $request, int $storeId = null): AdminTransactionResponseInterface;
+    public function cancelOrder(AdminCancelOrderRequestInterface $request, int|string|null $storeId = null): AdminTransactionResponseInterface;
 
     /**
      * Update QliroOne order merchant reference
      *
      * @param AdminUpdateMerchantReferenceRequestInterface $request
-     * @param int|null $storeId
-     * @return AdminTransactionResponseInterface
-     * @throws \Qliro\QliroOne\Model\Api\Client\Exception\ClientException
+     * @param int|string|null $storeId
+     * @return AdminTransactionResponseInterface|null
+     * @throws ClientException
      */
-    public function updateMerchantReference(AdminUpdateMerchantReferenceRequestInterface $request, int $storeId = null): AdminTransactionResponseInterface;
+    public function updateMerchantReference(AdminUpdateMerchantReferenceRequestInterface $request, int|string|null $storeId = null): ?AdminTransactionResponseInterface;
 }

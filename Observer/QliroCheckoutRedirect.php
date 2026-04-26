@@ -3,6 +3,7 @@
  * Copyright © Qliro AB. All rights reserved.
  * See LICENSE.txt for license details.
  */
+declare(strict_types=1);
 
 namespace Qliro\QliroOne\Observer;
 
@@ -44,7 +45,7 @@ class QliroCheckoutRedirect implements ObserverInterface
      * @param \Magento\Framework\Event\Observer $observer
      * @return void
      */
-    public function execute(Observer $observer)
+    public function execute(Observer $observer): void
     {
         $this->successSession->clear();
 

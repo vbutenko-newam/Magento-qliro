@@ -3,6 +3,8 @@
  * Copyright © Qliro AB. All rights reserved.
  * See LICENSE.txt for license details.
  */
+declare(strict_types=1);
+
 namespace Qliro\QliroOne\Gateway\Config;
 
 use Magento\Payment\Gateway\ConfigInterface;
@@ -25,11 +27,10 @@ class ConfigValueHandler implements ValueHandlerInterface
      * Retrieve method configured value
      *
      * @param array $subject
-     * @param int|null $storeId
-     *
+     * @param int|string|null $storeId
      * @return mixed
      */
-    public function handle(array $subject, $storeId = null)
+    public function handle(array $subject, int|string|null $storeId = null): mixed
     {
         return $this->configInterface->getValue(SubjectReader::readField($subject), $storeId);
     }

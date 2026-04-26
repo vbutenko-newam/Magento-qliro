@@ -3,13 +3,13 @@
  * Copyright © Qliro AB. All rights reserved.
  * See LICENSE.txt for license details.
  */
+declare(strict_types=1);
 
 namespace Qliro\QliroOne\Model\QliroOrder\Admin\Builder\Handler;
 
 use Qliro\QliroOne\Api\Admin\Builder\OrderItemHandlerInterface;
 use Qliro\QliroOne\Api\Data\QliroOrderItemInterface;
 use Qliro\QliroOne\Api\Data\QliroOrderItemInterfaceFactory;
-use Qliro\QliroOne\Helper\Data as QliroHelper;
 
 /**
  * Invoice Fee Handler class for order items builder
@@ -23,11 +23,9 @@ class InvoiceFeeHandler implements OrderItemHandlerInterface
      * Class constructor
      *
      * @param QliroOrderItemInterfaceFactory $qliroOrderItemFactory
-     * @param QliroHelper $qliroHelper
      */
     public function __construct(
-        private readonly QliroOrderItemInterfaceFactory $qliroOrderItemFactory,
-        private readonly QliroHelper $qliroHelper
+        private readonly QliroOrderItemInterfaceFactory $qliroOrderItemFactory
     ) {
     }
 
@@ -35,10 +33,10 @@ class InvoiceFeeHandler implements OrderItemHandlerInterface
      * Handle specific type of order items and add them to the QliroOne order items list
      *
      * @param \Qliro\QliroOne\Api\Data\QliroOrderItemInterface[] $orderItems
-     * @param \Magento\Sales\Model\Order $order
+     * @param \Magento\Sales\Api\Data\OrderInterface $order
      * @return \Qliro\QliroOne\Api\Data\QliroOrderItemInterface[]
      */
-    public function handle($orderItems, $order)
+    public function handle(array $orderItems, \Magento\Sales\Api\Data\OrderInterface $order): array
     {
         if (!$order->getFirstCaptureFlag()) {
             return $orderItems;

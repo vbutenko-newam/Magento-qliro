@@ -3,6 +3,7 @@
  * Copyright © Qliro AB. All rights reserved.
  * See LICENSE.txt for license details.
  */
+declare(strict_types=1);
 
 namespace Qliro\QliroOne\Model;
 
@@ -18,10 +19,7 @@ use Qliro\QliroOne\Service\RecurringPayments\Data as RecurringPaymentsDataServic
  */
 class CheckoutConfigProvider implements ConfigProviderInterface
 {
-    /**
-     * @var \Magento\Quote\Model\Quote
-     */
-    private $quote;
+    private \Magento\Quote\Model\Quote $quote;
 
     /**
      * Class constructor
@@ -49,7 +47,7 @@ class CheckoutConfigProvider implements ConfigProviderInterface
     /**
      * @return array
      */
-    public function getConfig()
+    public function getConfig(): array
     {
         $config = [
             'qliro' => [
@@ -89,7 +87,7 @@ class CheckoutConfigProvider implements ConfigProviderInterface
         return $config;
     }
 
-    private function getUrl($path)
+    private function getUrl(string $path): string
     {
         return $this->storeManager->getStore()->getUrl($path);
     }

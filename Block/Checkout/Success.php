@@ -3,6 +3,7 @@
  * Copyright © Qliro AB. All rights reserved.
  * See LICENSE.txt for license details.
  */
+declare(strict_types=1);
 
 namespace Qliro\QliroOne\Block\Checkout;
 
@@ -36,9 +37,9 @@ class Success extends Template
     /**
      * Get Id of placed order
      *
-     * @return string
+     * @return string|null
      */
-    public function getIncrementId()
+    public function getIncrementId(): ?string
     {
         return $this->successSession->getSuccessIncrementId();
     }
@@ -48,7 +49,7 @@ class Success extends Template
      *
      * @return bool
      */
-    public function isDebug()
+    public function isDebug(): bool
     {
         return $this->qliroConfig->isDebugMode();
     }

@@ -3,6 +3,7 @@
  * Copyright © Qliro AB. All rights reserved.
  * See LICENSE.txt for license details.
  */
+declare(strict_types=1);
 
 namespace Qliro\QliroOne\Model\Product\Type;
 
@@ -31,7 +32,7 @@ class TypeResolver
      * @param \Qliro\QliroOne\Api\Product\TypeSourceProviderInterface $typeSourceProvider
      * @return string|null
      */
-    public function resolve(array $qliroOrderItem, TypeSourceProviderInterface $typeSourceProvider)
+    public function resolve(array $qliroOrderItem, TypeSourceProviderInterface $typeSourceProvider): ?string
     {
         if (($qliroOrderItem['Type'] ?? null) !== 'Product') {
             return null;

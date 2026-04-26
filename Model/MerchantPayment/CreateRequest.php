@@ -9,6 +9,7 @@ namespace Qliro\QliroOne\Model\MerchantPayment;
 use Qliro\QliroOne\Api\Data\AdminCreateMerchantPaymentRequestInterface;
 use Qliro\QliroOne\Api\Data\MerchantPaymentCustomerInterface;
 use Qliro\QliroOne\Api\Data\MerchantPaymentPaymentMethodInterface;
+use Qliro\QliroOne\Api\Data\QliroOrderItemInterface;
 
 /**
  * QliroOne Merchant Payment Create Request concrete implementation
@@ -46,7 +47,7 @@ class CreateRequest implements AdminCreateMerchantPaymentRequestInterface
     private string $language = '';
 
     /**
-     * @var \Qliro\QliroOne\Api\Data\QliroOrderItemInterface[]
+     * @var QliroOrderItemInterface[]
      */
     private array $orderItems = [];
 
@@ -56,7 +57,7 @@ class CreateRequest implements AdminCreateMerchantPaymentRequestInterface
     private string $merchantOrderManagementStatusPushUrl = '';
 
     /**
-     * @var \Qliro\QliroOne\Api\Data\MerchantPaymentCustomerInterface|null
+     * @var MerchantPaymentCustomerInterface|null
      */
     private ?MerchantPaymentCustomerInterface $customer = null;
 
@@ -71,7 +72,7 @@ class CreateRequest implements AdminCreateMerchantPaymentRequestInterface
     private ?array $shippingAddress = null;
 
     /**
-     * @var \Qliro\QliroOne\Api\Data\MerchantPaymentPaymentMethodInterface|null
+     * @var MerchantPaymentPaymentMethodInterface|null
      */
     private ?MerchantPaymentPaymentMethodInterface $paymentMethod = null;
 
@@ -174,7 +175,7 @@ class CreateRequest implements AdminCreateMerchantPaymentRequestInterface
     /**
      * @inheritDoc
      */
-    public function setRequestId(string $value): AdminCreateMerchantPaymentRequestInterface
+    public function setRequestId(string $value): static
     {
         $this->requestId = $value;
         return $this;
@@ -182,9 +183,9 @@ class CreateRequest implements AdminCreateMerchantPaymentRequestInterface
 
     /**
      * @param string $value
-     * @return self
+     * @return static
      */
-    public function setMerchantReference($value): self
+    public function setMerchantReference(string $value): static
     {
         $this->merchantReference = $value;
 
@@ -193,9 +194,9 @@ class CreateRequest implements AdminCreateMerchantPaymentRequestInterface
 
     /**
      * @param string $value
-     * @return self
+     * @return static
      */
-    public function setMerchantApiKey(string $value): self
+    public function setMerchantApiKey(string $value): static
     {
         $this->merchantApiKey = $value;
 
@@ -204,9 +205,9 @@ class CreateRequest implements AdminCreateMerchantPaymentRequestInterface
 
     /**
      * @param string $value
-     * @return self
+     * @return static
      */
-    public function setCurrency(string $value): self
+    public function setCurrency(string $value): static
     {
         $this->currency = $value;
 
@@ -215,9 +216,9 @@ class CreateRequest implements AdminCreateMerchantPaymentRequestInterface
 
     /**
      * @param string $value
-     * @return self
+     * @return static
      */
-    public function setCountry(string $value): self
+    public function setCountry(string $value): static
     {
         $this->country = $value;
 
@@ -226,9 +227,9 @@ class CreateRequest implements AdminCreateMerchantPaymentRequestInterface
 
     /**
      * @param string $value
-     * @return self
+     * @return static
      */
-    public function setLanguage(string $value): self
+    public function setLanguage(string $value): static
     {
         $this->language = $value;
 
@@ -236,10 +237,10 @@ class CreateRequest implements AdminCreateMerchantPaymentRequestInterface
     }
 
     /**
-     * @param \Qliro\QliroOne\Api\Data\QliroOrderItemInterface[] $value
-     * @return self
+     * @param QliroOrderItemInterface[] $value
+     * @return static
      */
-    public function setOrderItems(array $value): self
+    public function setOrderItems(array $value): static
     {
         $this->orderItems = $value;
 
@@ -248,9 +249,9 @@ class CreateRequest implements AdminCreateMerchantPaymentRequestInterface
 
     /**
      * @param string $value
-     * @return self
+     * @return static
      */
-    public function setMerchantOrderManagementStatusPushUrl(string $value): self
+    public function setMerchantOrderManagementStatusPushUrl(string $value): static
     {
         $this->merchantOrderManagementStatusPushUrl = $value;
 
@@ -260,7 +261,7 @@ class CreateRequest implements AdminCreateMerchantPaymentRequestInterface
     /**
      * @inheritDoc
      */
-    public function setCustomer(MerchantPaymentCustomerInterface $value): self
+    public function setCustomer(MerchantPaymentCustomerInterface $value): static
     {
         $this->customer = $value;
 
@@ -270,7 +271,7 @@ class CreateRequest implements AdminCreateMerchantPaymentRequestInterface
     /**
      * @inheritDoc
      */
-    public function setBillingAddress(array $value): self
+    public function setBillingAddress(array $value): static
     {
         $this->billingAddress = $value;
 
@@ -280,7 +281,7 @@ class CreateRequest implements AdminCreateMerchantPaymentRequestInterface
     /**
      * @inheritDoc
      */
-    public function setShippingAddress(array $value): self
+    public function setShippingAddress(array $value): static
     {
         $this->shippingAddress = $value;
 
@@ -290,7 +291,7 @@ class CreateRequest implements AdminCreateMerchantPaymentRequestInterface
     /**
      * @inheritDoc
      */
-    public function setPaymentMethod(MerchantPaymentPaymentMethodInterface $value): self
+    public function setPaymentMethod(MerchantPaymentPaymentMethodInterface $value): static
     {
         $this->paymentMethod = $value;
         return $this;

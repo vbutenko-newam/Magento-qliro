@@ -3,6 +3,7 @@
  * Copyright © Qliro AB. All rights reserved.
  * See LICENSE.txt for license details.
  */
+declare(strict_types=1);
 
 namespace Qliro\QliroOne\Model;
 
@@ -15,7 +16,7 @@ use Qliro\QliroOne\Model\Management\CountrySelect;
  */
 class LanguageMapper implements LanguageMapperInterface
 {
-    private $languageMap = [
+    private array $languageMap = [
         'sv_SE' => 'sv-se',
         'en_US' => 'en-us',
         'fi_FI' => 'fi-fi',
@@ -25,7 +26,7 @@ class LanguageMapper implements LanguageMapperInterface
         'nn_NO' => 'nb-no',
     ];
 
-    private $countryLanguageMap = [
+    private array $countryLanguageMap = [
         'SE' => 'sv-se',
         'DK' => 'da-dk',
         'NO' => 'nb-no',
@@ -35,21 +36,19 @@ class LanguageMapper implements LanguageMapperInterface
     /**
      * Class constructor
      *
-     * @param Resolver $localeResolver
-     * @param CountrySelect $countrySelect
+     * @param Resolver                 $localeResolver
+     * @param CountrySelect            $countrySelect
      */
     public function __construct(
-        private readonly Resolver $localeResolver,
+        private readonly Resolver      $localeResolver,
         private readonly CountrySelect $countrySelect
     ) {
     }
 
     /**
-     * Get a prepared string that contains a QliroOne compatible language
-     *
-     * @return string
+     * @inheirtDoc
      */
-    public function getLanguage()
+    public function getLanguage(): string
     {
         if ($this->countrySelect->isEnabled() && !!$this->countrySelect->getSelectedCountry()) {
             $country = strtoupper($this->countrySelect->getSelectedCountry());

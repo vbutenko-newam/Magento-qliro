@@ -3,6 +3,7 @@
  * Copyright © Qliro AB. All rights reserved.
  * See LICENSE.txt for license details.
  */
+declare(strict_types=1);
 
 namespace Qliro\QliroOne\Model\Product\Type;
 
@@ -19,15 +20,8 @@ use Qliro\QliroOne\Api\Product\ProductNameResolverInterface;
  */
 class OrderSourceProvider implements TypeSourceProviderInterface
 {
-    /**
-     * @var array
-     */
-    private $sourceItems = [];
-
-    /**
-     * @var Order
-     */
-    private $order;
+    private array $sourceItems = [];
+    private ?Order $order = null;
 
     /**
      * Class constructor
@@ -48,16 +42,16 @@ class OrderSourceProvider implements TypeSourceProviderInterface
     /**
      * @return int
      */
-    public function getStoreId()
+    public function getStoreId(): int
     {
-        return $this->order->getStoreId();
+        return (int)$this->order->getStoreId();
     }
 
     /**
-     * @param string $reference
-     * @return TypeSourceItemInterface
+     * @param mixed $reference
+     * @return TypeSourceItemInterface|null
      */
-    public function getSourceItemByMerchantReference($reference)
+    public function getSourceItemByMerchantReference(mixed $reference): ?TypeSourceItemInterface
     {
         if (strpos($reference, ':') !== false) {
             list($quoteItemId, $sku) = explode(':', $reference);
@@ -92,7 +86,7 @@ class OrderSourceProvider implements TypeSourceProviderInterface
     /**
      * @return TypeSourceItemInterface[]
      */
-    public function getSourceItems()
+    public function getSourceItems(): array
     {
         $result = [];
 
@@ -109,7 +103,7 @@ class OrderSourceProvider implements TypeSourceProviderInterface
      *
      * @param Order $order
      */
-    public function setOrder($order)
+    public function setOrder(?Order $order): void
     {
         $this->order = $order;
     }
@@ -119,7 +113,7 @@ class OrderSourceProvider implements TypeSourceProviderInterface
      * @param float $quantity
      * @return TypeSourceItemInterface
      */
-    public function generateSourceItem($item, $quantity)
+    public function generateSourceItem(mixed $item, float $quantity): TypeSourceItemInterface
     {
         if (!isset($this->sourceItems[$item->getQuoteItemId()])) {
             /** @var TypeSourceItemInterface $sourceItem */

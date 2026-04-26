@@ -25,5 +25,5 @@ interface ReturnInterface
      * @return AdminTransactionResponseInterface
      * @throws \Qliro\QliroOne\Model\Api\Client\Exception\ClientException
      */
-    public function returnWithItems(AdminReturnWithItemsRequestInterface $request, int $storeId = null): AdminTransactionResponseInterface;
+    public function returnWithItems(AdminReturnWithItemsRequestInterface $request, int|string|null $storeId = null): AdminTransactionResponseInterface;
 }

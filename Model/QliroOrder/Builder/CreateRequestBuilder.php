@@ -3,15 +3,20 @@
  * Copyright © Qliro AB. All rights reserved.
  * See LICENSE.txt for license details.
  */
+declare(strict_types=1);
 
 namespace Qliro\QliroOne\Model\QliroOrder\Builder;
 
 use Magento\Catalog\Model\Product\Type;
 use Magento\Customer\Model\Session;
+use Magento\Directory\Helper\Data;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\Event\ManagerInterface;
+use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Quote\Api\Data\CartInterface;
+use Magento\Quote\Api\Data\CurrencyInterface;
 use Magento\Store\Model\ScopeInterface;
+use Magento\Store\Model\Store;
 use Magento\Store\Model\StoreManagerInterface;
 use Qliro\QliroOne\Api\GeoIpResolverInterface;
 use Qliro\QliroOne\Api\LanguageMapperInterface;
@@ -27,15 +32,8 @@ use Magento\Store\Model\Information;
  */
 class CreateRequestBuilder
 {
-    /**
-     * @var string
-     */
-    private $generatedToken;
-
-    /**
-     * @var \Magento\Quote\Model\Quote
-     */
-    private $quote;
+    private ?string $generatedToken = null;
+    private ?CartInterface $quote = null;
 
     /**
      * Class constructor
@@ -80,10 +78,10 @@ class CreateRequestBuilder
     /**
      * Set quote for data extraction
      *
-     * @param \Magento\Quote\Api\Data\CartInterface $quote
+     * @param CartInterface $quote
      * @return $this
      */
-    public function setQuote(CartInterface $quote)
+    public function setQuote(CartInterface $quote): static
     {
         $this->quote = $quote;
 
@@ -98,7 +96,7 @@ class CreateRequestBuilder
      * @todo: should we always supply shipping methods, or should it be a configuration?
      * @todo: what about virtual quotes, they should not have any shipping methods or what?
      */
-    public function create()
+    public function create(): array
     {
         if (empty($this->quote)) {
             throw new \LogicException('Quote entity is not set.');
@@ -183,9 +181,9 @@ class CreateRequestBuilder
     /**
      * @return array
      */
-    private function prepareCreateRequest()
+    private function prepareCreateRequest(): array
     {
-        /** @var \Magento\Quote\Api\Data\CurrencyInterface $currencies */
+        /** @var CurrencyInterface $currencies */
         $currencies = $this->quote->getCurrency();
 
         $createRequest = [];
@@ -236,12 +234,12 @@ class CreateRequestBuilder
     /**
      * Get a country code, either from:
      * - default config setting
-     * - selected by customer in Country Selector
+     * - selected by the customer in Country Selector
      * - GeoIP resolver
      *
      * @return string
      */
-    private function getCountry()
+    private function getCountry(): string
     {
         $countryCode = null;
         $countrySelectorEnabled = $this->countrySelectManagement->isEnabled();
@@ -256,7 +254,7 @@ class CreateRequestBuilder
 
         if (empty($countryCode)) {
             $countryCode = $this->scopeConfig->getValue(
-                \Magento\Directory\Helper\Data::XML_PATH_DEFAULT_COUNTRY,
+                Data::XML_PATH_DEFAULT_COUNTRY,
                 ScopeInterface::SCOPE_STORE
             );
         }
@@ -265,12 +263,12 @@ class CreateRequestBuilder
     }
 
     /**
-     * Get a callback URL with provided path and generated token
+     * Get a callback URL with the provided path and generated token
      *
      * @param string $path
      * @return string
      */
-    private function getCallbackUrl($path)
+    private function getCallbackUrl(string $path): string
     {
         $params['_query']['token'] = $this->generateCallbackToken();
 
@@ -297,7 +295,7 @@ class CreateRequestBuilder
      * @param string $url
      * @return string
      */
-    private function applyHttpAuth($url)
+    private function applyHttpAuth(string $url): string
     {
         if ($this->qliroConfig->isHttpAuthEnabled() && preg_match('#^(https?://)(.+)$#', $url, $match)) {
             $authUsername = $this->qliroConfig->getCallbackHttpAuthUsername();
@@ -310,15 +308,16 @@ class CreateRequestBuilder
     }
 
     /**
-     * Get a store-specific URL with provided path and optional parameters
+     * Get a store-specific URL with a provided path and optional parameters
      *
      * @param string $path
      * @param array $params
      * @return string
+     * @throws NoSuchEntityException
      */
-    private function getUrl($path, $params = [])
+    private function getUrl(string $path, array $params = []): string
     {
-        /** @var \Magento\Store\Model\Store $store */
+        /** @var Store $store */
         $store = $this->storeManager->getStore();
 
         return $store->getUrl($path, $params);
@@ -327,7 +326,7 @@ class CreateRequestBuilder
     /**
      * @return string
      */
-    private function generateCallbackToken()
+    private function generateCallbackToken(): string
     {
         if (!$this->generatedToken) {
             $this->generatedToken = $this->callbackToken->getToken();

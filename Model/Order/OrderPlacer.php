@@ -3,12 +3,14 @@
  * Copyright © Qliro AB. All rights reserved.
  * See LICENSE.txt for license details.
  */
+declare(strict_types=1);
 
 namespace Qliro\QliroOne\Model\Order;
 
 use Magento\Customer\Api\CustomerRepositoryInterface;
 use Magento\Customer\Api\Data\GroupInterface;
 use Magento\Customer\Model\Customer;
+use Magento\Framework\Exception\CouldNotSaveException;
 use Magento\Quote\Model\Quote;
 use Magento\Quote\Api\CartRepositoryInterface;
 use Magento\Checkout\Model\Type\Onepage;
@@ -20,23 +22,19 @@ use Magento\Sales\Model\Order;
 /**
  * Magento order placer class
  */
-class OrderPlacer
+readonly class OrderPlacer
 {
     /**
      * Class constructor
      *
-     * @param \Magento\Quote\Api\CartRepositoryInterface $quoteRepository
-     * @param \Magento\Quote\Api\CartManagementInterface $cartManagement
-     * @param \Magento\Sales\Api\OrderRepositoryInterface $orderRepository
-     * @param \Magento\Framework\Event\ManagerInterface $eventManager
-     * @param \Magento\Customer\Api\CustomerRepositoryInterface $customerRepository
+     * @param CartManagementInterface       $cartManagement
+     * @param OrderRepositoryInterface      $orderRepository
+     * @param CustomerRepositoryInterface   $customerRepository
      */
     public function __construct(
-        private readonly CartRepositoryInterface $quoteRepository,
-        private readonly CartManagementInterface $cartManagement,
-        private readonly OrderRepositoryInterface $orderRepository,
-        private readonly ManagerInterface $eventManager,
-        private readonly CustomerRepositoryInterface $customerRepository
+        private CartManagementInterface     $cartManagement,
+        private OrderRepositoryInterface    $orderRepository,
+        private CustomerRepositoryInterface $customerRepository
     ) {
     }
 
@@ -51,9 +49,9 @@ class OrderPlacer
      *
      * @param Quote $quote
      * @return Order
-     * @throws \Magento\Framework\Exception\CouldNotSaveException
+     * @throws CouldNotSaveException
      */
-    public function place($quote)
+    public function place(Quote $quote): Order
     {
         switch ($this->getCheckoutMethod($quote)) {
             case Onepage::METHOD_GUEST:
@@ -64,7 +62,7 @@ class OrderPlacer
                 break;
         }
 
-        $quote->save(); // quoteRepository->save does stupid things...
+        $quote->save();
         $orderId = $this->cartManagement->placeOrder($quote->getId());
 
         /** @var Order $order */
@@ -96,15 +94,14 @@ class OrderPlacer
      * Prepare quote for guest checkout order submit
      *
      * @param Quote $quote
-     * @return $this
+     * @return void
      */
-    private function prepareGuestQuote(Quote $quote): static
+    private function prepareGuestQuote(Quote $quote): void
     {
-        $quote->setCustomerId(null)
+        $quote->setCustomerId(0)
             ->setCustomerEmail($quote->getBillingAddress()->getEmail())
             ->setCustomerIsGuest(true)
             ->setCustomerGroupId(GroupInterface::NOT_LOGGED_IN_ID);
-        return $this;
     }
 
     /**

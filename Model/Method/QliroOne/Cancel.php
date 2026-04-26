@@ -3,9 +3,12 @@
  * Copyright © Qliro AB. All rights reserved.
  * See LICENSE.txt for license details.
  */
+declare(strict_types=1);
+
 namespace Qliro\QliroOne\Model\Method\QliroOne;
 
 use Magento\Framework\Exception\NoSuchEntityException;
+use Magento\Payment\Gateway\Command\ResultInterface;
 use Magento\Payment\Gateway\CommandInterface;
 use Qliro\QliroOne\Api\LinkRepositoryInterface;
 use Qliro\QliroOne\Api\Admin\OrderServiceInterface;
@@ -36,10 +39,10 @@ class Cancel implements CommandInterface
      * Cancel command
      *
      * @param array $commandSubject
-     * @return null
+     * @return ResultInterface|null
      * @throws \Exception
      */
-    public function execute(array $commandSubject)
+    public function execute(array $commandSubject): ?ResultInterface
     {
         if (isset($commandSubject['payment'])) {
             /** @var \Magento\Sales\Model\Order $order */

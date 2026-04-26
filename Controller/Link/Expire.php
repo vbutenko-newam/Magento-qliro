@@ -11,6 +11,7 @@ use Magento\Checkout\Model\Session as CheckoutSession;
 use Magento\Framework\App\Action\Action;
 use Magento\Framework\App\Action\Context;
 use Magento\Framework\Controller\Result\JsonFactory;
+use Magento\Framework\Controller\ResultInterface;
 use Qliro\QliroOne\Api\LinkRepositoryInterface as LinkRepository;
 use Qliro\QliroOne\Model\Logger\Manager as LoggerManager;
 use Qliro\QliroOne\Model\Management\Quote as QuoteManagement;
@@ -45,9 +46,9 @@ class Expire extends Action
     }
 
     /**
-     * @inheirtDoc
+     * @inheritDoc
      */
-    public function execute()
+    public function execute(): ResultInterface
     {
         $result = $this->resultJsonFactory->create();
         $quote = $this->checkoutSession->getQuote();

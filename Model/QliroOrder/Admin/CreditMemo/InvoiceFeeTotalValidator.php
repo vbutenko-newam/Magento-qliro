@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Qliro\QliroOne\Model\QliroOrder\Admin\CreditMemo;
 
@@ -8,19 +9,19 @@ use Qliro\QliroOne\Api\Admin\CreditMemo\InvoiceFeeTotalValidatorInterface;
 class InvoiceFeeTotalValidator implements InvoiceFeeTotalValidatorInterface
 {
     /**
-     * @var CreditmemoInterface $creditMemo
+     * @var CreditmemoInterface|null
      */
-    protected CreditmemoInterface $creditMemo;
+    protected ?CreditmemoInterface $creditMemo = null;
 
     /**
-     * @var float
+     * @var float|null
      */
-    private $totalFee;
+    private ?float $totalFee = null;
 
     /**
      * @inheritDoc
      */
-    public function validate(bool $feeIsAddedAsTotal = true, bool $useQtyRefundedOnly = false)
+    public function validate(bool $feeIsAddedAsTotal = true, bool $useQtyRefundedOnly = false): bool
     {
         if (!$this->getCreditMemo()) {
             return false;
@@ -61,7 +62,7 @@ class InvoiceFeeTotalValidator implements InvoiceFeeTotalValidatorInterface
      *
      * @return float The total fees for the order, including VAT.
      */
-    private function getOrderFeesTotal()
+    private function getOrderFeesTotal(): float
     {
         if (!$this->totalFee) {
             $feeTotal = floatval(0);
@@ -83,7 +84,7 @@ class InvoiceFeeTotalValidator implements InvoiceFeeTotalValidatorInterface
     /**
      * @inheritDoc
      */
-    public function setCreditMemo(CreditmemoInterface $creditMemo)
+    public function setCreditMemo(CreditmemoInterface $creditMemo): static
     {
         $this->creditMemo = $creditMemo;
 
@@ -93,7 +94,7 @@ class InvoiceFeeTotalValidator implements InvoiceFeeTotalValidatorInterface
     /**
      * @inheritDoc
      */
-    public function getCreditMemo()
+    public function getCreditMemo(): ?CreditmemoInterface
     {
         return $this->creditMemo;
     }

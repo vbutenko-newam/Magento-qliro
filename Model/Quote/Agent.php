@@ -3,6 +3,7 @@
  * Copyright © Qliro AB. All rights reserved.
  * See LICENSE.txt for license details.
  */
+declare(strict_types=1);
 
 namespace Qliro\QliroOne\Model\Quote;
 
@@ -24,9 +25,9 @@ class Agent
     const COOKIE_LIFETIME = 10800; // 3 hours for now
 
     /**
-     * @var \Magento\Quote\Model\Quote
+     * @var Quote|null
      */
-    private $relevantQuote;
+    private ?Quote $relevantQuote = null;
 
     /**
      * Class constructor
@@ -53,7 +54,7 @@ class Agent
      *
      * @param \Magento\Quote\Model\Quote $quote
      */
-    public function store(Quote $quote)
+    public function store(Quote $quote): void
     {
         $this->logManager->addTag('cookies');
 
@@ -87,7 +88,7 @@ class Agent
      *
      * @return \Magento\Quote\Model\Quote|null
      */
-    public function fetchRelevantQuote()
+    public function fetchRelevantQuote(): ?Quote
     {
         if (!$this->relevantQuote) {
             $this->logManager->addTag('cookies');
@@ -140,7 +141,7 @@ class Agent
     /**
      * Clear the quote if it's stored
      */
-    public function clear()
+    public function clear(): void
     {
         $this->logManager->addTag('cookies');
         $merchantReference = $this->cookieManager->getCookie(self::COOKIE_NAME);
@@ -174,7 +175,7 @@ class Agent
      * @param \Magento\Quote\Model\Quote $quote
      * @return bool
      */
-    private function isQuoteRelevant(Quote $quote)
+    private function isQuoteRelevant(Quote $quote): bool
     {
         if (empty($quote->getAllVisibleItems())) {
             return false;

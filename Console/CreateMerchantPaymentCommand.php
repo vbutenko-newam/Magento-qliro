@@ -45,7 +45,7 @@ class CreateMerchantPaymentCommand extends Command
     /**
      * @inheritDoc
      */
-    protected function configure()
+    protected function configure(): void
     {
         $this->setName('qliroone:merchantpayment:create');
         $this->setDescription('Create a Merchant Payment based on a placed Subscription Order');
@@ -54,7 +54,7 @@ class CreateMerchantPaymentCommand extends Command
         parent::configure();
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $orderId = (int)$input->getArgument('order_id');
         $recurringInfo = $this->recurringInfoRepo->getByOriginalOrderId($orderId);

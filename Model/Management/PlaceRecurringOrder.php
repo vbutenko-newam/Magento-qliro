@@ -3,6 +3,7 @@
  * Copyright © Qliro AB. All rights reserved.
  * See LICENSE.txt for license details.
  */
+declare(strict_types=1);
 
 namespace Qliro\QliroOne\Model\Management;
 
@@ -82,7 +83,7 @@ class PlaceRecurringOrder
      * @return \Magento\Sales\Model\Order
      * @throws TerminalException
      */
-    public function poll(\Magento\Quote\Model\Quote $quote)
+    public function poll(\Magento\Quote\Model\Quote $quote): \Magento\Sales\Model\Order
     {
         $quoteId = $quote->getId();
 
@@ -112,9 +113,9 @@ class PlaceRecurringOrder
      * Set the quote for the next execute() call.
      *
      * @param \Magento\Quote\Model\Quote $quote
-     * @return self
+     * @return static
      */
-    public function setCurrentQuote(\Magento\Quote\Model\Quote $quote): self
+    public function setCurrentQuote(\Magento\Quote\Model\Quote $quote): static
     {
         $this->currentQuote = $quote;
         return $this;
@@ -132,7 +133,7 @@ class PlaceRecurringOrder
      * @throws TerminalException
      * @todo May require doing something upon $this->applyQliroOrderStatus($orderId) returning false
      */
-    public function execute(AdminOrderInterface $qliroOrder, $state = Order::STATE_PENDING_PAYMENT)
+    public function execute(AdminOrderInterface $qliroOrder, string $state = Order::STATE_PENDING_PAYMENT): Order
     {
         $qliroOrderId = $qliroOrder->getOrderId();
 
@@ -250,7 +251,7 @@ class PlaceRecurringOrder
      * @param Order $order
      * @return bool
      */
-    public function applyQliroOrderStatus($order)
+    public function applyQliroOrderStatus(Order $order): bool
     {
         $orderId = $order->getId();
 
@@ -345,11 +346,14 @@ class PlaceRecurringOrder
      * Add information regarding this purchase to Quote, which will transfer to Order
      *
      * @param \Qliro\QliroOne\Api\Data\LinkInterface $link
-     * @param \Qliro\QliroOne\Model\QliroOrder\Admin\OrderPaymentTransaction $paymentTransaction
+     * @param \Qliro\QliroOne\Model\QliroOrder\Admin\OrderPaymentTransaction|null $paymentTransaction
+     * @return void
      * @throws \Magento\Framework\Exception\LocalizedException
      */
-    private function addAdditionalInfoToQuote($link, $paymentTransaction)
-    {
+    private function addAdditionalInfoToQuote(
+        LinkInterface $link,
+        ?\Qliro\QliroOne\Model\QliroOrder\Admin\OrderPaymentTransaction $paymentTransaction
+    ): void {
         // Note: called only from execute() where $this->currentQuote is set
         $payment = $this->currentQuote->getPayment();
         $payment->setAdditionalInformation(Config::QLIROONE_ADDITIONAL_INFO_QLIRO_ORDER_ID, $link->getQliroOrderId());
@@ -372,7 +376,7 @@ class PlaceRecurringOrder
      * @param AdminOrderInterface $order
      * @return void
      */
-    private function addAdditionalShippingInfoToQuote(AdminOrderInterface $order)
+    private function addAdditionalShippingInfoToQuote(AdminOrderInterface $order): void
     {
         $payment = $this->currentQuote->getPayment();
         foreach ($order->getOrderItemActions() as $orderItem) {

@@ -3,6 +3,7 @@
  * Copyright © Qliro AB. All rights reserved.
  * See LICENSE.txt for license details.
  */
+declare(strict_types=1);
 
 namespace Qliro\QliroOne\Model\QliroOrder\Builder;
 
@@ -15,10 +16,7 @@ class CustomerAddressBuilder
 {
     const STREET_ADDRESS_SEPARATOR = '; ';
 
-    /**
-     * @var \Magento\Customer\Model\Address\AbstractAddress
-     */
-    private $address;
+    private ?AbstractAddress $address = null;
 
     public function __construct()
     {
@@ -30,7 +28,7 @@ class CustomerAddressBuilder
      * @param \Magento\Customer\Model\Address\AbstractAddress $address
      * @return $this
      */
-    public function setAddress(AbstractAddress $address)
+    public function setAddress(AbstractAddress $address): static
     {
         $this->address = $address;
 
@@ -42,7 +40,7 @@ class CustomerAddressBuilder
      *
      * @return array
      */
-    public function create()
+    public function create(): array
     {
         if (empty($this->address)) {
             throw new \LogicException('Address entity is not set.');

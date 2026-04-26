@@ -3,6 +3,7 @@
  * Copyright © Qliro AB. All rights reserved.
  * See LICENSE.txt for license details.
  */
+declare(strict_types=1);
 
 namespace Qliro\QliroOne\Model\Management;
 
@@ -145,7 +146,7 @@ class QliroOrder
                     }
 
                     if (isset($qliroOrder['IsRefused']) && $qliroOrder['IsRefused'] && $allowRecreate) {
-                        $link->setIsActive(false);
+                        $link->setIsActive(0);
                         $link->setMessage('Refused order. Create new order');
                         $link->setQliroOrderStatus($qliroOrder['CustomerCheckoutStatus']);
                         $this->linkRepository->save($link);
@@ -196,6 +197,24 @@ class QliroOrder
                 'quote_id'       => $link->getQuoteId(),
                 'qliro_order_id' => $qliroOrderId ?? null,
             ]]);
+
+            // If the stored order ID is no longer valid in the current API environment
+            // (e.g. after a sandbox ↔ production switch) and no Magento order has been
+            // placed yet, reset the stale link and create a fresh Qliro order instead of
+            // surfacing a terminal error to the customer.
+            if ($allowRecreate && !empty($qliroOrderId ?? null) && empty($link->getOrderId())) {
+                $this->logManager->debug('Stale or invalid Qliro order ID detected; resetting link and recreating order.', [
+                    'extra' => [
+                        'link_id'        => $link->getId(),
+                        'quote_id'       => $link->getQuoteId(),
+                        'stale_order_id' => $qliroOrderId,
+                    ],
+                ]);
+                $link->setQliroOrderId(null);
+                $link->setIsActive(0);
+                $this->linkRepository->save($link);
+                return $this->get($quote, false);
+            }
 
             throw new TerminalException(
                 'Couldn\'t fetch the QliroOne order.',
@@ -303,7 +322,7 @@ class QliroOrder
             $omStatus->setQliroOrderId($qliroOrderId);
             $this->orderManagementStatusRepository->save($omStatus);
 
-            $link->setIsActive(false);
+            $link->setIsActive(0);
             $this->linkRepository->save($link);
 
         } catch (\LogicException $exception) {

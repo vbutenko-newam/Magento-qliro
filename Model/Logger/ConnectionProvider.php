@@ -3,6 +3,7 @@
  * Copyright © Qliro AB. All rights reserved.
  * See LICENSE.txt for license details.
  */
+declare(strict_types=1);
 
 namespace Qliro\QliroOne\Model\Logger;
 
@@ -17,7 +18,7 @@ class ConnectionProvider
     /**
      * @var \Magento\Framework\DB\Adapter\AdapterInterface|null
      */
-    private $connection = null;
+    private ?AdapterInterface $connection = null;
 
     /**
      * Class constructor
@@ -37,7 +38,7 @@ class ConnectionProvider
      * @return AdapterInterface
      * @throws \DomainException
      */
-    public function getConnection()
+    public function getConnection(): AdapterInterface
     {
         if (!$this->connection) {
             $connectionName = ResourceConnection::DEFAULT_CONNECTION;

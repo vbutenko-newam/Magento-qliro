@@ -3,6 +3,7 @@
  * Copyright © Qliro AB. All rights reserved.
  * See LICENSE.txt for license details.
  */
+declare(strict_types=1);
 
 namespace Qliro\QliroOne\Model\ResourceModel;
 
@@ -30,7 +31,7 @@ class LogRecord extends AbstractDb
         parent::__construct($context);
     }
 
-    protected function _construct()
+    protected function _construct(): void
     {
         $this->_init(self::TABLE_LOG, LogRecordModel::FIELD_ID);
     }
@@ -41,7 +42,7 @@ class LogRecord extends AbstractDb
      *
      * @param string $merchantReference
      */
-    public function patchMerchantReference($merchantReference)
+    public function patchMerchantReference(string $merchantReference): void
     {
         /** @var \Magento\Framework\DB\Adapter\AdapterInterface $connection */
         $connection = $this->connectionProvider->getConnection();

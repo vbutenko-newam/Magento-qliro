@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace Qliro\QliroOne\Ui\Component\Listing\Column;
 
 use \Magento\Sales\Api\OrderRepositoryInterface;
@@ -30,7 +32,7 @@ class RecurringParentId extends Column
         parent::__construct($context, $uiComponentFactory, $components, $data);
     }
 
-    public function prepareDataSource(array $dataSource)
+    public function prepareDataSource(array $dataSource): array
     {
         if (isset($dataSource['data']['items'])) {
             foreach ($dataSource['data']['items'] as & $item) {

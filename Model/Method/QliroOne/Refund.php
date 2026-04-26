@@ -3,6 +3,8 @@
  * Copyright © Qliro AB. All rights reserved.
  * See LICENSE.txt for license details.
  */
+declare(strict_types=1);
+
 namespace Qliro\QliroOne\Model\Method\QliroOne;
 
 use Magento\Framework\Exception\LocalizedException;
@@ -37,7 +39,7 @@ class Refund implements CommandInterface
      * @throws LocalizedException
      * @throws NoSuchEntityException
      */
-    public function execute(array $commandSubject)
+    public function execute(array $commandSubject): ?ResultInterface
     {
         /** @var InfoInterface $payment */
         $payment = $commandSubject['payment']->getPayment();

@@ -35,7 +35,7 @@ class QliroOne implements MethodInterface
     /**
      * @inheritdoc
      */
-    public function getCode()
+    public function getCode(): string
     {
         return $this->adapter->getCode();
     }
@@ -43,7 +43,7 @@ class QliroOne implements MethodInterface
     /**
      * @inheritdoc
      */
-    public function getFormBlockType()
+    public function getFormBlockType(): string
     {
         return $this->adapter->getFormBlockType();
     }
@@ -51,7 +51,7 @@ class QliroOne implements MethodInterface
     /**
      * @inheritdoc
      */
-    public function getTitle()
+    public function getTitle(): string
     {
         return $this->adapter->getTitle();
     }
@@ -59,7 +59,7 @@ class QliroOne implements MethodInterface
     /**
      * @inheritdoc
      */
-    public function setStore($storeId)
+    public function setStore(mixed $storeId): void
     {
         $this->adapter->setStore($storeId);
     }
@@ -67,7 +67,7 @@ class QliroOne implements MethodInterface
     /**
      * @inheritdoc
      */
-    public function getStore()
+    public function getStore(): mixed
     {
         return $this->adapter->getStore();
     }
@@ -75,7 +75,7 @@ class QliroOne implements MethodInterface
     /**
      * @inheritdoc
      */
-    public function canOrder()
+    public function canOrder(): bool
     {
         return $this->adapter->canOrder();
     }
@@ -83,7 +83,7 @@ class QliroOne implements MethodInterface
     /**
      * @inheritdoc
      */
-    public function canAuthorize()
+    public function canAuthorize(): bool
     {
         return $this->adapter->canAuthorize();
     }
@@ -91,7 +91,7 @@ class QliroOne implements MethodInterface
     /**
      * @inheritdoc
      */
-    public function canCapture()
+    public function canCapture(): bool
     {
         return $this->adapter->canCapture();
     }
@@ -99,7 +99,7 @@ class QliroOne implements MethodInterface
     /**
      * @inheritdoc
      */
-    public function canCapturePartial()
+    public function canCapturePartial(): bool
     {
         return $this->adapter->canCapturePartial();
     }
@@ -107,7 +107,7 @@ class QliroOne implements MethodInterface
     /**
      * @inheritdoc
      */
-    public function canCaptureOnce()
+    public function canCaptureOnce(): bool
     {
         return $this->adapter->canCaptureOnce();
     }
@@ -115,7 +115,7 @@ class QliroOne implements MethodInterface
     /**
      * @inheritdoc
      */
-    public function canRefund()
+    public function canRefund(): bool
     {
         return $this->adapter->canRefund();
     }
@@ -123,7 +123,7 @@ class QliroOne implements MethodInterface
     /**
      * @inheritdoc
      */
-    public function canRefundPartialPerInvoice()
+    public function canRefundPartialPerInvoice(): bool
     {
         return $this->adapter->canRefundPartialPerInvoice();
     }
@@ -131,7 +131,7 @@ class QliroOne implements MethodInterface
     /**
      * @inheritdoc
      */
-    public function canVoid()
+    public function canVoid(): bool
     {
         return $this->adapter->canVoid();
     }
@@ -139,7 +139,7 @@ class QliroOne implements MethodInterface
     /**
      * @inheritdoc
      */
-    public function canUseInternal()
+    public function canUseInternal(): bool
     {
         return $this->adapter->canUseInternal();
     }
@@ -147,7 +147,7 @@ class QliroOne implements MethodInterface
     /**
      * @inheritdoc
      */
-    public function canUseCheckout()
+    public function canUseCheckout(): bool
     {
         return $this->adapter->canUseCheckout();
     }
@@ -155,7 +155,7 @@ class QliroOne implements MethodInterface
     /**
      * @inheritdoc
      */
-    public function canEdit()
+    public function canEdit(): bool
     {
         return $this->adapter->canEdit();
     }
@@ -163,7 +163,7 @@ class QliroOne implements MethodInterface
     /**
      * @inheritdoc
      */
-    public function canFetchTransactionInfo()
+    public function canFetchTransactionInfo(): bool
     {
         return $this->adapter->canFetchTransactionInfo();
     }
@@ -171,7 +171,7 @@ class QliroOne implements MethodInterface
     /**
      * @inheritdoc
      */
-    public function fetchTransactionInfo(InfoInterface $payment, $transactionId)
+    public function fetchTransactionInfo(InfoInterface $payment, mixed $transactionId): mixed
     {
         return $this->adapter->fetchTransactionInfo($payment, $transactionId);
     }
@@ -179,7 +179,7 @@ class QliroOne implements MethodInterface
     /**
      * @inheritdoc
      */
-    public function isGateway()
+    public function isGateway(): bool
     {
         return $this->adapter->isGateway();
     }
@@ -187,7 +187,7 @@ class QliroOne implements MethodInterface
     /**
      * @inheritdoc
      */
-    public function isOffline()
+    public function isOffline(): bool
     {
         return $this->adapter->isOffline();
     }
@@ -195,7 +195,7 @@ class QliroOne implements MethodInterface
     /**
      * @inheritdoc
      */
-    public function isInitializeNeeded()
+    public function isInitializeNeeded(): bool
     {
         return $this->adapter->isInitializeNeeded();
     }
@@ -203,7 +203,7 @@ class QliroOne implements MethodInterface
     /**
      * @inheritdoc
      */
-    public function canUseForCountry($country)
+    public function canUseForCountry(mixed $country): bool
     {
         return $this->adapter->canUseForCountry($country);
     }
@@ -211,7 +211,7 @@ class QliroOne implements MethodInterface
     /**
      * @inheritdoc
      */
-    public function canUseForCurrency($currencyCode)
+    public function canUseForCurrency(mixed $currencyCode): bool
     {
         return $this->adapter->canUseForCurrency($currencyCode);
     }
@@ -219,7 +219,7 @@ class QliroOne implements MethodInterface
     /**
      * @inheritdoc
      */
-    public function getInfoBlockType()
+    public function getInfoBlockType(): string
     {
         return $this->adapter->getInfoBlockType();
     }
@@ -227,7 +227,7 @@ class QliroOne implements MethodInterface
     /**
      * @inheritdoc
      */
-    public function getInfoInstance()
+    public function getInfoInstance(): InfoInterface
     {
         return $this->adapter->getInfoInstance();
     }
@@ -235,7 +235,7 @@ class QliroOne implements MethodInterface
     /**
      * @inheritdoc
      */
-    public function setInfoInstance(InfoInterface $info)
+    public function setInfoInstance(InfoInterface $info): void
     {
         $this->adapter->setInfoInstance($info);
     }
@@ -243,92 +243,92 @@ class QliroOne implements MethodInterface
     /**
      * @inheritdoc
      */
-    public function validate()
+    public function validate(): static
     {
-        return $this->adapter->validate();
+        $this->adapter->validate();
+        return $this;
     }
 
     /**
      * @inheritdoc
      */
-    public function order(InfoInterface $payment, $amount)
+    public function order(InfoInterface $payment, mixed $amount): static
     {
         throw new \Exception("order - feature not implemented\n");
-        return $this->adapter->order($payment, $amount);
     }
 
     /**
      * @inheritdoc
      */
-    public function authorize(InfoInterface $payment, $amount)
+    public function authorize(InfoInterface $payment, mixed $amount): static
     {
         throw new \Exception("authorize - feature not implemented\n");
-        return $this->adapter->authorize($payment, $amount);
     }
 
     /**
      * @inheritdoc
      */
-    public function capture(InfoInterface $payment, $amount)
+    public function capture(InfoInterface $payment, mixed $amount): static
     {
-        return $this->adapter->capture($payment, $amount);
+        $this->adapter->capture($payment, $amount);
+        return $this;
     }
 
     /**
      * @inheritdoc
      */
-    public function refund(InfoInterface $payment, $amount)
+    public function refund(InfoInterface $payment, mixed $amount): static
     {
-        return $this->adapter->refund($payment, $amount);
+        $this->adapter->refund($payment, $amount);
+        return $this;
     }
 
     /**
      * @inheritdoc
      */
-    public function cancel(InfoInterface $payment)
+    public function cancel(InfoInterface $payment): static
     {
-        return $this->adapter->cancel($payment);
+        $this->adapter->cancel($payment);
+        return $this;
     }
 
     /**
      * @inheritdoc
      */
-    public function void(InfoInterface $payment)
+    public function void(InfoInterface $payment): static
     {
-        return $this->adapter->void($payment);
+        $this->adapter->void($payment);
+        return $this;
     }
 
     /**
      * @inheritdoc
      */
-    public function canReviewPayment()
+    public function canReviewPayment(): bool
     {
-        //throw new \Exception("canReviewPayment - Stop\n");
         return $this->adapter->canReviewPayment();
     }
 
     /**
      * @inheritdoc
      */
-    public function acceptPayment(InfoInterface $payment)
+    public function acceptPayment(InfoInterface $payment): bool
     {
-        //throw new \Exception("acceptPayment - Stop\n");
         return $this->adapter->acceptPayment($payment);
     }
 
     /**
      * @inheritdoc
      */
-    public function denyPayment(InfoInterface $payment)
+    public function denyPayment(InfoInterface $payment): bool
     {
-        //throw new \Exception("denyPayment - Stop\n");
         return $this->adapter->denyPayment($payment);
     }
 
     /**
      * @inheritdoc
      */
-    public function getConfigData($field, $storeId = null)
+    public function getConfigData(mixed $field, mixed $storeId = null): mixed
     {
         return $this->adapter->getConfigData($field, $storeId);
     }
@@ -336,15 +336,16 @@ class QliroOne implements MethodInterface
     /**
      * @inheritdoc
      */
-    public function assignData(DataObject $data)
+    public function assignData(DataObject $data): static
     {
-        return $this->adapter->assignData($data);
+        $this->adapter->assignData($data);
+        return $this;
     }
 
     /**
      * @inheritdoc
      */
-    public function isAvailable(?CartInterface $quote = null)
+    public function isAvailable(?CartInterface $quote = null): bool
     {
         return $this->adapter->isAvailable($quote);
     }
@@ -352,7 +353,7 @@ class QliroOne implements MethodInterface
     /**
      * @inheritdoc
      */
-    public function isActive($storeId = null)
+    public function isActive(mixed $storeId = null): bool
     {
         return $this->adapter->isActive($storeId);
     }
@@ -360,15 +361,15 @@ class QliroOne implements MethodInterface
     /**
      * @inheritdoc
      */
-    public function initialize($paymentAction, $stateObject)
+    public function initialize(mixed $paymentAction, mixed $stateObject): void
     {
-        return $this->adapter->initialize($paymentAction, $stateObject);
+        $this->adapter->initialize($paymentAction, $stateObject);
     }
 
     /**
      * @inheritdoc
      */
-    public function getConfigPaymentAction()
+    public function getConfigPaymentAction(): ?string
     {
         return $this->adapter->getConfigPaymentAction();
     }

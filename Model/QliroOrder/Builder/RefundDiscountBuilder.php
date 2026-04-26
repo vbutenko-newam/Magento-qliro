@@ -3,6 +3,7 @@
  * Copyright © Qliro AB. All rights reserved.
  * See LICENSE.txt for license details.
  */
+declare(strict_types=1);
 
 namespace Qliro\QliroOne\Model\QliroOrder\Builder;
 
@@ -13,10 +14,7 @@ use Qliro\QliroOne\Api\Data\QliroOrderItemInterfaceFactory;
 
 class RefundDiscountBuilder
 {
-    /**
-     * @var CreditmemoInterface
-     */
-    private $creditMemo;
+    private ?CreditmemoInterface $creditMemo = null;
 
     /**
      * Class constructor
@@ -36,7 +34,7 @@ class RefundDiscountBuilder
      * @param CreditmemoInterface $creditMemo The credit memo instance to be set
      * @return $this
      */
-    public function setCreditMemo(CreditmemoInterface $creditMemo)
+    public function setCreditMemo(CreditmemoInterface $creditMemo): static
     {
         $this->creditMemo = $creditMemo;
 
@@ -50,7 +48,7 @@ class RefundDiscountBuilder
      * @return array Processed data from the credit memo entity, including discounts.
      * @throws \LogicException If the credit memo entity is not set.
      */
-    public function create()
+    public function create(): array
     {
         if (empty($this->creditMemo)) {
             throw new \LogicException('Credit memo entity is not set.');
@@ -73,7 +71,7 @@ class RefundDiscountBuilder
      * @return QliroOrderItemInterface Returns an instance of QliroOrderItemInterface
      * containing discount details, including description, price, quantity, and type.
      */
-    protected function getDiscounts()
+    protected function getDiscounts(): QliroOrderItemInterface
     {
         $container = $this->qliroOrderItemFactory->create();
 

@@ -3,12 +3,13 @@
  * Copyright © Qliro AB. All rights reserved.
  * See LICENSE.txt for license details.
  */
+declare(strict_types=1);
 
 namespace Qliro\QliroOne\Model\QliroOrder\Builder;
 
 use Magento\Framework\Event\ManagerInterface;
 use Magento\Quote\Model\Quote;
-use Qliro\QliroOne\Helper\Data;
+use Qliro\QliroOne\Model\Formatter\PriceFormatter;
 use Qliro\QliroOne\Model\Config;
 
 /**
@@ -25,22 +26,19 @@ class ShippingConfigUnifaunBuilder
     const UNIFAUN_TAGS_FUNC_USERDEFINED = 'userdefined';
     const UNIFAUN_TAGS_FUNC_WEIGHT = 'weight';
 
-    /**
-     * @var \Magento\Quote\Model\Quote
-     */
-    private $quote;
+    private ?Quote $quote = null;
 
     /**
      * Class constructor
      *
      * @param ManagerInterface $eventManager
      * @param Config $qliroConfig
-     * @param Data $qliroHelper
+     * @param PriceFormatter $priceFormatter
      */
     public function __construct(
         private readonly ManagerInterface $eventManager,
-        private readonly Config $qliroConfig,
-        private readonly Data $qliroHelper
+        private readonly Config           $qliroConfig,
+        private readonly PriceFormatter   $priceFormatter
     ) {
     }
 
@@ -50,7 +48,7 @@ class ShippingConfigUnifaunBuilder
      * @param \Magento\Quote\Model\Quote $quote
      * @return $this
      */
-    public function setQuote(Quote $quote)
+    public function setQuote(Quote $quote): static
     {
         $this->quote = $quote;
 
@@ -60,9 +58,9 @@ class ShippingConfigUnifaunBuilder
     /**
      * Create a QliroOne order shipping Config container
      *
-     * @return \Qliro\QliroOne\Api\Data\QliroOrderShippingConfigUnifaunInterface
+     * @return array
      */
-    public function create()
+    public function create(): array
     {
         if (empty($this->quote)) {
             throw new \LogicException('Quote entity is not set.');
@@ -86,10 +84,12 @@ class ShippingConfigUnifaunBuilder
         return $container;
     }
 
-    /** Should get rewritten for easier customizations
+    /**
+     * Should get rewritten for easier customizations
      * @param array $params
+     * @return array|null
      */
-    private function buildTags($params)
+    private function buildTags(array $params): ?array
     {
         $tags = null;
         foreach ($params as $param) {
@@ -115,10 +115,7 @@ class ShippingConfigUnifaunBuilder
         return $tags;
     }
 
-    /**
-     * @param $attributeCode
-     */
-    private function calculateQuoteBulky($attributeCode)
+    private function calculateQuoteBulky(mixed $attributeCode): bool
     {
         $isBulky = false;
         /** @var \Magento\Quote\Model\Quote\Item $item */
@@ -134,7 +131,7 @@ class ShippingConfigUnifaunBuilder
         return $isBulky;
     }
 
-    private function calculateQuoteWeight($attributeCode)
+    private function calculateQuoteWeight(mixed $attributeCode): float|int
     {
         $totalWeight = 0;
         /** @var \Magento\Quote\Model\Quote\Item $item */
@@ -149,9 +146,9 @@ class ShippingConfigUnifaunBuilder
         return $totalWeight;
     }
 
-    private function calculateQuoteCartPrice($attributeCode)
+    private function calculateQuoteCartPrice(mixed $attributeCode): mixed
     {
-        $totalAmount = $this->qliroHelper->formatPrice($this->quote->getData($attributeCode));
+        $totalAmount = $this->priceFormatter->format($this->quote->getData($attributeCode));
 
         return $totalAmount;
     }

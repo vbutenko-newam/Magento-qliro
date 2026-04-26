@@ -3,6 +3,7 @@
  * Copyright © Qliro AB. All rights reserved.
  * See LICENSE.txt for license details.
  */
+declare(strict_types=1);
 
 // @codingStandardsIgnoreFile
 // phpcs:ignoreFile
@@ -66,7 +67,7 @@ class Handler extends AbstractProcessingHandler
      * @param array|string $data
      * @return string
      */
-    private function encodeExtra($data)
+    private function encodeExtra(array|string $data): string|null
     {
         try {
             $serializedData = is_array($data) ? $this->serialize($data) : $data;
@@ -83,7 +84,7 @@ class Handler extends AbstractProcessingHandler
      * @param array $data
      * @return false|string
      */
-    private function serialize($data)
+    private function serialize(array $data): string|false
     {
         return \json_encode($data, JSON_PRETTY_PRINT + JSON_UNESCAPED_SLASHES + JSON_UNESCAPED_UNICODE);
     }

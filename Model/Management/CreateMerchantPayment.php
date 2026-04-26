@@ -16,7 +16,7 @@ class CreateMerchantPayment
 {
     const DEFAULT_QLIRO_STATUS = 'MerchantPaymentCreated';
 
-    private $order;
+    private ?\Magento\Sales\Model\Order $order = null;
 
     /**
      * @var \Magento\Quote\Model\Quote|null
@@ -52,9 +52,9 @@ class CreateMerchantPayment
      * Set quote
      *
      * @param \Magento\Quote\Model\Quote $quote
-     * @return $this
+     * @return static
      */
-    public function setQuote(\Magento\Quote\Model\Quote $quote): self
+    public function setQuote(\Magento\Quote\Model\Quote $quote): static
     {
         $this->quote = $quote;
         return $this;
@@ -120,7 +120,7 @@ class CreateMerchantPayment
      *
      * @return \Magento\Sales\Model\Order
      */
-    public function getOrder()
+    public function getOrder(): \Magento\Sales\Model\Order
     {
         if (!($this->order instanceof \Magento\Sales\Model\Order)) {
             throw new \LogicException('Order must be set before it is fetched.');
@@ -133,9 +133,9 @@ class CreateMerchantPayment
      * Set the order in the management class
      *
      * @param \Magento\Sales\Model\Order $order
-     * @return $this
+     * @return static
      */
-    public function setOrder($order)
+    public function setOrder(\Magento\Sales\Model\Order $order): static
     {
         $order->setFirstCaptureFlag(true);
         $this->order = $order;

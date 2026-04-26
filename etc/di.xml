@@ -6,6 +6,46 @@
  */
 -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <preference for="Qliro\QliroOne\Api\LinkRepositoryInterface" type="Qliro\QliroOne\Model\Link\Repository" />
+    <preference for="Qliro\QliroOne\Api\Data\LinkInterface" type="Qliro\QliroOne\Model\Link" />
+    <preference for="Qliro\QliroOne\Api\LinkSearchResultInterface" type="Qliro\QliroOne\Model\Link\SearchResult" />
+    <preference for="Qliro\QliroOne\Api\OrderManagementStatusRepositoryInterface" type="Qliro\QliroOne\Model\OrderManagementStatus\Repository" />
+    <preference for="Qliro\QliroOne\Api\Data\OrderManagementStatusInterface" type="Qliro\QliroOne\Model\OrderManagementStatus" />
+    <preference for="Qliro\QliroOne\Api\OrderManagementStatusSearchResultInterface" type="Qliro\QliroOne\Model\OrderManagementStatus\SearchResult" />
+    <preference for="Qliro\QliroOne\Api\HashResolverInterface" type="Qliro\QliroOne\Model\QliroOrder\ReferenceHashResolver" />
+    <preference for="Qliro\QliroOne\Api\ShippingMethodBrandResolverInterface" type="Qliro\QliroOne\Model\ShippingMethod\BrandResolver" />
+    <preference for="Qliro\QliroOne\Api\Admin\CreditMemo\InvoiceFeeTotalValidatorInterface" type="Qliro\QliroOne\Model\QliroOrder\Admin\CreditMemo\InvoiceFeeTotalValidator" />
+    <preference for="Qliro\QliroOne\Api\Product\TypeSourceItemInterface" type="Qliro\QliroOne\Model\Product\Type\TypeSourceItem" />
+    <preference for="Qliro\QliroOne\Api\Client\MerchantInterface" type="Qliro\QliroOne\Model\Api\Client\Merchant" />
+    <preference for="Qliro\QliroOne\Api\Client\OrderManagementInterface" type="Qliro\QliroOne\Model\Api\Client\OrderManagement" />
+    <preference for="Qliro\QliroOne\Api\Client\OrderManagement\OrderReaderInterface" type="Qliro\QliroOne\Model\Api\Client\OrderManagement" />
+    <preference for="Qliro\QliroOne\Api\Client\OrderManagement\OrderMutatorInterface" type="Qliro\QliroOne\Model\Api\Client\OrderManagement" />
+    <preference for="Qliro\QliroOne\Api\Client\OrderManagement\PaymentOperationsInterface" type="Qliro\QliroOne\Model\Api\Client\OrderManagement" />
+    <preference for="Qliro\QliroOne\Api\Client\OrderManagement\ReturnInterface" type="Qliro\QliroOne\Model\Api\Client\OrderManagement" />
+    <preference for="Qliro\QliroOne\Api\Checkout\OrderServiceInterface" type="Qliro\QliroOne\Model\Checkout\OrderService" />
+    <preference for="Qliro\QliroOne\Api\Admin\OrderServiceInterface" type="Qliro\QliroOne\Model\Admin\OrderService" />
+    <preference for="Qliro\QliroOne\Api\LanguageMapperInterface" type="Qliro\QliroOne\Model\LanguageMapper" />
+    <preference for="Qliro\QliroOne\Api\GeoIpResolverInterface" type="Qliro\QliroOne\Model\GeoIp\DefaultResolver" />
+    <preference for="Qliro\QliroOne\Api\Data\QliroOrderItemInterface" type="Qliro\QliroOne\Model\QliroOrder\Item" />
+    <preference for="Qliro\QliroOne\Api\Data\AdminOrderInterface" type="Qliro\QliroOne\Model\QliroOrder\Admin\AdminOrder" />
+    <preference for="Qliro\QliroOne\Api\Data\AdminOrderItemActionInterface" type="Qliro\QliroOne\Model\QliroOrder\Admin\OrderItemAction" />
+    <preference for="Qliro\QliroOne\Api\Data\AdminMarkItemsAsShippedRequestInterface" type="Qliro\QliroOne\Model\QliroOrder\Admin\MarkItemsAsShippedRequest" />
+    <preference for="Qliro\QliroOne\Api\Data\QliroShipmentInterface" type="Qliro\QliroOne\Model\QliroOrder\Admin\QliroShipment" />
+    <preference for="Qliro\QliroOne\Api\Data\AdminCancelOrderRequestInterface" type="Qliro\QliroOne\Model\QliroOrder\Admin\CancelOrderRequest" />
+    <preference for="Qliro\QliroOne\Api\Data\AdminUpdateMerchantReferenceRequestInterface" type="Qliro\QliroOne\Model\QliroOrder\Admin\UpdateMerchantReferenceRequest" />
+    <preference for="Qliro\QliroOne\Api\Data\AdminUpdateItemsRequestInterface" type="Qliro\QliroOne\Model\QliroOrder\Admin\UpdateItemsRequest" />
+    <preference for="Qliro\QliroOne\Api\Data\AdminOrderPaymentTransactionInterface" type="Qliro\QliroOne\Model\QliroOrder\Admin\OrderPaymentTransaction" />
+    <preference for="Qliro\QliroOne\Api\Data\AdminReturnWithItemsRequestInterface" type="Qliro\QliroOne\Model\QliroOrder\Admin\ReturnWithItemsRequest" />
+    <preference for="Qliro\QliroOne\Api\Data\AdminCreateMerchantPaymentRequestInterface" type="Qliro\QliroOne\Model\MerchantPayment\CreateRequest" />
+    <preference for="Qliro\QliroOne\Api\Data\AdminTransactionResponseInterface" type="Qliro\QliroOne\Model\QliroOrder\Admin\TransactionResponse" />
+    <preference for="Qliro\QliroOne\Api\Data\AdminCreateMerchantPaymentResponseInterface" type="Qliro\QliroOne\Model\MerchantPayment\CreateResponse" />
+    <preference for="Qliro\QliroOne\Api\Data\MerchantPaymentPaymentMethodInterface" type="Qliro\QliroOne\Model\MerchantPayment\PaymentMethod" />
+    <preference for="Qliro\QliroOne\Api\Data\MerchantPaymentCustomerInterface" type="Qliro\QliroOne\Model\MerchantPayment\Customer" />
+    <preference for="Qliro\QliroOne\Api\SubscriptionInterface" type="Qliro\QliroOne\Model\Newsletter\Subscription" />
+    <preference for="Qliro\QliroOne\Api\Data\RecurringInfoInterface" type="Qliro\QliroOne\Model\RecurringInfo" />
+    <preference for="Qliro\QliroOne\Api\RecurringInfoRepositoryInterface" type="Qliro\QliroOne\Model\RecurringInfoRepository" />
+    <preference for="Qliro\QliroOne\Api\Product\ProductNameResolverInterface" type="Qliro\QliroOne\Model\Product\ProductNameResolver" />
+
     <type name="Magento\Framework\Console\CommandListInterface">
         <arguments>
             <argument name="commands" xsi:type="array">
@@ -139,7 +179,6 @@
         </arguments>
     </type>
 
-
     <virtualType name="QliroOneConfigValueHandler" type="Magento\Payment\Gateway\Config\ConfigValueHandler">
         <arguments>
             <argument name="configInterface" xsi:type="object">QliroOneConfig</argument>
@@ -158,51 +197,6 @@
             </argument>
         </arguments>
     </virtualType>
-
-    <preference for="Qliro\QliroOne\Api\LinkRepositoryInterface" type="Qliro\QliroOne\Model\Link\Repository" />
-    <preference for="Qliro\QliroOne\Api\Data\LinkInterface" type="Qliro\QliroOne\Model\Link" />
-    <preference for="Qliro\QliroOne\Api\LinkSearchResultInterface" type="Qliro\QliroOne\Model\Link\SearchResult" />
-    <preference for="Qliro\QliroOne\Api\OrderManagementStatusRepositoryInterface" type="Qliro\QliroOne\Model\OrderManagementStatus\Repository" />
-    <preference for="Qliro\QliroOne\Api\Data\OrderManagementStatusInterface" type="Qliro\QliroOne\Model\OrderManagementStatus" />
-    <preference for="Qliro\QliroOne\Api\OrderManagementStatusSearchResultInterface" type="Qliro\QliroOne\Model\OrderManagementStatus\SearchResult" />
-    <preference for="Qliro\QliroOne\Api\HashResolverInterface" type="Qliro\QliroOne\Model\QliroOrder\ReferenceHashResolver" />
-    <preference for="Qliro\QliroOne\Api\ShippingMethodBrandResolverInterface" type="Qliro\QliroOne\Model\ShippingMethod\BrandResolver" />
-    <preference for="Qliro\QliroOne\Api\Admin\CreditMemo\InvoiceFeeTotalValidatorInterface" type="Qliro\QliroOne\Model\QliroOrder\Admin\CreditMemo\InvoiceFeeTotalValidator" />
-
-    <preference for="Qliro\QliroOne\Api\Product\TypeSourceItemInterface" type="Qliro\QliroOne\Model\Product\Type\TypeSourceItem" />
-
-    <preference for="Qliro\QliroOne\Api\Client\MerchantInterface" type="Qliro\QliroOne\Model\Api\Client\Merchant" />
-    <preference for="Qliro\QliroOne\Api\Client\OrderManagementInterface" type="Qliro\QliroOne\Model\Api\Client\OrderManagement" />
-    <preference for="Qliro\QliroOne\Api\Client\OrderManagement\OrderReaderInterface" type="Qliro\QliroOne\Model\Api\Client\OrderManagement" />
-    <preference for="Qliro\QliroOne\Api\Client\OrderManagement\OrderMutatorInterface" type="Qliro\QliroOne\Model\Api\Client\OrderManagement" />
-    <preference for="Qliro\QliroOne\Api\Client\OrderManagement\PaymentOperationsInterface" type="Qliro\QliroOne\Model\Api\Client\OrderManagement" />
-    <preference for="Qliro\QliroOne\Api\Client\OrderManagement\ReturnInterface" type="Qliro\QliroOne\Model\Api\Client\OrderManagement" />
-
-    <preference for="Qliro\QliroOne\Api\Checkout\OrderServiceInterface" type="Qliro\QliroOne\Model\Checkout\OrderService" />
-    <preference for="Qliro\QliroOne\Api\Admin\OrderServiceInterface" type="Qliro\QliroOne\Model\Admin\OrderService" />
-
-    <preference for="Qliro\QliroOne\Api\LanguageMapperInterface" type="Qliro\QliroOne\Model\LanguageMapper" />
-    <preference for="Qliro\QliroOne\Api\GeoIpResolverInterface" type="Qliro\QliroOne\Model\GeoIp\DefaultResolver" />
-    <preference for="Qliro\QliroOne\Api\Data\QliroOrderItemInterface" type="Qliro\QliroOne\Model\QliroOrder\Item" />
-    <preference for="Qliro\QliroOne\Api\Data\AdminOrderInterface" type="Qliro\QliroOne\Model\QliroOrder\Admin\AdminOrder" />
-    <preference for="Qliro\QliroOne\Api\Data\AdminOrderItemActionInterface" type="Qliro\QliroOne\Model\QliroOrder\Admin\OrderItemAction" />
-    <preference for="Qliro\QliroOne\Api\Data\AdminMarkItemsAsShippedRequestInterface" type="Qliro\QliroOne\Model\QliroOrder\Admin\MarkItemsAsShippedRequest" />
-    <preference for="Qliro\QliroOne\Api\Data\QliroShipmentInterface" type="Qliro\QliroOne\Model\QliroOrder\Admin\QliroShipment" />
-    <preference for="Qliro\QliroOne\Api\Data\AdminCancelOrderRequestInterface" type="Qliro\QliroOne\Model\QliroOrder\Admin\CancelOrderRequest" />
-    <preference for="Qliro\QliroOne\Api\Data\AdminUpdateMerchantReferenceRequestInterface" type="Qliro\QliroOne\Model\QliroOrder\Admin\UpdateMerchantReferenceRequest" />
-    <preference for="Qliro\QliroOne\Api\Data\AdminUpdateItemsRequestInterface" type="Qliro\QliroOne\Model\QliroOrder\Admin\UpdateItemsRequest" />
-    <preference for="Qliro\QliroOne\Api\Data\AdminOrderPaymentTransactionInterface" type="Qliro\QliroOne\Model\QliroOrder\Admin\OrderPaymentTransaction" />
-    <preference for="Qliro\QliroOne\Api\Data\AdminReturnWithItemsRequestInterface" type="Qliro\QliroOne\Model\QliroOrder\Admin\ReturnWithItemsRequest" />
-    <preference for="Qliro\QliroOne\Api\Data\AdminCreateMerchantPaymentRequestInterface" type="Qliro\QliroOne\Model\MerchantPayment\CreateRequest" />
-    <preference for="Qliro\QliroOne\Api\Data\AdminTransactionResponseInterface" type="Qliro\QliroOne\Model\QliroOrder\Admin\TransactionResponse" />
-    <preference for="Qliro\QliroOne\Api\Data\AdminCreateMerchantPaymentResponseInterface" type="Qliro\QliroOne\Model\MerchantPayment\CreateResponse" />
-    <preference for="Qliro\QliroOne\Api\Data\MerchantPaymentPaymentMethodInterface" type="Qliro\QliroOne\Model\MerchantPayment\PaymentMethod" />
-    <preference for="Qliro\QliroOne\Api\Data\MerchantPaymentCustomerInterface" type="Qliro\QliroOne\Model\MerchantPayment\Customer" />
-    <preference for="Qliro\QliroOne\Api\SubscriptionInterface" type="Qliro\QliroOne\Model\Newsletter\Subscription" />
-    <preference for="Qliro\QliroOne\Api\Data\RecurringInfoInterface" type="Qliro\QliroOne\Model\RecurringInfo" />
-    <preference for="Qliro\QliroOne\Api\RecurringInfoRepositoryInterface" type="Qliro\QliroOne\Model\RecurringInfoRepository" />
-
-    <preference for="Qliro\QliroOne\Api\Product\ProductNameResolverInterface" type="Qliro\QliroOne\Model\Product\ProductNameResolver" />
 
     <type name="Magento\Framework\App\Request\CsrfValidator">
         <plugin name="qliroone_onepage_csrf_validator_skip" type="Qliro\QliroOne\Plugin\Callbacks\CsrfValidatorSkip" />
@@ -227,29 +221,24 @@
         </arguments>
     </type>
 
-    <type name="Qliro\QliroOne\Model\QliroOrder\Admin\Builder\ShipmentShipmentsBuilder">
-        <arguments>
-            <argument name="handlers" xsi:type="array">
-                <item name="shipping_fee" xsi:type="object">Qliro\QliroOne\Model\QliroOrder\Admin\Builder\Handler\ShippingFeeHandler</item>
-            </argument>
-        </arguments>
-    </type>
-
     <type name="Qliro\QliroOne\Model\Api\Client\Merchant">
         <arguments>
             <argument name="payloadConverter" xsi:type="object">Qliro\QliroOne\Model\Payload\PayloadConverter</argument>
         </arguments>
     </type>
+
     <type name="Qliro\QliroOne\Model\Api\Client\OrderManagement">
         <arguments>
             <argument name="payloadConverter" xsi:type="object">Qliro\QliroOne\Model\Payload\PayloadConverter</argument>
         </arguments>
     </type>
+
     <type name="Qliro\QliroOne\Model\Management\CheckoutStatus">
         <arguments>
             <argument name="payloadConverter" xsi:type="object">Qliro\QliroOne\Model\Payload\PayloadConverter</argument>
         </arguments>
     </type>
+
     <type name="Qliro\QliroOne\Helper\Data">
         <arguments>
             <argument name="payloadConverter" xsi:type="object">Qliro\QliroOne\Model\Payload\PayloadConverter</argument>

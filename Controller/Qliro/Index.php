@@ -3,6 +3,7 @@
  * Copyright © Qliro AB. All rights reserved.
  * See LICENSE.txt for license details.
  */
+declare(strict_types=1);
 
 namespace Qliro\QliroOne\Controller\Qliro;
 
@@ -16,6 +17,7 @@ use Magento\Framework\Controller\Result\ForwardFactory;
 use Magento\Framework\Controller\Result\JsonFactory;
 use Magento\Framework\Controller\Result\RawFactory;
 use Magento\Framework\Controller\Result\Redirect;
+use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\Data\Form\FormKey\Validator;
 use Magento\Framework\Registry;
 use Magento\Framework\Translate\InlineInterface;
@@ -92,9 +94,9 @@ class Index extends \Magento\Checkout\Controller\Index\Index
     /**
      * Dispatch request
      *
-     * @return \Magento\Framework\Controller\ResultInterface|ResponseInterface
+     * @return ResultInterface|ResponseInterface
      */
-    public function execute()
+    public function execute(): ResultInterface|ResponseInterface
     {
         if (!$this->qliroConfig->isActive()) {
             $this->logManager->debug('Qliro One is not enabled for ' . $this->getRequest()->getRequestUri());

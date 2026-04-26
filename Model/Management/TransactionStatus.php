@@ -3,6 +3,7 @@
  * Copyright © Qliro AB. All rights reserved.
  * See LICENSE.txt for license details.
  */
+declare(strict_types=1);
 
 namespace Qliro\QliroOne\Model\Management;
 
@@ -59,14 +60,29 @@ class TransactionStatus
             $orderId = $link->getOrderId();
 
             if (empty($orderId)) {
-                /* Should not happen, but if it does, respond with this to stop new notifications */
-                return $this->qliroOrderManagementStatusRespond(
-                    'OrderNotFound'
+                // Link exists but has no Magento order yet — tell Qliro to stop retrying.
+                $this->logManager->warning(
+                    'TransactionStatus: link found but no Magento order_id — stopping retries.',
+                    ['extra' => ['qliro_order_id' => $qliroOrderId]]
                 );
-            } elseif (!$this->updateTransactionStatus($qliroOrderManagementStatus)) {
-                return $this->qliroOrderManagementStatusRespond(
-                    'OrderNotFound'
+                return $this->qliroOrderManagementStatusRespond('OrderNotFound');
+            }
+
+            if (!$this->updateTransactionStatus($qliroOrderManagementStatus)) {
+                // The handler failed to process the transaction but the order IS in Magento.
+                // Return 'Received' (200) to stop Qliro from retrying indefinitely.
+                // The omStatus record was already persisted, so the transaction can be
+                // reprocessed manually if the Magento order state needs to be corrected.
+                $this->logManager->critical(
+                    'TransactionStatus: handler failed to process transaction for existing order.',
+                    ['extra' => [
+                        'qliro_order_id'     => $qliroOrderId,
+                        'order_id'           => $orderId,
+                        'payment_type'       => $qliroOrderManagementStatus['PaymentType'] ?? null,
+                        'transaction_id'     => $qliroOrderManagementStatus['PaymentTransactionId'] ?? null,
+                    ]]
                 );
+                return $this->qliroOrderManagementStatusRespond('Received');
             }
         } catch (NoSuchEntityException $exception) {
             /* No more qliro notifications should be sent */
@@ -103,7 +119,7 @@ class TransactionStatus
      * @throws \Qliro\QliroOne\Model\Exception\TerminalException
      * @throws \Magento\Framework\Exception\AlreadyExistsException
      */
-    private function updateTransactionStatus($qliroOrderManagementStatus)
+    private function updateTransactionStatus(array $qliroOrderManagementStatus): bool
     {
         $result = true;
 

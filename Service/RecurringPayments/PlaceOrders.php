@@ -179,7 +179,7 @@ class PlaceOrders
         $this->logger->error(sprintf('[RecurringPayment Error End. Original order: %s]', $orderId));
     }
 
-    public function getOrderByQuoteId($quoteId)
+    public function getOrderByQuoteId(mixed $quoteId): \Magento\Sales\Api\Data\OrderInterface|false
     {
         $searchCriteria = $this->searchCriteriaBuilder
             ->addFilter('quote_id', $quoteId, 'eq')

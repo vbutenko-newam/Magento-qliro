@@ -3,6 +3,7 @@
  * Copyright © Qliro AB. All rights reserved.
  * See LICENSE.txt for license details.
  */
+declare(strict_types=1);
 
 namespace Qliro\QliroOne\Model\Order\Total\Creditmemo;
 
@@ -31,7 +32,7 @@ class Fee extends AbstractTotal
      * @param Creditmemo $creditmemo
      * @return $this
      */
-    public function collect(Creditmemo $creditmemo)
+    public function collect(Creditmemo $creditmemo): static
     {
         /** @var \Magento\Sales\Model\Order $order */
         $order = $creditmemo->getOrder();

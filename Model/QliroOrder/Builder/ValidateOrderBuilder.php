@@ -3,6 +3,7 @@
  * Copyright © Qliro AB. All rights reserved.
  * See LICENSE.txt for license details.
  */
+declare(strict_types=1);
 
 namespace Qliro\QliroOne\Model\QliroOrder\Builder;
 
@@ -20,15 +21,8 @@ use Qliro\QliroOne\Model\QliroOrder\Validator\QuoteItemComparator;
  */
 class ValidateOrderBuilder
 {
-    /**
-     * @var array
-     */
-    private $validationRequest;
-
-    /**
-     * @var \Magento\Quote\Model\Quote
-     */
-    private $quote;
+    private ?array $validationRequest = null;
+    private ?CartInterface $quote = null;
 
     /**
      * Class constructor
@@ -54,7 +48,7 @@ class ValidateOrderBuilder
      * @param CartInterface $quote
      * @return $this
      */
-    public function setQuote(CartInterface $quote)
+    public function setQuote(CartInterface $quote): static
     {
         $this->quote = $quote;
         return $this;
@@ -62,9 +56,9 @@ class ValidateOrderBuilder
 
     /**
      * @param array $validationRequest
-     * @return $this
+     * @return static
      */
-    public function setValidationRequest(array $validationRequest)
+    public function setValidationRequest(array $validationRequest): static
     {
         $this->validationRequest = $validationRequest;
         return $this;
