@@ -13,7 +13,7 @@ use Qliro\QliroOne\Api\SubscriptionInterface;
 /**
  * Quote from QliroOne order container converter class
  */
-class QuoteFromOrderConverter
+readonly class QuoteFromOrderConverter
 {
     /**
      * Class constructor
@@ -24,10 +24,10 @@ class QuoteFromOrderConverter
      * @param SubscriptionInterface $subscription
      */
     public function __construct(
-        private readonly CustomerConverter $customerConverter,
-        private readonly AddressConverter $addressConverter,
-        private readonly OrderItemsConverter $orderItemsConverter,
-        private readonly SubscriptionInterface $subscription
+        private CustomerConverter     $customerConverter,
+        private AddressConverter      $addressConverter,
+        private OrderItemsConverter   $orderItemsConverter,
+        private SubscriptionInterface $subscription
     ) {
     }
 

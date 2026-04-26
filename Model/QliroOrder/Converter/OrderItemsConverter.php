@@ -12,15 +12,13 @@ use Magento\Quote\Model\Quote;
 use Qliro\QliroOne\Api\Data\QliroOrderItemInterface;
 use Qliro\QliroOne\Model\Product\Type\QuoteSourceProvider;
 use Qliro\QliroOne\Model\Product\Type\TypePoolHandler;
-use Qliro\QliroOne\Model\Payload\PayloadConverter;
 use Qliro\QliroOne\Model\Fee;
-use Qliro\QliroOne\Model\QliroOrder\Admin\Builder\Handler\InvoiceFeeHandler;
 use Qliro\QliroOne\Model\QliroOrder\Admin\Builder\Handler\ShippingFeeHandler;
 
 /**
  * QliroOne Order Items Converter class
  */
-class OrderItemsConverter
+readonly class OrderItemsConverter
 {
     /**
      * Class constructor
@@ -28,13 +26,11 @@ class OrderItemsConverter
      * @param TypePoolHandler $typePoolHandler
      * @param Fee $fee
      * @param QuoteSourceProvider $quoteSourceProvider
-     * @param PayloadConverter $payloadConverter
      */
     public function __construct(
-        private readonly TypePoolHandler $typePoolHandler,
-        private readonly Fee $fee,
-        private readonly QuoteSourceProvider $quoteSourceProvider,
-        private readonly PayloadConverter $payloadConverter
+        private TypePoolHandler     $typePoolHandler,
+        private Fee                 $fee,
+        private QuoteSourceProvider $quoteSourceProvider,
     ) {
     }
 
@@ -42,8 +38,8 @@ class OrderItemsConverter
      * Convert QliroOne order items into relevant quote items
      *
      * @param array $qliroOrderItems
-     * @param \Magento\Quote\Model\Quote $quote
-     * @throws \Magento\Framework\Exception\LocalizedException
+     * @param Quote $quote
+     * @throws LocalizedException
      */
     public function convert(array $qliroOrderItems, Quote $quote): void
     {
@@ -73,7 +69,7 @@ class OrderItemsConverter
                 case QliroOrderItemInterface::TYPE_FEE:
                     $quote->getPayment()->setAdditionalInformation(
                         "qliroone_fees",
-                        [$index => $this->payloadConverter->toArray($orderItem)]
+                        [$index => $orderItem]
                     );
                     break;
             }
@@ -88,8 +84,8 @@ class OrderItemsConverter
 
     /**
      * @param string $code
-     * @param \Magento\Quote\Model\Quote $quote
-     * @throws \Magento\Framework\Exception\LocalizedException
+     * @param Quote $quote
+     * @throws LocalizedException
      */
     private function applyShippingMethod(string $code, Quote $quote, string $shippingMerchantRef = ''): void
     {

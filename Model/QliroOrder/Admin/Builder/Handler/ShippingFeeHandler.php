@@ -7,9 +7,9 @@ declare(strict_types=1);
 
 namespace Qliro\QliroOne\Model\QliroOrder\Admin\Builder\Handler;
 
+use Magento\Sales\Api\Data\OrderInterface;
 use Qliro\QliroOne\Api\Admin\Builder\OrderItemHandlerInterface;
 use Qliro\QliroOne\Api\Data\QliroOrderItemInterface;
-use Qliro\QliroOne\Api\Data\QliroOrderItemInterfaceFactory;
 use Qliro\QliroOne\Model\Formatter\PriceFormatter;
 
 /**
@@ -17,28 +17,22 @@ use Qliro\QliroOne\Model\Formatter\PriceFormatter;
  */
 class ShippingFeeHandler implements OrderItemHandlerInterface
 {
-    const MERCHANT_REFERENCE_CODE_FIELD = 'qliro_shipping_merchant_ref';
+    const string MERCHANT_REFERENCE_CODE_FIELD = 'qliro_shipping_merchant_ref';
 
     /**
      * Class constructor
      *
-     * @param QliroOrderItemInterfaceFactory $qliroOrderItemFactory
      * @param PriceFormatter $priceFormatter
      */
     public function __construct(
-        private readonly QliroOrderItemInterfaceFactory $qliroOrderItemFactory,
         private readonly PriceFormatter $priceFormatter
     ) {
     }
 
     /**
-     * Handle specific type of order items and add them to the QliroOne order items list
-     *
-     * @param \Qliro\QliroOne\Api\Data\QliroOrderItemInterface[] $orderItems
-     * @param \Magento\Sales\Api\Data\OrderInterface $order
-     * @return \Qliro\QliroOne\Api\Data\QliroOrderItemInterface[]
+     * @inHeirtDoc
      */
-    public function handle(array $orderItems, \Magento\Sales\Api\Data\OrderInterface $order): array
+    public function handle(array $orderItems, OrderInterface $order): array
     {
         // @todo Handle invoiced and refunded shipping
         if (!$order->getFirstCaptureFlag()) {
@@ -55,18 +49,15 @@ class ShippingFeeHandler implements OrderItemHandlerInterface
         $formattedExclAmount = $this->priceFormatter->format($exclTax);
 
         if ($merchantReference) {
-            /** @var \Qliro\QliroOne\Api\Data\QliroOrderItemInterface $qliroOrderItem */
-            $qliroOrderItem = $this->qliroOrderItemFactory->create();
-
-            $qliroOrderItem->setMerchantReference($merchantReference);
-            $qliroOrderItem->setDescription($merchantReference);
-            $qliroOrderItem->setType(QliroOrderItemInterface::TYPE_SHIPPING);
-            $qliroOrderItem->setQuantity(1);
-            $qliroOrderItem->setPricePerItemIncVat($formattedInclAmount);
-            $qliroOrderItem->setPricePerItemExVat($formattedExclAmount);
-            $qliroOrderItem->setMetadata(['qliro' => 'checkout']);
-
-            $orderItems[] = $qliroOrderItem;
+            $orderItems[] = [
+                'MerchantReference'  => $merchantReference,
+                'Description'        => $merchantReference,
+                'Type'               => QliroOrderItemInterface::TYPE_SHIPPING,
+                'Quantity'           => 1,
+                'PricePerItemIncVat' => $formattedInclAmount,
+                'PricePerItemExVat'  => $formattedExclAmount,
+                'Metadata'           => ['qliro' => 'checkout'],
+            ];
         }
 
         return $orderItems;

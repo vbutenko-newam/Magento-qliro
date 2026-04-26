@@ -9,79 +9,33 @@ namespace Qliro\QliroOne\Model\QliroOrder\Admin;
 
 use Qliro\QliroOne\Api\Data\AdminReturnWithItemsRequestInterface;
 use Qliro\QliroOne\Api\Data\QliroOrderItemInterface;
-use Qliro\QliroOne\Model\Payload\PayloadConverter;
 
 /**
- * Return With Items Request class
+ * Return With Item Request class
+ *
+ * All order item, fee, and discount collections are stored as plain arrays
+ * (key => value maps matching the Qliro API field names), so no converter
+ * is needed when building the returns' payload.
  */
 class ReturnWithItemsRequest implements AdminReturnWithItemsRequestInterface
 {
-    /**
-     * @var string
-     */
-    private string $merchantApiKey;
-
-    /**
-     * @var int
-     */
-    private int $paymentReference;
-
-    /**
-     * @var string
-     */
-    private string $requestId;
-
-    /**
-     * @var string
-     */
-    private string $currency;
-
-    /**
-     * @var QliroOrderItemInterface[]
-     */
-    private array $orderItems;
-
-    /**
-     * @var QliroOrderItemInterface[]
-     */
-    private array $fees;
-
-    /**
-     * @var QliroOrderItemInterface[]
-     */
-    private array $discounts;
-
-    /**
-     * @var int
-     */
-    private int $orderId;
-
-    /**
-     * @var int
-     */
-    private int $paymentTransactionId;
-
-    /**
-     * @var array
-     */
+    private string $merchantApiKey = '';
+    private int $paymentReference = 0;
+    private string $requestId = '';
+    private string $currency = '';
+    private array $orderItems = [];
+    private array $fees = [];
+    private array $discounts = [];
+    private int $orderId = 0;
+    private int $paymentTransactionId = 0;
     private array $returns = [];
-
-    /**
-     * Class constructor
-     *
-     * @param PayloadConverter $payloadConverter
-     */
-    public function __construct(
-        private readonly PayloadConverter $payloadConverter
-    ) {
-    }
 
     /**
      * @inheritDoc
      */
     public function getMerchantApiKey(): string
     {
-        return (string)$this->merchantApiKey;
+        return $this->merchantApiKey;
     }
 
     /**
@@ -99,7 +53,7 @@ class ReturnWithItemsRequest implements AdminReturnWithItemsRequestInterface
      */
     public function getPaymentReference(): int
     {
-        return (int)$this->paymentReference;
+        return $this->paymentReference;
     }
 
     /**
@@ -117,7 +71,7 @@ class ReturnWithItemsRequest implements AdminReturnWithItemsRequestInterface
      */
     public function getRequestId(): string
     {
-        return (string)$this->requestId;
+        return $this->requestId;
     }
 
     /**
@@ -135,7 +89,7 @@ class ReturnWithItemsRequest implements AdminReturnWithItemsRequestInterface
      */
     public function getCurrency(): string
     {
-        return (string)$this->currency;
+        return $this->currency;
     }
 
     /**
@@ -153,7 +107,7 @@ class ReturnWithItemsRequest implements AdminReturnWithItemsRequestInterface
      */
     public function getOrderItems(): array
     {
-        return [];
+        return $this->orderItems;
     }
 
     /**
@@ -165,13 +119,11 @@ class ReturnWithItemsRequest implements AdminReturnWithItemsRequestInterface
             return $this;
         }
 
-        // Convert positive discount numbers to negative
         foreach ($orderItems as $key => $orderItem) {
-            if ($orderItem->getType() === QliroOrderItemInterface::TYPE_DISCOUNT) {
-                $orderItem->setPricePerItemExVat(-abs($orderItem->getPricePerItemExVat()));
-                $orderItem->setPricePerItemIncVat(-abs($orderItem->getPricePerItemIncVat()));
+            if (($orderItem['Type'] ?? null) === QliroOrderItemInterface::TYPE_DISCOUNT) {
+                $orderItems[$key]['PricePerItemExVat'] = -abs($orderItem['PricePerItemExVat'] ?? 0.0);
+                $orderItems[$key]['PricePerItemIncVat'] = -abs($orderItem['PricePerItemIncVat'] ?? 0.0);
             }
-
         }
 
         $this->orderItems = $orderItems;
@@ -184,7 +136,7 @@ class ReturnWithItemsRequest implements AdminReturnWithItemsRequestInterface
      */
     public function getFees(): array
     {
-        return [];
+        return $this->fees;
     }
 
     /**
@@ -233,52 +185,20 @@ class ReturnWithItemsRequest implements AdminReturnWithItemsRequestInterface
         if ($this->paymentTransactionId) {
             $this->returns['PaymentTransactionId'] = $this->paymentTransactionId;
         }
-        if (is_countable($this->orderItems)) {
-            $orderItems = [];
-            foreach ($this->orderItems as $orderItem) {
-                $innerItem = $this->payloadConverter->toArray($orderItem);
-                if (!count($innerItem)){
-                    continue;
-                }
 
-                $orderItems[] = $innerItem;
-            }
-
-            if (count($orderItems)) {
-                $this->returns['OrderItems'] = $orderItems;
-            }
+        $orderItems = array_values(array_filter($this->orderItems));
+        if ($orderItems) {
+            $this->returns['OrderItems'] = $orderItems;
         }
 
-        if (is_countable($this->fees)) {
-            $fees = [];
-            foreach ($this->fees as $fee) {
-                $innerItem = $this->payloadConverter->toArray($fee);
-                if (!count($innerItem)){
-                    continue;
-                }
-
-                $fees[] = $innerItem;
-            }
-
-            if (count($fees)) {
-                $this->returns['Fees'] = $fees;
-            }
+        $fees = array_values(array_filter($this->fees));
+        if ($fees) {
+            $this->returns['Fees'] = $fees;
         }
 
-        if (is_countable($this->discounts)) {
-            $discounts = [];
-            foreach ($this->discounts as $discount) {
-                $innerItem = $this->payloadConverter->toArray($discount);
-                if (!count($innerItem)){
-                    continue;
-                }
-
-                $discounts[] = $innerItem;
-            }
-
-            if (count($discounts)) {
-                $this->returns['Discounts'] = $discounts;
-            }
+        $discounts = array_values(array_filter($this->discounts));
+        if ($discounts) {
+            $this->returns['Discounts'] = $discounts;
         }
 
         return $this->returns;
