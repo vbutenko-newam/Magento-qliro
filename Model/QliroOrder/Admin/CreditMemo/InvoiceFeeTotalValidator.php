@@ -31,11 +31,18 @@ class InvoiceFeeTotalValidator implements InvoiceFeeTotalValidatorInterface
             return false;
         }
 
+        // Credit memos created from the order (not tied to a specific invoice) have no
+        // invoice reference. Invoice-level fee validation cannot be performed in that case.
+        if ($this->getCreditMemo()->getInvoice() === null) {
+            return false;
+        }
+
         if ($useQtyRefundedOnly) {
             return bccomp(
-                $this->getCreditMemo()->getInvoice()->getBaseTotalRefunded(),
-                $this->getCreditMemo()->getInvoice()->getGrandTotal()
-            ) != -1;
+                (string) $this->getCreditMemo()->getInvoice()->getBaseTotalRefunded(),
+                (string) $this->getCreditMemo()->getInvoice()->getGrandTotal(),
+                2
+            ) !== -1;
         }
 
         $invoiceGrandTotal = $this->getCreditMemo()->getInvoice()->getGrandTotal() - $this->getOrderFeesTotal();
@@ -45,11 +52,7 @@ class InvoiceFeeTotalValidator implements InvoiceFeeTotalValidatorInterface
         $fee = $this->getOrderFeesTotal();
         $orderTotalRefunded = $feeIsAddedAsTotal ? $totalRefunded + $totalCreditMemo - $fee : $totalRefunded + $totalCreditMemo;
 
-        if (bccomp($orderTotalRefunded, $invoiceGrandTotal) != -1) {
-            return true;
-        }
-
-        return false;
+        return bccomp((string) $orderTotalRefunded, (string) $invoiceGrandTotal, 2) !== -1;
     }
 
     /**
@@ -73,7 +76,9 @@ class InvoiceFeeTotalValidator implements InvoiceFeeTotalValidatorInterface
             }
 
             foreach ($qlirooneFees as $qlirooneFee) {
-                $this->totalFee = $this->totalFee + floatval($qlirooneFee['PricePerItemIncVat']);
+                if (is_array($qlirooneFee)) {
+                    $this->totalFee = $this->totalFee + floatval($qlirooneFee['PricePerItemIncVat'] ?? 0);
+                }
             }
 
         }
