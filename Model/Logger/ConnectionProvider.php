@@ -16,7 +16,7 @@ use Magento\Framework\App\ResourceConnection\ConnectionFactory;
 class ConnectionProvider
 {
     /**
-     * @var \Magento\Framework\DB\Adapter\AdapterInterface|null
+     * @var AdapterInterface|null
      */
     private ?AdapterInterface $connection = null;
 
@@ -33,7 +33,7 @@ class ConnectionProvider
     }
 
     /**
-     * Get a log DB connection that uses same config as default connection, but is separate
+     * Get a log DB connection that uses the same config as the default connection but is separate
      *
      * @return AdapterInterface
      * @throws \DomainException

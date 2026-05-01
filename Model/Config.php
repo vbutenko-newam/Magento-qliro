@@ -9,119 +9,122 @@ namespace Qliro\QliroOne\Model;
 
 use Magento\Framework\Serialize\Serializer\Json;
 use Magento\Payment\Model\Method\Adapter;
-use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Framework\App\Config\ScopeConfigInterface as ScopeConfig;
 use Magento\Directory\Helper\Data as DirectoryHelper;
 use Magento\Directory\Model\ResourceModel\Country\CollectionFactory as CountryCollectionFactory;
 use Magento\Store\Model\ScopeInterface;
+use Magento\Store\Model\Store;
 
 class Config
 {
-    const QLIROONE_ACTIVE = 'active';
-    const QLIROONE_TITLE = 'title';
-    const QLIROONE_DEBUG = 'debug';
-    const QLIROONE_EAGER_CHECKOUT_REFRESH = 'eager_checkout_refresh';
+    const string QLIROONE_ACTIVE = 'active';
+    const string QLIROONE_TITLE = 'title';
+    const string QLIROONE_DEBUG = 'debug';
+    const string QLIROONE_EAGER_CHECKOUT_REFRESH = 'eager_checkout_refresh';
 
-    const QLIROONE_COUNTRY_SELECTOR = 'api/country_selector';
-    const QLIROONE_GEOIP = 'api/geoip';
-    const QLIROONE_LOGGING_LEVEL = 'api/logging';
-    const QLIROONE_ORDER_STATUS = 'api/order_status';
-    const QLIROONE_ALLOW_SPECIFIC = 'api/allowspecific';
-    const QLIROONE_COUNTRIES = 'api/shipping_countries';
-    const QLIROONE_CAPTURE_ON_SHIPMENT = 'api/capture_on_shipment';
-    const QLIROONE_CAPTURE_ON_INVOICE = 'api/capture_on_invoice';
-    const QLIROONE_NEWSLETTER_SIGNUP = 'api/newsletter_signup';
-    const QLIROONE_NEWSLETTER_SIGNUP_PRECHECKED = 'api/newsletter_signup_prechecked';
-    const QLIROONE_REQUIRE_IDENTITY_VERIFICATION = 'api/require_identity_verification';
-    const QLIROONE_MINIMUM_CUSTOMER_AGE = 'api/minimum_customer_age';
-    const QLIROONE_B2B_CHECKOUT_ONLY = 'api/b2b_checkout_only';
-    const QLIROONE_SHOW_AS_PAYMENT_METHOD = 'api/show_as_payment_method';
+    const string QLIROONE_COUNTRY_SELECTOR = 'api/country_selector';
+    const string QLIROONE_GEOIP = 'api/geoip';
+    const string QLIROONE_LOGGING_LEVEL = 'api/logging';
+    const string QLIROONE_ORDER_STATUS = 'api/order_status';
+    const string QLIROONE_ALLOW_SPECIFIC = 'api/allowspecific';
+    const string QLIROONE_COUNTRIES = 'api/shipping_countries';
+    const string QLIROONE_CAPTURE_ON_SHIPMENT = 'api/capture_on_shipment';
+    const string QLIROONE_CAPTURE_ON_INVOICE = 'api/capture_on_invoice';
+    const string QLIROONE_NEWSLETTER_SIGNUP = 'api/newsletter_signup';
+    const string QLIROONE_NEWSLETTER_SIGNUP_PRECHECKED = 'api/newsletter_signup_prechecked';
+    const string QLIROONE_REQUIRE_IDENTITY_VERIFICATION = 'api/require_identity_verification';
+    const string QLIROONE_MINIMUM_CUSTOMER_AGE = 'api/minimum_customer_age';
+    const string QLIROONE_B2B_CHECKOUT_ONLY = 'api/b2b_checkout_only';
+    const string QLIROONE_SHOW_AS_PAYMENT_METHOD = 'api/show_as_payment_method';
 
-    const QLIROONE_API_TYPE = 'qliro_api/type';
-    const QLIROONE_MERCHANT_API_KEY = 'qliro_api/merchant_api_key';
-    const QLIROONE_MERCHANT_API_SECRET = 'qliro_api/merchant_api_secret';
-    const QLIROONE_PRESET_ADDRESS = 'qliro_api/preset_address';
+    const string QLIROONE_API_TYPE = 'qliro_api/type';
+    const string QLIROONE_MERCHANT_API_KEY = 'qliro_api/merchant_api_key';
+    const string QLIROONE_MERCHANT_API_SECRET = 'qliro_api/merchant_api_secret';
+    const string QLIROONE_PRESET_ADDRESS = 'qliro_api/preset_address';
 
-    const QLIROONE_STYLING_BACKGROUND = 'styling/background_color';
-    const QLIROONE_STYLING_PRIMARY = 'styling/primary_color';
-    const QLIROONE_STYLING_CALL_TO_ACTION = 'styling/call_to_action_color';
-    const QLIROONE_STYLING_HOVER = 'styling/call_to_action_hover_color';
-    const QLIROONE_STYLING_RADIUS = 'styling/corner_radius';
-    const QLIROONE_STYLING_BUTTON_CORNER = 'styling/button_corner_radius';
+    const string QLIROONE_STYLING_BACKGROUND = 'styling/background_color';
+    const string QLIROONE_STYLING_PRIMARY = 'styling/primary_color';
+    const string QLIROONE_STYLING_CALL_TO_ACTION = 'styling/call_to_action_color';
+    const string QLIROONE_STYLING_HOVER = 'styling/call_to_action_hover_color';
+    const string QLIROONE_STYLING_RADIUS = 'styling/corner_radius';
+    const string QLIROONE_STYLING_BUTTON_CORNER = 'styling/button_corner_radius';
 
-    const QLIROONE_FEE_MERCHANT_REFERENCE = 'merchant/fee_merchant_reference';
-    const QLIROONE_TERMS_URL = 'merchant/terms_url';
-    const QLIROONE_INTEGRITY_POLICY_URL = 'merchant/integrity_policy_url';
+    const string QLIROONE_FEE_MERCHANT_REFERENCE = 'merchant/fee_merchant_reference';
+    const string QLIROONE_TERMS_URL = 'merchant/terms_url';
+    const string QLIROONE_INTEGRITY_POLICY_URL = 'merchant/integrity_policy_url';
 
-    const QLIROONE_XDEBUG_SESSION_FLAG_NAME = 'callback/xdebug_session_flag_name';
-    const QLIROONE_REDIRECT_CALLBACKS = 'callback/redirect_callbacks';
-    const QLIROONE_CALLBACK_URI = 'callback/callback_uri';
-    const QLIROONE_ENABLE_HTTP_AUTH = 'callback/enable_http_auth';
-    const QLIROONE_HTTP_AUTH_USERNAME = 'callback/http_auth_username';
-    const QLIROONE_HTTP_AUTH_PASSWORD = 'callback/http_auth_password';
+    const string QLIROONE_XDEBUG_SESSION_FLAG_NAME = 'callback/xdebug_session_flag_name';
+    const string QLIROONE_REDIRECT_CALLBACKS = 'callback/redirect_callbacks';
+    const string QLIROONE_CALLBACK_URI = 'callback/callback_uri';
+    const string QLIROONE_ENABLE_HTTP_AUTH = 'callback/enable_http_auth';
+    const string QLIROONE_HTTP_AUTH_USERNAME = 'callback/http_auth_username';
+    const string QLIROONE_HTTP_AUTH_PASSWORD = 'callback/http_auth_password';
 
-    const QLIROONE_ADDITIONAL_INFO_REFERENCE = 'qliro_reference';
-    const QLIROONE_ADDITIONAL_INFO_QLIRO_ORDER_ID = 'qliro_order_id';
-    const QLIROONE_ADDITIONAL_INFO_PAYMENT_METHOD_CODE = 'qliro_payment_method_code';
-    const QLIROONE_ADDITIONAL_INFO_PAYMENT_METHOD_NAME = 'qliro_payment_method_name';
-    const QLIROONE_ADDITIONAL_INFO_SHIPPING_PROPERTIES = 'qliro_payment_shipping_properties';
+    const string QLIROONE_ADDITIONAL_INFO_REFERENCE = 'qliro_reference';
+    const string QLIROONE_ADDITIONAL_INFO_QLIRO_ORDER_ID = 'qliro_order_id';
+    const string QLIROONE_ADDITIONAL_INFO_PAYMENT_METHOD_CODE = 'qliro_payment_method_code';
+    const string QLIROONE_ADDITIONAL_INFO_PAYMENT_METHOD_NAME = 'qliro_payment_method_name';
+    const string QLIROONE_ADDITIONAL_INFO_SHIPPING_PROPERTIES = 'qliro_payment_shipping_properties';
 
-    const CONFIG_FEE_AMOUNT = 'fee';
-    const CONFIG_FEE_TITLE = 'description';
+    const string CONFIG_FEE_AMOUNT = 'fee';
+    const string CONFIG_FEE_TITLE = 'description';
 
-    const TOTALS_FEE_CODE = 'qliroone_fee';
-    const TOTALS_FEE_CODE_TAX = 'qliroone_fee_tax';
-    const TOTALS_BASE_FEE_CODE = 'base_qliroone_fee';
-    const TOTALS_BASE_FEE_CODE_TAX = 'base_qliroone_fee_tax';
+    const string TOTALS_FEE_CODE = 'qliroone_fee';
+    const string TOTALS_FEE_CODE_TAX = 'qliroone_fee_tax';
+    const string TOTALS_BASE_FEE_CODE = 'base_qliroone_fee';
+    const string TOTALS_BASE_FEE_CODE_TAX = 'base_qliroone_fee_tax';
 
-    const QLIROONE_UNIFAUN_ENABLED = 'unifaun/enable';
-    const QLIROONE_UNIFAUN_SHIPPING_ENABLED = 'carriers/qlirounifaun/active';
-    const QLIROONE_UNIFAUN_CHECKOUT_ID = 'unifaun/checkout_id';
-    const QLIROONE_UNIFAUN_PARAMETERS = 'unifaun/parameters';
+    const string QLIROONE_UNIFAUN_ENABLED = 'unifaun/enable';
+    const string QLIROONE_UNIFAUN_SHIPPING_ENABLED = 'carriers/qlirounifaun/active';
+    const string QLIROONE_UNIFAUN_CHECKOUT_ID = 'unifaun/checkout_id';
+    const string QLIROONE_UNIFAUN_PARAMETERS = 'unifaun/parameters';
 
-    const QLIROONE_INGRID_ENABLED = 'ingrid/enable';
-    const QLIROONE_INGRID_SHIPPING_ENABLED = 'carriers/qliroingrid/active';
+    const string QLIROONE_INGRID_ENABLED = 'ingrid/enable';
+    const string QLIROONE_INGRID_SHIPPING_ENABLED = 'carriers/qliroingrid/active';
 
-    const QLIROONE_RECURRING_ENABLE = 'recurring_payments/enable';
-    const QLIROONE_RECURRING_FREQUENCY_OPTIONS = 'recurring_payments/frequency_options';
+    const string QLIROONE_RECURRING_ENABLE = 'recurring_payments/enable';
+    const string QLIROONE_RECURRING_FREQUENCY_OPTIONS = 'recurring_payments/frequency_options';
+
+    const string QLIROONE_LOG_RETENTION_DAYS = 'debugging/log_retention_days';
 
     /**
      * Payment Fee tax class
      */
-    const XML_PATH_TAX_CLASS = 'tax/classes/qliroone_fee_tax_class';
+    const string XML_PATH_TAX_CLASS = 'tax/classes/qliroone_fee_tax_class';
 
     /**
      * @todo Improvement for proper module. Make use of this setting, it is not at the moment
      *
      * Shopping cart display settings
      */
-    const XML_PATH_PRICE_DISPLAY_CART_PAYMENT_FEE = 'tax/cart_display/qliroone_fee';
+    const string XML_PATH_PRICE_DISPLAY_CART_PAYMENT_FEE = 'tax/cart_display/qliroone_fee';
 
     /**
      * @todo Improvement for proper module. Make use of this setting, it is not at the moment
      *
      * Sales display settings
      */
-    const XML_PATH_PRICE_DISPLAY_SALES_PAYMENT_FEE = 'tax/sales_display/qliroone_fee';
+    const string XML_PATH_PRICE_DISPLAY_SALES_PAYMENT_FEE = 'tax/sales_display/qliroone_fee';
 
     /**
      * tax calculation for payment fee
      */
-    const CONFIG_XML_PATH_PAYMENT_FEE_INCLUDES_TAX = 'tax/calculation/qliroone_fee_includes_tax';
+    const string CONFIG_XML_PATH_PAYMENT_FEE_INCLUDES_TAX = 'tax/calculation/qliroone_fee_includes_tax';
 
     /**
      * Class constructor
      *
-     * @param \Magento\Payment\Model\Method\Adapter $adapter
-     * @param \Magento\Framework\App\Config\ScopeConfigInterface $config
-     * @param Json $json
-     * @param DirectoryHelper $directoryHelper
-     * @param CountryCollectionFactory $countryCollectionFactory
+     * @param Adapter                             $adapter
+     * @param ScopeConfig                         $config
+     * @param Json                                $json
+     * @param DirectoryHelper                     $directoryHelper
+     * @param CountryCollectionFactory            $countryCollectionFactory
      */
     public function __construct(
-        private readonly Adapter $adapter,
-        protected readonly ScopeConfigInterface $config,
-        private readonly Json $json,
-        private readonly DirectoryHelper $directoryHelper,
+        private readonly Adapter                  $adapter,
+        protected readonly ScopeConfig            $config,
+        private readonly Json                     $json,
+        private readonly DirectoryHelper          $directoryHelper,
         private readonly CountryCollectionFactory $countryCollectionFactory
     ) {
     }
@@ -233,7 +236,7 @@ class Config
     }
 
     /**
-     * @param int|null $storeId
+     * @param int|string|null $storeId
      * @return bool
      */
     public function shouldCaptureOnShipment(int|string|null $storeId = null): bool
@@ -242,7 +245,7 @@ class Config
     }
 
     /**
-     * @param int|null $storeId
+     * @param int|string|null $storeId
      * @return bool
      */
     public function shouldCaptureOnInvoice(int|string|null $storeId = null): bool
@@ -251,7 +254,7 @@ class Config
     }
 
     /**
-     * @param int|null $storeId
+     * @param int|string|null $storeId
      * @return bool
      */
     public function shouldAskForNewsletterSignup(int|string|null $storeId = null): bool
@@ -260,7 +263,7 @@ class Config
     }
 
     /**
-     * @param int|null $storeId
+     * @param int|string|null $storeId
      * @return bool
      */
     public function askForNewsletterSignupChecked(int|string|null $storeId = null): bool
@@ -269,7 +272,7 @@ class Config
     }
 
     /**
-     * @param int|null $storeId
+     * @param int|string|null $storeId
      * @return bool
      */
     public function requireIdentityVerification(int|string|null $storeId = null): bool
@@ -280,7 +283,7 @@ class Config
     /**
      * Get API type can be either "sandbox" or "prod"
      *
-     * @param int|null $storeId
+     * @param int|string|null $storeId
      * @return string
      */
     public function getApiType(int|string|null $storeId = null): string
@@ -289,7 +292,7 @@ class Config
     }
 
     /**
-     * @param int|null $storeId
+     * @param int|string|null $storeId
      * @return string
      */
     public function getMerchantApiKey(int|string|null $storeId = null): string
@@ -298,7 +301,7 @@ class Config
     }
 
     /**
-     * @param int|null $storeId
+     * @param int|string|null $storeId
      * @return string
      */
     public function getMerchantApiSecret(int|string|null $storeId = null): string
@@ -467,7 +470,7 @@ class Config
     /**
      * Get TaxClass for Fee
      *
-     * @param \Magento\Store\Model\Store|int|null $store
+     * @param Store|int|null $store
      * @return string|null
      */
     public function getFeeTaxClass(mixed $store = null): ?string
@@ -480,9 +483,9 @@ class Config
     }
 
     /**
-     * Check ability to display prices including tax for payment fee in shopping cart
+     * Check the ability to display prices including tax for payment fee in shopping cart
      *
-     * @param \Magento\Store\Model\Store|int|null $store
+     * @param Store|int|null $store
      * @return bool
      */
     public function displayCartPaymentFeeIncludeTaxPrice(mixed $store = null): bool
@@ -497,9 +500,9 @@ class Config
     }
 
     /**
-     * Check ability to display prices excluding tax for payment fee in shopping cart
+     * Check the ability to display prices excluding tax for payment fee in shopping cart
      *
-     * @param \Magento\Store\Model\Store|int|null $store
+     * @param Store|int|null $store
      * @return bool
      */
     public function displayCartPaymentFeeExcludeTaxPrice(mixed $store = null): bool
@@ -515,7 +518,7 @@ class Config
     /**
      * Check ability to display both prices for payment fee in shopping cart
      *
-     * @param \Magento\Store\Model\Store|int|null $store
+     * @param Store|int|null $store
      * @return bool
      */
     public function displayCartPaymentFeeBothPrices(mixed $store = null): bool
@@ -529,9 +532,9 @@ class Config
     }
 
     /**
-     * Check ability to display prices including tax for payment fee in backend sales
+     * Check the ability to display prices including tax for payment fee in backend sales
      *
-     * @param \Magento\Store\Model\Store|int|null $store
+     * @param Store|int|null $store
      * @return bool
      */
     public function displaySalesPaymentFeeIncludeTaxPrice(mixed $store = null): bool
@@ -546,9 +549,9 @@ class Config
     }
 
     /**
-     * Check ability to display prices excluding tax for payment fee in backend sales
+     * Check the ability to display prices excluding tax for payment fee in backend sales
      *
-     * @param \Magento\Store\Model\Store|int|null $store
+     * @param Store|int|null $store
      * @return bool
      */
     public function displaySalesPaymentFeeExcludeTaxPrice(mixed $store = null): bool
@@ -562,9 +565,9 @@ class Config
     }
 
     /**
-     * Check ability to display both prices for payment fee in backend sales
+     * Check the ability to display both prices for payment fee in backend sales
      *
-     * @param \Magento\Store\Model\Store|int|null $store
+     * @param Store|int|null $store
      * @return bool
      */
     public function displaySalesPaymentFeeBothPrices(mixed $store = null): bool
@@ -580,7 +583,7 @@ class Config
     /**
      * Check if shipping prices include tax
      *
-     * @param \Magento\Store\Model\Store|int|null $store
+     * @param Store|int|null $store
      * @return bool
      */
     public function paymentFeeIncludesTax(mixed $store = null): bool
@@ -594,7 +597,7 @@ class Config
     }
 
     /**
-     * @param int|null $storeId
+     * @param int|string|null $storeId
      * @return bool
      */
     public function isUnifaunEnabled(int|string|null $storeId = null): bool
@@ -611,7 +614,7 @@ class Config
     }
 
     /**
-     * @param int|null $storeId
+     * @param int|string|null $storeId
      * @return string
      */
     public function getUnifaunCheckoutId(int|string|null $storeId = null): string
@@ -620,7 +623,7 @@ class Config
     }
 
     /**
-     * @param int|null $storeId
+     * @param int|string|null $storeId
      * @return array
      */
     public function getUnifaunParameters(int|string|null $storeId = null): array
@@ -634,7 +637,7 @@ class Config
     }
 
     /**
-     * @param int|null $storeId
+     * @param int|string|null $storeId
      * @return bool
      */
     public function isIngridEnabled(int|string|null $storeId = null): bool
@@ -651,7 +654,7 @@ class Config
     }
 
     /**
-     * @param int|null $storeId
+     * @param int|string|null $storeId
      * @return int
      */
     public function getMinimumCustomerAge(int|string|null $storeId = null): int
@@ -662,7 +665,7 @@ class Config
     /**
      * Check if only B2B checkout is enabled for companies
      *
-     * @param int|null $storeId
+     * @param int|string|null $storeId
      * @return bool
      */
     public function isB2BCheckoutOnlyEnabled(int|string|null $storeId = null): bool
@@ -673,7 +676,7 @@ class Config
     /**
      * Check if qliro set to be shown as a payment method
      *
-     * @param int|null $storeId
+     * @param int|string|null $storeId
      * @return bool
      */
     public function getShowAsPaymentMethod(int|string|null $storeId = null): bool
@@ -682,7 +685,7 @@ class Config
     }
 
     /**
-     * @param int|null $storeId
+     * @param int|string|null $storeId
      * @return bool
      */
     public function isUseRecurring(int|string|null $storeId = null): bool
@@ -691,7 +694,7 @@ class Config
     }
 
     /**
-     * @param int|null $storeId
+     * @param int|string|null $storeId
      * @return string
      */
     public function getRecurringFrequencyOptions(int|string|null $storeId = null): string
@@ -704,7 +707,7 @@ class Config
      * - if "allow specific" is enabled, returns the list of countries from "specific countries" config
      * - otherwise, returns general list of allowed countries
      *
-     * @param int|null $storeId
+     * @param int|string|null $storeId
      * @return array Option format: ['value' => 'SE', 'label' => 'Sweden']
      */
     public function getAvailableCountries(int|string|null $storeId = null): array
@@ -722,11 +725,26 @@ class Config
     /**
      * Get default country
      *
-     * @param int|null $storeId
+     * @param int|string|null $storeId
      * @return string
      */
     public function getDefaultCountry(int|string|null $storeId = null): string
     {
         return $this->directoryHelper->getDefaultCountry($storeId);
+    }
+
+    /**
+     * Number of days to retain log records and log file entries before cleanup.
+     *
+     * @param int|string|null $storeId
+     * @return int
+     */
+    public function getLogRetentionDays(int|string|null $storeId = null): int
+    {
+        return (int) $this->config->getValue(
+            'payment/qliroone/' . self::QLIROONE_LOG_RETENTION_DAYS,
+            ScopeInterface::SCOPE_STORE,
+            $storeId
+        );
     }
 }

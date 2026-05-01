@@ -319,6 +319,11 @@
                 </group>
                 <group id="debugging" type="text" sortOrder="90" showInDefault="1" showInWebsite="1" showInStore="1" translate="label">
                     <label>Debugging</label>
+                    <field id="log_retention_days" translate="label comment" type="select" sortOrder="5" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                        <label>Log Retention Period</label>
+                        <comment>Log records older than this period are removed by the nightly cleanup cron job (qliroone_clean_logs).</comment>
+                        <source_model>Qliro\QliroOne\Model\System\Config\Source\LogRetentionPeriod</source_model>
+                    </field>
                     <group id="download" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1" translate="label">
                         <label>Download Logs</label>
                         <field id="download_logs" translate="label" type="button" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
