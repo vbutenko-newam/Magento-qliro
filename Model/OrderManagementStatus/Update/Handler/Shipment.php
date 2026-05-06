@@ -98,9 +98,16 @@ class Shipment implements OrderManagementStatusUpdateHandlerInterface
                 $invoice->register()->pay();
                 $this->invoiceRepository->save($invoice);
             } else {
-                throw new \Magento\Framework\Exception\LocalizedException(
-                    __('Order does not allow to capture')
-                );
+                $payment->setTransactionId($qliroOrderManagementStatus['PaymentTransactionId'] ?? null);
+                $payment->setLastTransId($qliroOrderManagementStatus['PaymentTransactionId'] ?? null);
+                foreach ($order->getInvoiceCollection() as $existingInvoice) {
+                    if ((int)$existingInvoice->getState() === Invoice::STATE_OPEN) {
+                        $existingInvoice->setTransactionId($qliroOrderManagementStatus['PaymentTransactionId'] ?? null);
+                        $existingInvoice->pay();
+                        $this->invoiceRepository->save($existingInvoice);
+                        break;
+                    }
+                }
             }
 
             $formattedPrice = $order->getBaseCurrency()->formatTxt(

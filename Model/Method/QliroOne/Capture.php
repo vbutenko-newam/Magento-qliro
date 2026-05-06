@@ -55,6 +55,9 @@ readonly class Capture implements CommandInterface
             $order = $payment->getOrder();
             if ($this->qliroConfig->shouldCaptureOnInvoice($order ? $order->getStoreId() : null)) {
                 $this->qliroManagement->captureByInvoice($payment, $amount);
+            } else {
+                $payment->setIsTransactionPending(true);
+                $payment->setIsTransactionClosed(false);
             }
         } catch (\Exception $exception) {
             throw new LocalizedException(
