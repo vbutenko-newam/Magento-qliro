@@ -60,8 +60,11 @@ class UpdateRequestBuilder
             throw new \LogicException('Quote entity is not set.');
         }
 
+        $storeId = $this->quote->getStoreId();
         $updateRequest = [
-            'RequireIdentityVerification' => (bool) $this->qliroConfig->requireIdentityVerification(),
+            'RequireIdentityVerification'   => $this->qliroConfig->requireIdentityVerification($storeId),
+            'AskForNewsletterSignup'        => $this->qliroConfig->shouldAskForNewsletterSignup($storeId),
+            'AskForNewsletterSignupChecked' => $this->qliroConfig->askForNewsletterSignupChecked($storeId),
         ];
 
         $updateRequest['OrderItems'] = $this->orderItemsBuilder->setQuote($this->quote)->create();
