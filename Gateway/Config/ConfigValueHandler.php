@@ -30,7 +30,7 @@ class ConfigValueHandler implements ValueHandlerInterface
      * @param int|string|null $storeId
      * @return mixed
      */
-    public function handle(array $subject, int|string|null $storeId = null): mixed
+    public function handle(array $subject, $storeId = null): mixed
     {
         return $this->configInterface->getValue(SubjectReader::readField($subject), $storeId);
     }
