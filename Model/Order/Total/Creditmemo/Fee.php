@@ -9,18 +9,18 @@ namespace Qliro\QliroOne\Model\Order\Total\Creditmemo;
 
 use Magento\Sales\Model\Order\Creditmemo;
 use Magento\Sales\Model\Order\Creditmemo\Total\AbstractTotal;
-use Qliro\QliroOne\Api\Admin\CreditMemo\InvoiceFeeTotalValidatorInterface;
+use Qliro\QliroOne\Api\Admin\CreditMemo\InvoiceFeeTotalValidatorInterface as InvoiceFeeTotalValidator;
 
 class Fee extends AbstractTotal
 {
     /**
      * Class constructor
      *
-     * @param InvoiceFeeTotalValidatorInterface $invoiceFeeTotalValidator
+     * @param InvoiceFeeTotalValidator            $invoiceFeeTotalValidator
      * @param array $data
      */
     public function __construct(
-        private readonly InvoiceFeeTotalValidatorInterface $invoiceFeeTotalValidator,
+        private readonly InvoiceFeeTotalValidator $invoiceFeeTotalValidator,
         array $data = []
     ) {
         parent::__construct($data);

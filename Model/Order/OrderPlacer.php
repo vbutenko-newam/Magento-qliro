@@ -7,16 +7,13 @@ declare(strict_types=1);
 
 namespace Qliro\QliroOne\Model\Order;
 
-use Magento\Customer\Api\CustomerRepositoryInterface;
+use Magento\Customer\Api\CustomerRepositoryInterface as CustomerRepository;
 use Magento\Customer\Api\Data\GroupInterface;
-use Magento\Customer\Model\Customer;
 use Magento\Framework\Exception\CouldNotSaveException;
 use Magento\Quote\Model\Quote;
-use Magento\Quote\Api\CartRepositoryInterface;
 use Magento\Checkout\Model\Type\Onepage;
-use Magento\Quote\Api\CartManagementInterface;
-use Magento\Sales\Api\OrderRepositoryInterface;
-use Magento\Framework\Event\ManagerInterface;
+use Magento\Quote\Api\CartManagementInterface as CartManagement;
+use Magento\Sales\Api\OrderRepositoryInterface as OrderRepository;
 use Magento\Sales\Model\Order;
 
 /**
@@ -27,14 +24,14 @@ readonly class OrderPlacer
     /**
      * Class constructor
      *
-     * @param CartManagementInterface       $cartManagement
-     * @param OrderRepositoryInterface      $orderRepository
-     * @param CustomerRepositoryInterface   $customerRepository
+     * @param CartManagement       $cartManagement
+     * @param OrderRepository      $orderRepository
+     * @param CustomerRepository   $customerRepository
      */
     public function __construct(
-        private CartManagementInterface     $cartManagement,
-        private OrderRepositoryInterface    $orderRepository,
-        private CustomerRepositoryInterface $customerRepository
+        private CartManagement     $cartManagement,
+        private OrderRepository    $orderRepository,
+        private CustomerRepository $customerRepository
     ) {
     }
 
@@ -83,6 +80,7 @@ readonly class OrderPlacer
             $quote->setCheckoutMethod(Onepage::METHOD_CUSTOMER);
             return $quote->getCheckoutMethod();
         }
+
         if (!$quote->getCheckoutMethod()) {
             $quote->setCheckoutMethod(Onepage::METHOD_GUEST);
         }
@@ -115,17 +113,20 @@ readonly class OrderPlacer
         $billing  = $quote->getBillingAddress();
         $shipping = $quote->isVirtual() ? null : $quote->getShippingAddress();
 
-        /** @var Customer $customer */
         $customer           = $this->customerRepository->getById($quote->getCustomerId());
-        $hasDefaultBilling  = (bool)$customer->getPrimaryBillingAddress();
-        $hasDefaultShipping = (bool)$customer->getPrimaryShippingAddress();
+        $hasDefaultBilling  = (bool)$customer->getDefaultBilling();
+        $hasDefaultShipping = (bool)$customer->getDefaultShipping();
 
-        if ($shipping && !$shipping->getSameAsBilling() && (!$shipping->getCustomerId() || $shipping->getSaveInAddressBook())) {
+        if ($shipping
+            && !$shipping->getSameAsBilling()
+            && (!$shipping->getCustomerId() || $shipping->getSaveInAddressBook())
+        ) {
             $shippingAddress = $shipping->exportCustomerAddress();
             if (!$hasDefaultShipping) {
                 $shippingAddress->setIsDefaultShipping(true);
                 $hasDefaultShipping = true;
             }
+
             $quote->addCustomerAddress($shippingAddress);
             $shipping->setCustomerAddressData($shippingAddress);
         }
@@ -138,6 +139,7 @@ readonly class OrderPlacer
                 }
                 $billingAddress->setIsDefaultBilling(true);
             }
+
             $quote->addCustomerAddress($billingAddress);
             $billing->setCustomerAddressData($billingAddress);
         }

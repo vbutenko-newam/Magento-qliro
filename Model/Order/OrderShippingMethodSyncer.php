@@ -15,10 +15,10 @@ use Qliro\QliroOne\Model\Logger\Manager as LogManager;
  *
  * Extracted from PlaceOrder::syncShippingMethod() (SRP).
  */
-class OrderShippingMethodSyncer
+readonly class OrderShippingMethodSyncer
 {
     public function __construct(
-        private readonly LogManager $logManager
+        private LogManager $logManager
     ) {
     }
 

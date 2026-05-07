@@ -7,7 +7,7 @@ declare(strict_types=1);
 
 namespace Qliro\QliroOne\Model\Order;
 
-use Magento\Sales\Api\OrderRepositoryInterface;
+use Magento\Sales\Api\OrderRepositoryInterface as OrderRepository;
 use Magento\Sales\Model\Order;
 
 /**
@@ -20,10 +20,10 @@ readonly class OrderAddressUpdater
     /**
      * Class constructor
      *
-     * @param OrderRepositoryInterface $orderRepository
+     * @param OrderRepository   $orderRepository
      */
     public function __construct(
-        private OrderRepositoryInterface $orderRepository
+        private OrderRepository $orderRepository
     ) {
     }
 
@@ -63,7 +63,9 @@ readonly class OrderAddressUpdater
                 continue;
             }
 
-            $source = ($orderAddress->getAddressType() === 'shipping' && $qliroShipping) ? $qliroShipping : $qliroBilling;
+            $source = ($orderAddress->getAddressType() === 'shipping' && $qliroShipping)
+                ? $qliroShipping
+                : $qliroBilling;
 
             $fields = $addressFields;
             if ($source && $orderAddress->getAddressType() === 'shipping') {
