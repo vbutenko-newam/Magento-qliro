@@ -162,6 +162,7 @@ class Quote
 
         if ($link->getQliroOrderId()) {
             $this->logManager->debug('Existing active Qliro link found; skipping legacy update flow');
+            $this->updateQliroOrder($quote);
         } else {
             $this->logManager->debug('Generating new qliro order reference for quote ' . $quoteId);
             $orderReference = $this->linkService->generateOrderReference($quote);

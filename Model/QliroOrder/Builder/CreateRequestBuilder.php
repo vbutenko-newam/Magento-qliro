@@ -224,9 +224,10 @@ class CreateRequestBuilder
         if ($minAge > 0) {
             $createRequest['MinimumCustomerAge'] = $minAge;
         }
-        $createRequest['AskForNewsletterSignup'] = (bool)$this->qliroConfig->shouldAskForNewsletterSignup();
-        $createRequest['AskForNewsletterSignupChecked'] = (bool)$this->qliroConfig->askForNewsletterSignupChecked();
-        $createRequest['RequireIdentityVerification'] = (bool)$this->qliroConfig->requireIdentityVerification();
+        $storeId = $this->quote->getStoreId();
+        $createRequest['AskForNewsletterSignup']        = (bool)$this->qliroConfig->shouldAskForNewsletterSignup($storeId);
+        $createRequest['AskForNewsletterSignupChecked'] = (bool)$this->qliroConfig->askForNewsletterSignupChecked($storeId);
+        $createRequest['RequireIdentityVerification']   = (bool)$this->qliroConfig->requireIdentityVerification($storeId);
 
         return $createRequest;
     }
