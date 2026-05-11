@@ -4,13 +4,4 @@
         <plugin name="recurring_orders_grid_collection_plugin" type="Qliro\QliroOne\Plugin\AddRecurringColumnToOrderGrid" />
     </type>
 
-    <type name="Magento\Framework\View\Element\UiComponent\DataProvider\CollectionFactory">
-        <arguments>
-            <argument name="collections" xsi:type="array">
-                <item name="qliroone_log_listing_data_source" xsi:type="string">
-                    Qliro\QliroOne\Model\ResourceModel\LogRecord\Grid\Collection
-                </item>
-            </argument>
-        </arguments>
-    </type>
 </config>

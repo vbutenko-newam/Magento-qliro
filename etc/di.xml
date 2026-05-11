@@ -198,6 +198,14 @@
         </arguments>
     </virtualType>
 
+    <type name="Magento\Framework\View\Element\UiComponent\DataProvider\CollectionFactory">
+        <arguments>
+            <argument name="collections" xsi:type="array">
+                <item name="qliroone_log_listing_data_source" xsi:type="string">Qliro\QliroOne\Model\ResourceModel\LogRecord\Grid\Collection</item>
+            </argument>
+        </arguments>
+    </type>
+
     <type name="Magento\Framework\App\Request\CsrfValidator">
         <plugin name="qliroone_onepage_csrf_validator_skip" type="Qliro\QliroOne\Plugin\Callbacks\CsrfValidatorSkip" />
     </type>
