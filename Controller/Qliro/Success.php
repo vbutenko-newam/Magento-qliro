@@ -26,6 +26,7 @@ use Magento\Framework\View\Result\PageFactory;
 use Magento\Quote\Api\CartRepositoryInterface;
 use Magento\Sales\Api\OrderRepositoryInterface;
 use Psr\Log\LoggerInterface;
+use Qliro\QliroOne\Api\Client\MerchantInterface;
 use Qliro\QliroOne\Api\LinkRepositoryInterface;
 use Qliro\QliroOne\Model\Quote\Agent;
 use Qliro\QliroOne\Model\Success\Session as SuccessSession;
@@ -65,6 +66,7 @@ class Success extends Onepage
      * @param LinkRepositoryInterface $linkRepository
      * @param OrderRepositoryInterface $orderRepository
      * @param LoggerInterface $logger
+     * @param MerchantInterface $merchantApi
      */
     public function __construct(
         Context $context,
@@ -86,7 +88,8 @@ class Success extends Onepage
         private readonly SuccessSession $successSession,
         private readonly LinkRepositoryInterface $linkRepository,
         private readonly OrderRepositoryInterface $orderRepository,
-        private readonly LoggerInterface $logger
+        private readonly LoggerInterface $logger,
+        private readonly MerchantInterface $merchantApi
     ) {
         parent::__construct(
             $context,
@@ -174,7 +177,21 @@ class Success extends Onepage
 
                 if (!empty($orderId)) {
                     $order = $this->orderRepository->get($orderId);
-                    $this->successSession->save(null, $order);
+
+                    $snippet = null;
+                    try {
+                        $qliroOrderId = $link->getQliroOrderId();
+                        if ($qliroOrderId) {
+                            $qliroOrder = $this->merchantApi->getOrder($qliroOrderId);
+                            $snippet = $qliroOrder['OrderHtmlSnippet'] ?? null;
+                        }
+                    } catch (\Exception $e) {
+                        $this->logger->warning(
+                            'QliroOne Success: could not fetch HTML snippet: ' . $e->getMessage()
+                        );
+                    }
+
+                    $this->successSession->save($snippet, $order);
                     return true;
                 }
 

@@ -45,6 +45,16 @@ class Success extends Template
     }
 
     /**
+     * Get the Qliro order confirmation HTML snippet, if available.
+     *
+     * @return string|null
+     */
+    public function getSuccessHtmlSnippet(): ?string
+    {
+        return $this->successSession->getSuccessHtmlSnippet();
+    }
+
+    /**
      * Check if debug mode is on
      *
      * @return bool
