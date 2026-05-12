@@ -167,6 +167,7 @@ class QliroOrder
                             'Convert update shipping methods request into quote: ' . $qliroOrder['OrderId']
                         );
                         $this->quoteManagement->recalculateAndSaveQuote($quote);
+                        $this->quoteManagement->updateQliroOrder($quote);
                     } catch (\Exception $exception) {
                         $this->logManager->debug($exception, ['extra' => [
                             'link_id'        => $link->getId(),
