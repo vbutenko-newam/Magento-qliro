@@ -67,20 +67,16 @@ class InvoiceFeeTotalValidator implements InvoiceFeeTotalValidatorInterface
      */
     private function getOrderFeesTotal(): float
     {
-        if (!$this->totalFee) {
-            $feeTotal = floatval(0);
+        if ($this->totalFee === null) {
+            $this->totalFee = 0.0;
             $qlirooneFees = $this->getCreditMemo()->getOrder()->getPayment()->getAdditionalInformation('qliroone_fees');
-            if (!is_array($qlirooneFees) || !count($qlirooneFees)) {
-                $this->totalFee = $feeTotal;
-                return $this->totalFee;
-            }
-
-            foreach ($qlirooneFees as $qlirooneFee) {
-                if (is_array($qlirooneFee)) {
-                    $this->totalFee = $this->totalFee + floatval($qlirooneFee['PricePerItemIncVat'] ?? 0);
+            if (is_array($qlirooneFees)) {
+                foreach ($qlirooneFees as $qlirooneFee) {
+                    if (is_array($qlirooneFee)) {
+                        $this->totalFee += floatval($qlirooneFee['PricePerItemIncVat'] ?? 0);
+                    }
                 }
             }
-
         }
 
         return $this->totalFee;
@@ -92,6 +88,7 @@ class InvoiceFeeTotalValidator implements InvoiceFeeTotalValidatorInterface
     public function setCreditMemo(CreditmemoInterface $creditMemo): static
     {
         $this->creditMemo = $creditMemo;
+        $this->totalFee = null;
 
         return $this;
     }
