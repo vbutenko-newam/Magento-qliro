@@ -143,9 +143,6 @@ class CheckoutStatus
 
             return ['CallbackResponse' => 'Received', 'callbackResponseCode' => 200];
 
-        } catch (NoSuchEntityException $exception) {
-            return ['CallbackResponse' => 'Received', 'callbackResponseCode' => 200];
-
         } catch (\Exception $exception) {
             $this->logManager->critical($exception, $logContext);
             return ['CallbackResponse' => 'OrderNotFound', 'callbackResponseCode' => 500];
