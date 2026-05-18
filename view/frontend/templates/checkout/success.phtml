@@ -8,6 +8,9 @@
 ?>
 
 <div class="success-wrapper">
+    <?php if ($block->getIncrementId()): ?>
+        <p><?= $block->escapeHtml(__('Order has successfully been placed. Order ID: #%1', $block->getIncrementId())) ?></p>
+    <?php endif; ?>
     <div class="qliroone-checkout-success">
         <?php if ($snippet = $block->getSuccessHtmlSnippet()): ?>
             <?php /* @noEscape */ echo $snippet; ?>
