@@ -43,7 +43,7 @@ class Refund implements CommandInterface
     {
         /** @var InfoInterface $payment */
         $payment = $commandSubject['payment']->getPayment();
-        $amount = $commandSubject['amount'];
+        $amount = (float) $commandSubject['amount'];
 
         try {
             $this->qliroManagement->refundByInvoice($payment, $amount);
