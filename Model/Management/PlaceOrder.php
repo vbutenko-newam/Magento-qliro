@@ -137,6 +137,8 @@ class PlaceOrder
             $link->setMessage(sprintf('Created pending order %s', $order->getIncrementId()));
             $this->linkRepository->save($link);
 
+            $this->syncMerchantReference($link->getQliroOrderId(), $order->getIncrementId(), $quote->getStoreId());
+
             $this->logManager->debug('Pending order placed successfully', [
                 'extra' => [
                     'quote_id'        => $quote->getId(),
@@ -447,6 +449,42 @@ class PlaceOrder
         $recurringInfo = $this->recurringDataService->quoteGetter($this->currentQuote);
         if ($recurringInfo->getEnabled()) {
             $this->recurringDataService->scheduleNextRecurringOrder($this->currentQuote);
+        }
+    }
+
+    /**
+     * Sync the Qliro MerchantReference to the Magento order increment_id.
+     * Called immediately after placePending() creates the order so Qliro reflects
+     * the correct order number without waiting for the callback.
+     */
+    private function syncMerchantReference(int|null $qliroOrderId, string $incrementId, int|string|null $storeId): void
+    {
+        if (!$qliroOrderId) {
+            return;
+        }
+
+        try {
+            $request = $this->payloadConverter->fromArray(
+                [
+                    'OrderId'              => $qliroOrderId,
+                    'NewMerchantReference' => $incrementId,
+                ],
+                AdminUpdateMerchantReferenceRequestInterface::class
+            );
+            $this->orderManagementApi->updateMerchantReference($request, $storeId);
+            $this->logManager->debug('Merchant reference synced in placePending', [
+                'extra' => [
+                    'qliro_order_id'         => $qliroOrderId,
+                    'new_merchant_reference' => $incrementId,
+                ],
+            ]);
+        } catch (\Exception $exception) {
+            $this->logManager->critical($exception, [
+                'extra' => [
+                    'qliro_order_id' => $qliroOrderId,
+                    'increment_id'   => $incrementId,
+                ],
+            ]);
         }
     }
 

@@ -146,32 +146,9 @@ readonly class OrderManagement implements OrderManagementInterface
             /** @var AdminTransactionResponseInterface $container */
             $container = $this->payloadConverter->fromArray($response, AdminTransactionResponseInterface::class);
         } catch (\Exception $exception) {
-            /**
-             * This function is called inside a notification from Qliro. That notification should just respond with ok
-             * Unless something is very wrong. What the call to updatemerchantreference responds with should NOT
-             * make any difference in what that notification should respond! The return from this function only logs
-             * the transactionId....
-             * @todo This needs to be fixed properly once we can debug notifications
-             */
-
-            // Workaround for having updateMerchantReference NOT throwing exception in case of success
-//            if ($exception instanceof RequestException) {
-//                $data = $this->json->unserialize($exception->getResponse()->getBody());
-//
-//                $errorCode = $data['ErrorCode'] ?? null;
-//
-//                if ($errorCode === 'ORDER_HAS_BEEN_CANCELLED') {
-//                    /** @var \Qliro\QliroOne\Api\Data\AdminTransactionResponseInterface $container */
-//                    $container = $this->payloadConverter->fromArray(
-//                        ['Status' => 'Refused'],
-//                        AdminTransactionResponseInterface::class
-//                    );
-//
-//                    return $container;
-//                }
-//            }
-//
-//            $this->handleExceptions($exception);
+            $this->logManager->critical($exception, [
+                'extra' => ['qliro_order_id' => $request->getOrderId() ?? 'unknown'],
+            ]);
         }
 
         return $container;
