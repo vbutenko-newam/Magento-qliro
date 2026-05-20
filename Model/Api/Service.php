@@ -129,7 +129,7 @@ class Service implements ApiServiceInterface
             $payload = '';
             $options[RequestOptions::QUERY] = $body;
         } else {
-            if (!isset($body['MerchantApiKey'])) {
+            if (empty($body['MerchantApiKey'])) {
                 $body['MerchantApiKey'] = $this->config->getMerchantApiKey($storeId);
             }
             $payload = $this->json->serialize($body);

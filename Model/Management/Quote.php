@@ -163,15 +163,17 @@ class Quote
         if ($link->getQliroOrderId()) {
             $this->logManager->debug('Existing active Qliro link found; skipping legacy update flow');
         } else {
-            $this->logManager->debug('Generating new qliro order reference for quote ' . $quoteId);
-            $orderReference = $this->linkService->generateOrderReference($quote);
-            $this->logManager->debug('Qliro order reference created: ' . $orderReference);
+            if (!$quote->getReservedOrderId()) {
+                $quote->reserveOrderId();
+                $this->quoteRepository->save($quote);
+            }
+            $orderReference = $quote->getReservedOrderId();
+
+            $this->logManager->debug('Qliro order reference (reserved increment_id): ' . $orderReference);
             $this->logManager->setMerchantReference($orderReference);
 
-            $this->logManager->debug('Creating request payload for Qliro order reference: ' . $orderReference);
             $payload = $this->createRequestBuilder->setQuote($quote)->create();
             $payload['MerchantReference'] = $orderReference;
-            $this->logManager->debug('Request payload for Qliro order reference created: ' . $orderReference);
 
             $this->logManager->debug('Sending request to create order ' . $orderReference);
             $orderId = $this->merchantApi->createOrder($payload);
