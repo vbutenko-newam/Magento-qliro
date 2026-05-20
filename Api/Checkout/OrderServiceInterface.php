@@ -86,4 +86,12 @@ interface OrderServiceInterface
      * @throws \Exception
      */
     public function updateFee(float $fee): bool;
+
+    /**
+     * Push the current quote state (items, discounts, shipping) to the Qliro widget.
+     * Called after coupon apply/remove so the widget reflects the updated totals.
+     *
+     * @return void
+     */
+    public function pushQuoteUpdate(): void;
 }

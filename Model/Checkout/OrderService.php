@@ -158,6 +158,14 @@ class OrderService implements OrderServiceInterface
     }
 
     /**
+     * @inheritDoc
+     */
+    public function pushQuoteUpdate(): void
+    {
+        $this->quoteManagement->updateQliroOrder($this->getQuote());
+    }
+
+    /**
      * Return the current session quote
      */
     private function getQuote(): Quote

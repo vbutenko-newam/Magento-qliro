@@ -29,7 +29,9 @@ class UpdateQuote extends AbstractAjaxAction
         }
 
         try {
-            $grandTotal = (float) $this->checkoutSession->getQuote()->getGrandTotal();
+            $quote = $this->checkoutSession->getQuote();
+            $grandTotal = (float) $quote->getGrandTotal();
+            $this->orderService->pushQuoteUpdate();
         } catch (\Exception $e) {
             $this->logManager->critical($e);
             return $this->errorResponse($e->getMessage());
