@@ -290,7 +290,7 @@ class PlaceOrder
                         $order->getPayment()->setAdditionalInformation($paymentAdditionalInfo);
                     }
 
-                    $this->orderStateSetter->apply($order, Order::STATE_NEW);
+                    $this->orderStateSetter->apply($order, Order::STATE_PROCESSING);
                     return true;
 
                 case 'OnHold':

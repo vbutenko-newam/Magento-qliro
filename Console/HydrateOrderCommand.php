@@ -218,7 +218,7 @@ class HydrateOrderCommand extends AbstractCommand
         }
 
         $stateMap = [
-            'Completed' => Order::STATE_NEW,
+            'Completed' => Order::STATE_PROCESSING,
             'OnHold'    => Order::STATE_PAYMENT_REVIEW,
             'Refused'   => 'canceled',
             'InProcess' => '(no change)',

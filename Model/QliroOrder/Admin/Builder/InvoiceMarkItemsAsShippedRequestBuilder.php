@@ -109,13 +109,11 @@ class InvoiceMarkItemsAsShippedRequestBuilder
                 $exception,
                 [
                     'extra' => [
-                        'link_id' => $link->getId(),
-                        'quote_id' => $link->getQuoteId(),
-                        'qliro_order_id' => $link->getQliroOrderId(),
+                        'order_id' => $this->order->getId(),
+                        'increment_id' => $this->order->getIncrementId(),
                     ],
                 ]
             );
-
         }
 
         return $request;
