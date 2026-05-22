@@ -265,29 +265,41 @@ class PlaceOrder
 
                     $paymentAdditionalInfo = $order->getPayment()->getAdditionalInformation();
                     if (empty($paymentAdditionalInfo['qliroone_updated_merchant_reference'])) {
-                        /** @var AdminUpdateMerchantReferenceRequestInterface $request */
-                        $request = $this->payloadConverter->fromArray(
-                            [
-                                'OrderId'              => $link->getQliroOrderId(),
-                                'NewMerchantReference' => $order->getIncrementId(),
-                            ],
-                            AdminUpdateMerchantReferenceRequestInterface::class
-                        );
+                        try {
+                            /** @var AdminUpdateMerchantReferenceRequestInterface $request */
+                            $request = $this->payloadConverter->fromArray(
+                                [
+                                    'OrderId'              => $link->getQliroOrderId(),
+                                    'NewMerchantReference' => $order->getIncrementId(),
+                                ],
+                                AdminUpdateMerchantReferenceRequestInterface::class
+                            );
 
-                        $response       = $this->orderManagementApi->updateMerchantReference($request, $order->getStoreId());
-                        $transactionId  = $response && $response->getPaymentTransactionId()
-                            ? $response->getPaymentTransactionId()
-                            : 'unknown';
+                            $response       = $this->orderManagementApi->updateMerchantReference($request, $order->getStoreId());
+                            $transactionId  = $response && $response->getPaymentTransactionId()
+                                ? $response->getPaymentTransactionId()
+                                : 'unknown';
 
-                        $this->logManager->debug('Merchant reference updated', [
-                            'payment_transaction_id'  => $transactionId,
-                            'qliro_order_id'          => $link->getQliroOrderId(),
-                            'order_id'                => $orderId,
-                            'new_merchant_reference'  => $order->getIncrementId(),
-                        ]);
+                            $this->logManager->debug('Merchant reference updated', [
+                                'payment_transaction_id'  => $transactionId,
+                                'qliro_order_id'          => $link->getQliroOrderId(),
+                                'order_id'                => $orderId,
+                                'new_merchant_reference'  => $order->getIncrementId(),
+                            ]);
 
-                        $paymentAdditionalInfo['qliroone_updated_merchant_reference'] = true;
-                        $order->getPayment()->setAdditionalInformation($paymentAdditionalInfo);
+                            $paymentAdditionalInfo['qliroone_updated_merchant_reference'] = true;
+                            $order->getPayment()->setAdditionalInformation($paymentAdditionalInfo);
+                        } catch (\Exception $exception) {
+                            // Reference update is best-effort: Qliro may reject it if the reference
+                            // was already set at order-creation time (UPDATE_MERCHANT_REFERENCE_NOT_SUPPORTED).
+                            // Log and continue — the state transition must always happen.
+                            $this->logManager->debug($exception, [
+                                'extra' => [
+                                    'order_id'       => $orderId,
+                                    'qliro_order_id' => $link->getQliroOrderId(),
+                                ],
+                            ]);
+                        }
                     }
 
                     $this->orderStateSetter->apply($order, Order::STATE_PROCESSING);
@@ -479,7 +491,10 @@ class PlaceOrder
                 ],
             ]);
         } catch (\Exception $exception) {
-            $this->logManager->critical($exception, [
+            // Non-fatal: Qliro returns UPDATE_MERCHANT_REFERENCE_NOT_SUPPORTED when the
+            // reference was already set at order-creation time (same increment_id). Log at
+            // debug level so it doesn't trigger alerts for expected behaviour.
+            $this->logManager->debug($exception, [
                 'extra' => [
                     'qliro_order_id' => $qliroOrderId,
                     'increment_id'   => $incrementId,
