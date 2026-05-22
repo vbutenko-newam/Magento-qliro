@@ -17,6 +17,8 @@ use Magento\Payment\Gateway\Command;
 use Magento\Payment\Gateway\CommandInterface;
 use Magento\Payment\Gateway\Command\ResultInterface;
 use Qliro\QliroOne\Model\Config;
+use Qliro\QliroOne\Model\Logger\Manager as LogManager;
+use Qliro\QliroOne\Model\Management\Payment as PaymentManagement;
 
 /**
  * Class Capture for QliroOne payment method
@@ -28,10 +30,12 @@ readonly class Capture implements CommandInterface
      *
      * @param OrderServiceInterface $qliroManagement
      * @param Config $qliroConfig
+     * @param LogManager $logManager
      */
     public function __construct(
         private OrderServiceInterface $qliroManagement,
-        private Config                $qliroConfig
+        private Config                $qliroConfig,
+        private LogManager            $logManager
     ) {
     }
 
@@ -53,13 +57,33 @@ readonly class Capture implements CommandInterface
         try {
             /** @var Order $order */
             $order = $payment->getOrder();
-            if ($this->qliroConfig->shouldCaptureOnInvoice($order ? $order->getStoreId() : null)) {
+            $captureOnInvoice = $this->qliroConfig->shouldCaptureOnInvoice($order ? $order->getStoreId() : null);
+            $skipCapture = (bool) $payment->getData(PaymentManagement::QLIRO_SKIP_ACTUAL_CAPTURE);
+
+            $this->logManager->debug('Capture::execute called', [
+                'extra' => [
+                    'order_id'          => $order ? $order->getId() : null,
+                    'increment_id'      => $order ? $order->getIncrementId() : null,
+                    'amount'            => $amount,
+                    'capture_on_invoice' => $captureOnInvoice,
+                    'skip_actual_capture' => $skipCapture,
+                    'payment_txn_id'    => $payment->getTransactionId(),
+                ],
+            ]);
+
+            if ($captureOnInvoice) {
                 $this->qliroManagement->captureByInvoice($payment, $amount);
             } else {
+                $this->logManager->debug('Capture::execute — capture_on_invoice disabled, marking transaction pending');
                 $payment->setIsTransactionPending(true);
                 $payment->setIsTransactionClosed(false);
             }
         } catch (\Exception $exception) {
+            $this->logManager->debug('Capture::execute — exception: ' . $exception->getMessage(), [
+                'extra' => [
+                    'order_id' => isset($order) ? $order->getId() : null,
+                ],
+            ]);
             throw new LocalizedException(
                 __('Unable to capture payment for this order.'),
                 $exception

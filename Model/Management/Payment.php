@@ -137,6 +137,12 @@ class Payment
     public function captureByInvoice(\Magento\Payment\Model\InfoInterface $payment, float $amount): void
     {
         if ($payment->getData(self::QLIRO_SKIP_ACTUAL_CAPTURE)) {
+            $this->logManager->debug('captureByInvoice — skipped (QLIRO_SKIP_ACTUAL_CAPTURE is set)', [
+                'extra' => [
+                    'order_id'    => $payment->getOrder()->getId(),
+                    'payment_id'  => $payment->getId(),
+                ],
+            ]);
             return;
         }
 
@@ -145,11 +151,29 @@ class Payment
         $link = $this->linkRepository->getByOrderId($order->getId());
         $this->logManager->setMerchantReference($link->getReference());
 
+        $this->logManager->debug('captureByInvoice — calling MarkItemsAsShipped', [
+            'extra' => [
+                'order_id'      => $order->getId(),
+                'qliro_order_id' => $link->getQliroOrderId(),
+                'amount'        => $amount,
+                'payment_txn_id' => $payment->getTransactionId(),
+            ],
+        ]);
+
         $this->invoiceMarkItemsAsShippedRequestBuilder->setPayment($payment);
         $this->invoiceMarkItemsAsShippedRequestBuilder->setAmount($amount);
 
         $request = $this->invoiceMarkItemsAsShippedRequestBuilder->create();
         $result = $this->orderManagementApi->markItemsAsShipped($request, $order->getStoreId());
+
+        $this->logManager->debug('captureByInvoice — MarkItemsAsShipped response', [
+            'extra' => [
+                'order_id'               => $order->getId(),
+                'qliro_order_id'         => $link->getQliroOrderId(),
+                'result_status'          => $result->getStatus(),
+                'payment_transaction_id' => $result->getPaymentTransactionId(),
+            ],
+        ]);
 
         try {
             /** @var OrderManagementStatus $omStatus */
@@ -177,8 +201,25 @@ class Payment
         if ($result->getStatus() == 'Created') {
             if ($result->getPaymentTransactionId()) {
                 $payment->setTransactionId($result->getPaymentTransactionId());
+                $this->logManager->debug('captureByInvoice — transaction ID set on payment', [
+                    'extra' => [
+                        'order_id'               => $order->getId(),
+                        'payment_transaction_id' => $result->getPaymentTransactionId(),
+                        'is_transaction_pending'  => $payment->getIsTransactionPending(),
+                    ],
+                ]);
+            } else {
+                $this->logManager->debug('captureByInvoice — status Created but PaymentTransactionId is empty', [
+                    'extra' => ['order_id' => $order->getId()],
+                ]);
             }
         } else {
+            $this->logManager->debug('captureByInvoice — unexpected status, throwing exception', [
+                'extra' => [
+                    'order_id'      => $order->getId(),
+                    'result_status' => $result->getStatus(),
+                ],
+            ]);
             throw new LocalizedException(
                 __('Unable to capture payment for this order.')
             );
