@@ -72,7 +72,7 @@ class Exporter
             throw new \RuntimeException('Cannot open file for writing: ' . $filePath);
         }
 
-        fputcsv($fp, ['scope', 'scope_id', 'path', 'value']);
+        fputcsv($fp, ['scope', 'scope_id', 'path', 'value'], ',', '"', '\\');
 
         foreach ($collection as $configRow) {
             if ($configRow->getData('path') === self::CONFIG_PATH_API_KEY ||
@@ -86,7 +86,10 @@ class Exporter
                     $configRow->getData('scope_id'),
                     $configRow->getData('path'),
                     $configRow->getData('value'),
-                ]
+                ],
+                ',',
+                '"',
+                '\\'
             );
         }
 

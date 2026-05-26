@@ -73,6 +73,7 @@ readonly class Capture implements CommandInterface
 
             if ($captureOnInvoice) {
                 $this->qliroManagement->captureByInvoice($payment, $amount);
+                $payment->setIsTransactionPending(false);
             } else {
                 $this->logManager->debug('Capture::execute — capture_on_invoice disabled, marking transaction pending');
                 $payment->setIsTransactionPending(true);
