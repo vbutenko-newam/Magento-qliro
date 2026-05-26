@@ -90,13 +90,20 @@ define([
                             if (Math.abs(order.totalPrice - data.order.totalPrice) < 0.005) {
                                 unmatchCount = 0;
                                 window.q1.unlock();
-                            } else {
-                                unmatchCount++;
 
-                                if (unmatchCount > 3) {
-                                    unmatchCount = 0;
-                                    showErrorMessage(__('Store and Qliro One totals don\'t match. Refresh the page.'));
-                                }
+                                return true;
+                            }
+
+                            unmatchCount++;
+
+                            if (unmatchCount > 3) {
+                                qliroDebug('Total mismatch after retries — unlocking.', {
+                                    qliroTotal: order.totalPrice,
+                                    magentoTotal: data.order.totalPrice
+                                });
+                                window.q1.unlock();
+
+                                return true;
                             }
                         })
                     },
