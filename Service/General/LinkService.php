@@ -2,8 +2,10 @@
 
 namespace Qliro\QliroOne\Service\General;
 
+use Magento\Framework\Exception\AlreadyExistsException;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Quote\Model\Quote;
+use Qliro\QliroOne\Api\Data\LinkInterface;
 use Qliro\QliroOne\Api\HashResolverInterface;
 use Qliro\QliroOne\Api\LinkRepositoryInterface;
 
@@ -12,24 +14,33 @@ use Qliro\QliroOne\Api\LinkRepositoryInterface;
  */
 class LinkService
 {
-    const REFERENCE_MIN_LENGTH = 6;
+    const int REFERENCE_MIN_LENGTH = 6;
 
     /**
-     * @var Qliro\QliroOne\Api\HashResolverInterface
+     * Class constructor
+     *
+     * @param HashResolverInterface $hashResolver
+     * @param LinkRepositoryInterface $linkRepository
      */
-    private HashResolverInterface $hashResolver;
-
-    /**
-     * @var Qliro\QliroOne\Api\LinkRepositoryInterface
-     */
-    private LinkRepositoryInterface $linkRepository;
-
     public function __construct(
-        HashResolverInterface $hashResolver,
-        LinkRepositoryInterface $linkRepository
+        private readonly HashResolverInterface $hashResolver,
+        private readonly LinkRepositoryInterface $linkRepository
     ) {
-        $this->hashResolver = $hashResolver;
-        $this->linkRepository = $linkRepository;
+    }
+
+    /**
+     * Deactivate a link by clearing its Qliro order ID and marking it inactive.
+     *
+     * Moved from Service\Checkout\LinkManager (dead-weight elimination).
+     *
+     * @param LinkInterface $link
+     * @throws AlreadyExistsException
+     */
+    public function deactivate(LinkInterface $link): void
+    {
+        $link->setIsActive(false);
+        $link->setQliroOrderId(null);
+        $this->linkRepository->save($link);
     }
 
     /**
@@ -69,7 +80,7 @@ class LinkService
      *
      * @param string $hash
      */
-    private function validateHash($hash)
+    private function validateHash(string $hash): void
     {
         if (!preg_match(HashResolverInterface::VALIDATE_MERCHANT_REFERENCE, $hash)) {
             throw new \DomainException(sprintf('Merchant reference \'%s\' will not be accepted by Qliro', $hash));

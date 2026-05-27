@@ -3,6 +3,7 @@
  * Copyright © Qliro AB. All rights reserved.
  * See LICENSE.txt for license details.
  */
+declare(strict_types=1);
 
 // @codingStandardsIgnoreFile
 // phpcs:ignoreFile
@@ -21,22 +22,16 @@ use Qliro\QliroOne\Model\ResourceModel\LogRecord as DbLogRecord;
 class Handler extends AbstractProcessingHandler
 {
     /**
-     * @var ConnectionProvider
-     */
-    private $connectionProvider;
-
-    /**
-     * Handler constructor.
+     * Class constructor
      *
      * @param FormatterInterface $formatter
      * @param ConnectionProvider $connectionProvider
      */
     public function __construct(
         FormatterInterface $formatter,
-        ConnectionProvider $connectionProvider
+        private readonly ConnectionProvider $connectionProvider
     ) {
         $this->formatter = $formatter;
-        $this->connectionProvider = $connectionProvider;
 
         parent::__construct();
     }
@@ -72,7 +67,7 @@ class Handler extends AbstractProcessingHandler
      * @param array|string $data
      * @return string
      */
-    private function encodeExtra($data)
+    private function encodeExtra(array|string $data): string|null
     {
         try {
             $serializedData = is_array($data) ? $this->serialize($data) : $data;
@@ -89,7 +84,7 @@ class Handler extends AbstractProcessingHandler
      * @param array $data
      * @return false|string
      */
-    private function serialize($data)
+    private function serialize(array $data): string|false
     {
         return \json_encode($data, JSON_PRETTY_PRINT + JSON_UNESCAPED_SLASHES + JSON_UNESCAPED_UNICODE);
     }
