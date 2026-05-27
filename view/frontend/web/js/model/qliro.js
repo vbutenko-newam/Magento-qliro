@@ -78,34 +78,11 @@ define([
             sendUpdateQuote()
                 .then(
                     function(data) {
-                        var unmatchCount = 0;
+                        qliroDebug('Quote update pushed, unlocking checkout.', data);
 
-                        window.q1.onOrderUpdated(function(order) {
-                            if (config.isEagerCheckoutRefresh) {
-                                qliroDebug('Skipping checkout update polling.');
-
-                                return true;
-                            }
-
-                            if (Math.abs(order.totalPrice - data.order.totalPrice) < 0.005) {
-                                unmatchCount = 0;
-                                window.q1.unlock();
-
-                                return true;
-                            }
-
-                            unmatchCount++;
-
-                            if (unmatchCount > 3) {
-                                qliroDebug('Total mismatch after retries — unlocking.', {
-                                    qliroTotal: order.totalPrice,
-                                    magentoTotal: data.order.totalPrice
-                                });
-                                window.q1.unlock();
-
-                                return true;
-                            }
-                        })
+                        if (!config.isEagerCheckoutRefresh) {
+                            window.q1.unlock();
+                        }
                     },
                     function(response, state, reason) {
                         var data = response.responseJSON || {};
